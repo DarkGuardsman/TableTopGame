@@ -1,6 +1,6 @@
 package com.builtbroken.tests;
 
-import com.builtbroken.tabletop.common.map.MapInstance;
+import com.builtbroken.tabletop.common.world.WorldMap;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -13,6 +13,6 @@ public class MapTest extends TestCase
     @Test
     public void testInit()
     {
-        MapInstance map = new MapInstance();
+        WorldMap map = new WorldMap("");
     }
 }

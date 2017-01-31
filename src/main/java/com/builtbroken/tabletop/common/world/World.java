@@ -2,7 +2,6 @@ package com.builtbroken.tabletop.common.world;
 
 import com.builtbroken.tabletop.common.Game;
 import com.builtbroken.tabletop.common.entity.Entity;
-import com.builtbroken.tabletop.common.map.MapInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class World
     public final Game game;
 
     /** Current map this would represents */
-    private MapInstance map;
+    private WorldMap map;
     /** All entities placed into the world (Both living and non-living) */
     private List<Entity> entities;
 
