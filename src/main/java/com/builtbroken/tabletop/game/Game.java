@@ -1,6 +1,6 @@
-package com.builtbroken.tabletop.common;
+package com.builtbroken.tabletop.game;
 
-import com.builtbroken.tabletop.common.world.World;
+import com.builtbroken.tabletop.game.world.World;
 
 /**
  * Main logic controller for the running game state

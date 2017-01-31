@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.api;
 
-import com.builtbroken.tabletop.common.world.WorldMap;
+import com.builtbroken.tabletop.game.world.WorldMap;
 
 import java.util.HashMap;
 import java.util.List;

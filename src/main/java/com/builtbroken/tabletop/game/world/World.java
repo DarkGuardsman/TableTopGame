@@ -1,7 +1,7 @@
-package com.builtbroken.tabletop.common.world;
+package com.builtbroken.tabletop.game.world;
 
-import com.builtbroken.tabletop.common.Game;
-import com.builtbroken.tabletop.common.entity.Entity;
+import com.builtbroken.tabletop.game.Game;
+import com.builtbroken.tabletop.game.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;

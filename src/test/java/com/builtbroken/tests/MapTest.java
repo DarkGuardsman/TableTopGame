@@ -1,6 +1,6 @@
 package com.builtbroken.tests;
 
-import com.builtbroken.tabletop.common.world.WorldMap;
+import com.builtbroken.tabletop.game.world.WorldMap;
 import junit.framework.TestCase;
 import org.junit.Test;
 
