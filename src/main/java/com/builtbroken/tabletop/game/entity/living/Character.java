@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.game.entity.living;
 
 import com.builtbroken.tabletop.game.entity.Entity;
+import com.builtbroken.tabletop.game.entity.controller.Controller;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -8,4 +9,12 @@ import com.builtbroken.tabletop.game.entity.Entity;
  */
 public class Character extends Entity
 {
+    String displayName = "Entity";
+
+    Controller controller;
+
+    public Character(String uniqueID)
+    {
+        super(uniqueID);
+    }
 }

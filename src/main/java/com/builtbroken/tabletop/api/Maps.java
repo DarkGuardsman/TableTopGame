@@ -17,6 +17,4 @@ public class Maps
     HashMap<String, WorldMap> maps = new HashMap();
     /** Category to maps, used to display maps to the user without showing a massive list */
     HashMap<String, List<String>> mapDisplayList = new HashMap();
-
-
 }
