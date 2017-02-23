@@ -22,9 +22,16 @@ public class Entity extends GameObject
     int y = 0;
     int z = 0;
 
+    /** Current health value, -1 means it was never set */
     int health = -1;
+    /** Current shield value, works like HP, -1 means it was never set */
     int shield = -1;
 
+    /**
+     * Constructor
+     *
+     * @param uniqueID - entity type ID, use a different value for instance IDs
+     */
     public Entity(String uniqueID)
     {
         super("entity." + uniqueID);
