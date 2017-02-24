@@ -18,14 +18,14 @@ public class Entity extends GameObject
     /** Can the entity take damage from attacks */
     boolean canTakeDamae = true;
 
-    int x = 0;
-    int y = 0;
-    int z = 0;
+    protected int x = 0;
+    protected int y = 0;
+    protected int z = 0;
 
     /** Current health value, -1 means it was never set */
-    int health = -1;
+    private int health = -1;
     /** Current shield value, works like HP, -1 means it was never set */
-    int shield = -1;
+    private int shield = -1;
 
     /**
      * Constructor
@@ -36,6 +36,11 @@ public class Entity extends GameObject
     {
         super("entity." + uniqueID);
     }
+
+
+    //==============================================
+    // Damage code
+    //==============================================
 
     /**
      * Called when the entity is attacked by another entity.
@@ -79,7 +84,7 @@ public class Entity extends GameObject
                 //if armor is over twice the shot is deflected, if glance it is deflected by default
                 if (armor * 2 >= damage.armorPierce || glance)
                 {
-                    return HitResult.DEFLECT;
+                    return HitResult.DEFLECT; //TODO want to bounce for a chance to do another damage
                 }
 
                 //Calculate crit change to pen armor
@@ -87,7 +92,7 @@ public class Entity extends GameObject
                 if (diceRollD20 < 1 + getCriticalBonus())
                 {
                     //Apply normal hit
-                    applyDamage(damage.damageDice.roll(), glance, false);
+                    applyDamage(damage, damage.damageDice.roll(), glance, false);
                     return HitResult.DAMAGE;
                 }
                 return HitResult.NO_DAMAGE;
@@ -95,14 +100,15 @@ public class Entity extends GameObject
             else
             {
                 //Apply normal hit
-                applyDamage(damage.damageDice.roll(), glance, false);
+                applyDamage(damage, damage.damageDice.roll(), glance, false);
 
                 //Calculate crit hit
                 int diceRollD20 = new Dice(20).roll();
                 if (diceRollD20 < 1 + getCriticalBonus())
                 {
                     //Apply crit hit
-                    applyDamage(damage.damageDice.roll(), glance, true);
+                    applyDamage(damage, damage.damageDice.roll(), glance, true);
+                    return HitResult.DAMAGE_CRIT;
                 }
                 return HitResult.DAMAGE;
             }
@@ -110,60 +116,160 @@ public class Entity extends GameObject
         return HitResult.IGNORE;
     }
 
-    protected void applyDamage(int damageAmount, boolean glance, boolean crit)
+    /**
+     * Called to apply HP damage to the entity as well the entities
+     * armor.
+     *
+     * @param damage       - damage data, optional
+     * @param damageAmount - damage to apply
+     * @param glance       - was the damage a glancing hit
+     * @param crit         - was the damage a critical hit
+     */
+    public void applyDamage(Damage damage, int damageAmount, boolean glance, boolean crit)
     {
         if (glance)
         {
             damageAmount = damageAmount / 2;
         }
         health -= damageAmount;
-        //TODO calculate armor damage (armor - (damage / 2))
-        //TODO calculate armor damage ( armor - damage) <- math for crit
+        if (crit)
+        {
+            damageArmor(damage, damageAmount);
+        }
+        else
+        {
+            damageArmor(damage, damageAmount / 2);
+        }
+    }
+
+    /**
+     * Called to damage the entities armor
+     *
+     * @param damage - damage data, optional
+     * @param amount - amount of damage
+     */
+    public void damageArmor(Damage damage, int amount)
+    {
         //TODO spread armor damage if not wearing a set
     }
 
+    //==============================================
+    // Actions
+    //==============================================
+
+    /**
+     * Called to attack the location with the weapon when
+     * a specific entity can not be selected.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param weapon
+     */
+    public void attack(int x, int y, int z, Weapon weapon)
+    {
+        //TODO get entities at location
+        //TODO get direction from self
+    }
+
+    /**
+     * Called to attack the entity with the weapon
+     * <p>
+     * Will roll a D20 to calculate hit
+     *
+     * @param entityToAttack - entity that will be attacked
+     * @param weapon         - weapon being used
+     */
     public void attack(Entity entityToAttack, Weapon weapon)
     {
-        //Calculate hit roll
-        int diceRollD20 = new Dice(20).roll();
+        attack(entityToAttack, weapon, new Dice(20).roll());
+    }
+
+    /**
+     * Called to attack the entity with the weapon
+     *
+     * @param entityToAttack - entity that will be attacked
+     * @param weapon         - weapon being used
+     * @param diceRollD20    - value used to check for hit
+     */
+    public HitResult attack(Entity entityToAttack, Weapon weapon, int diceRollD20)
+    {
         //Calculate hit ability
-        int RHR = getRangedHitAbility() - entityToAttack.getRangedReactionAbility();
+        int RHR = getHitRating(weapon.isRanged()) - entityToAttack.getReactionRating(weapon.isRanged());
         //Hit if the dice roll is less than hit ability
         if (diceRollD20 < RHR)
         {
             //TODO handle result
-            weapon.attackEntity(this, entityToAttack, false);
+            return weapon.attackEntity(this, entityToAttack, false);
         }
         //Glance hit if dice is close enough
         else if (diceRollD20 + 2 <= RHR)
         {
-            weapon.attackEntity(this, entityToAttack, true);
+            //TODO handle result
+            return weapon.attackEntity(this, entityToAttack, true);
         }
-        //TODO consume ammo
+        else
+        {
+            //TODO if entity is on the other side of cover and we miss see if we hit the cover instead
+            //TODO cover is directional
+            // return HitResult.HIT_COVER;
+        }
+        return HitResult.MISS;
+    }
+
+    //==============================================
+    // Property calls
+    //==============================================
+
+    /**
+     * Called to set the health of the entity
+     * <p>
+     * Do not call this directly for normal actions.
+     * This should only be used to init the entity
+     * after it has been loaded into the world.
+     *
+     * @param value
+     */
+    public void setHealth(int value)
+    {
+        this.health = value; //TODO max health check?
+    }
+
+    public int getHealth()
+    {
+        return health;
     }
 
     /**
      * Called to get the entities current ability to hit
      * a target with a ranged attack.
      * <p>
+     * For ranged attacks
      * HR = Shooter Agility +Strength + Marksman
+     * <p>
+     * For melee attacks
+     * HR = Aggressor Stamina + Reaction + Hand to Hand
      *
      * @return
      */
-    public int getRangedHitAbility()
+    public int getHitRating(boolean ranged)
     {
-        return 1;
+        return 20;
     }
 
     /**
      * Called to get the entities current ability to
      * react to a ranged attack in order to avoid.
      * <p>
+     * For ranged reactions
      * RL = Reaction + bonuses + cover level
+     * <p>
+     * For melee reactions
+     * RL = (Reaction + Fortitude / 2 Rnd Up) + Hand to Hand
      *
      * @return
      */
-    public int getRangedReactionAbility()
+    public int getReactionRating(boolean ranged)
     {
         return 0;
     }
@@ -187,5 +293,26 @@ public class Entity extends GameObject
     public int getCriticalBonus()
     {
         return 0;
+    }
+
+    //==============================================
+    // Movement and location code
+    //==============================================
+
+    public int xi()
+    {
+        return x;
+    }
+
+
+    public int yi()
+    {
+        return y;
+    }
+
+
+    public int zi()
+    {
+        return z;
     }
 }

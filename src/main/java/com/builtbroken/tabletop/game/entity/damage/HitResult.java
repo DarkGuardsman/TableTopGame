@@ -6,6 +6,8 @@ package com.builtbroken.tabletop.game.entity.damage;
  */
 public enum HitResult
 {
+    /** Entity took damage and took crit damage */
+    DAMAGE_CRIT,
     /** Entity took damage */
     DAMAGE,
     /** Armor blocked the damage */
@@ -13,5 +15,11 @@ public enum HitResult
     /** Armor deflected the damage completely */
     DEFLECT,
     /** Entity can not take damage */
-    IGNORE
+    IGNORE,
+    /** We missed the target */
+    MISS,
+    /** Shot hit and damaged the cover */
+    DAMAGE_COVER,
+    /** Shot hit the cover with no damage */
+    HIT_COVER
 }

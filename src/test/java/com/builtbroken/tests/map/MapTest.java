@@ -1,4 +1,4 @@
-package com.builtbroken.tests;
+package com.builtbroken.tests.map;
 
 import com.builtbroken.tabletop.game.world.WorldMap;
 import junit.framework.TestCase;

@@ -11,20 +11,45 @@ import com.builtbroken.tabletop.game.items.Item;
  */
 public class Weapon extends Item
 {
+    boolean ranged = true;
     /** How many tiles away can the weapon attack */
-    int range = 1;
+    public int range = 1;
     /** How many times can the weapon attack before being reloaded/reactivated/recharged etc */
-    int attackLimit = 1;
+    public int attackLimit = 1;
     /** Damage applied by the weapon */
-    Damage damage;
+    public Damage damage;
 
     public Weapon(String uniqueID)
     {
         super("weapon." + uniqueID);
     }
 
+    /**
+     * Called to do damage to an entity using the weapon
+     * <p>
+     * Hit or no hit is calculated by the attacking entity
+     *
+     * @param attacker
+     * @param entityHit
+     * @param glance
+     * @return
+     */
     public HitResult attackEntity(Entity attacker, Entity entityHit, boolean glance)
     {
+        consumeUse(1);
         return entityHit.onAttacked(damage.copy(attacker), glance);
+    }
+
+    public boolean isRanged()
+    {
+        return ranged;
+    }
+
+    public void consumeUse(int i)
+    {
+        //TODO implement
+        //TODO damage weapon
+
+        //TODO consume charge for ranged weapon
     }
 }

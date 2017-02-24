@@ -9,12 +9,13 @@ import com.builtbroken.tabletop.game.entity.controller.Controller;
  */
 public class Character extends Entity
 {
-    String displayName = "Entity";
+    String displayName;
 
     Controller controller;
 
-    public Character(String uniqueID)
+    public Character(String name)
     {
-        super(uniqueID);
+        super("character");
+        this.displayName = name;
     }
 }
