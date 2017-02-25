@@ -8,12 +8,12 @@ import com.builtbroken.tabletop.game.GameObject;
  */
 public class Item extends GameObject
 {
-    /** length of the item in the inventory */
-    int lenght;
-    /** Width of the item in the inventory */
-    int width;
-    /** Mass of the item */
-    int mass;
+    /** Y-size of the inventory */
+    public int height;
+    /** X-size of the inventory */
+    public int width;
+    /** Mass of the item, used for strength checks and other minor math values */
+    public int mass;
 
     public Item(String uniqueID)
     {

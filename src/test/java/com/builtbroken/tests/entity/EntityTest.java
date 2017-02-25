@@ -16,7 +16,7 @@ public class EntityTest extends TestCase
     public void testInit()
     {
         Entity entity = new Entity("bob");
-        assertEquals("bob", entity.uniqueID);
+        assertEquals("entity.bob", entity.uniqueID);
     }
 
     public void testAttack()
