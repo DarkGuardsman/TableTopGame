@@ -24,19 +24,6 @@ public class Inventory
     }
 
     /**
-     * Gets the item at the current index in the inventory.
-     * <p>
-     * Try not to use this unless dumping the entire array.
-     *
-     * @param slot - index
-     * @return item, or null if outside of the inventory
-     */
-    public ItemState getItem(int slot)
-    {
-        return null; //TODO implement
-    }
-
-    /**
      * Gets the item at the current location in the inventory matrix
      *
      * @param x - width value
@@ -83,15 +70,84 @@ public class Inventory
         {
             for (int yy = 0; yy < state.item.height; yy++)
             {
-
+                Slot slot = getSlot(xx + x, yy + y);
+                if (slot == null || slot.item != null || slot.rootPosition != null)
+                {
+                    return false;
+                }
             }
+        }
+        return true;
+    }
+
+    /**
+     * Tries to insert the item at the location
+     *
+     * @param x     - start x point
+     * @param y     - start y point
+     * @param state - item data to check for fit
+     * @return true if the item was inserted, or partially inserted. Make sure
+     * to check stack size on the item to see if all items were added. As ammo
+     * and other consumables can be merged without fully inserted.
+     */
+    public boolean insertItem(int x, int y, ItemState state)
+    {
+        if (canFit(x, y, state))
+        {
+            //TODO implement item rotation
+            Slot primarySlot = getSlot(x, y);
+            primarySlot.item = state;
+            primarySlot.rootPosition = null;
+            for (int xx = 0; xx < state.item.width; xx++)
+            {
+                for (int yy = 0; yy < state.item.height; yy++)
+                {
+                    Slot slot = getSlot(xx + x, yy + y);
+                    if (slot != primarySlot)
+                    {
+                        slot.item = null;
+                        slot.rootPosition = primarySlot;
+                    }
+                }
+            }
+            return true;
         }
         return false;
     }
 
-    public void setSlot(int x, int y, ItemState state)
+    /**
+     * Called to remove the item at the location
+     *
+     * @param x - start x point
+     * @param y - start y point
+     * @return previous item in the slot
+     */
+    public ItemState removeItem(int x, int y)
     {
-
+        Slot primarySlot = getSlot(x, y);
+        if (primarySlot != null)
+        {
+            ItemState state = primarySlot.item;
+            if (state != null)
+            {
+                for (int xx = 0; xx < state.item.width; xx++)
+                {
+                    for (int yy = 0; yy < state.item.height; yy++)
+                    {
+                        Slot slot = getSlot(xx + x, yy + y);
+                        if (slot != primarySlot)
+                        {
+                            slot.item = null;
+                            slot.rootPosition = null;
+                        }
+                    }
+                }
+            }
+            primarySlot.item = null;
+            primarySlot.rootPosition = null;
+            return state;
+        }
+        return null;
     }
 
     /**
