@@ -61,16 +61,16 @@ public class Inventory
         {
             return false;
         }
-        if (y < 0 || y + state.item.height > width)
+        if (y < 0 || y + state.item.height > height)
         {
             return false;
         }
         //Check if slots are empty
-        for (int xx = 0; xx < state.item.width; xx++)
+        for (int w = 0; w < state.item.width; w++)
         {
-            for (int yy = 0; yy < state.item.height; yy++)
+            for (int h = 0; h < state.item.height; h++)
             {
-                Slot slot = getSlot(xx + x, yy + y);
+                Slot slot = getSlot(w + x, h + y);
                 if (slot == null || slot.item != null || slot.rootPosition != null)
                 {
                     return false;
@@ -127,6 +127,7 @@ public class Inventory
         Slot primarySlot = getSlot(x, y);
         if (primarySlot != null)
         {
+            //TODO implement item rotation
             ItemState state = primarySlot.item;
             if (state != null)
             {
@@ -162,16 +163,25 @@ public class Inventory
      */
     public Slot getSlot(int x, int y)
     {
-        if (items == null)
+        //Ensure we are inside of the expected array
+        if (x >= 0 && x < width && y >= 0 && y < height)
         {
-            items = new Slot[width][height];
-        }
-        if (items != null && x >= 0 && x < items.length && items[x] != null && y >= 0 && y < items[x].length)
-        {
+            //If array for x is empty init
+            if (items == null)
+            {
+                items = new Slot[width][height];
+            }
+            //If array for y is empty init
+            if (items[x] == null)
+            {
+                items[x] = new Slot[height];
+            }
+            //If slot is null init
             if (items[x][y] == null)
             {
                 items[x][y] = new Slot(x, y);
             }
+            //return slot
             return items[x][y];
         }
         return null;

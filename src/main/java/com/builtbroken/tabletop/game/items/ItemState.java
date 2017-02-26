@@ -8,13 +8,27 @@ package com.builtbroken.tabletop.game.items;
  */
 public class ItemState
 {
+    /** Item data, same over all items of same type */
     public Item item;
-    public int stackSize;
+    /** Number of items in the stack */
+    public int stackSize = 1;
     /** Rotation on the map or in the inventory */
     public ItemRotation rotation = ItemRotation.LEFT;
 
+    public ItemState(Item item)
+    {
+        this.item = item;
+    }
 
+    public ItemState(Item item, int amount)
+    {
+        this.item = item;
+        this.stackSize = amount;
+    }
 
+    /**
+     * Enum of rotation values
+     */
     public enum ItemRotation
     {
         UP,
