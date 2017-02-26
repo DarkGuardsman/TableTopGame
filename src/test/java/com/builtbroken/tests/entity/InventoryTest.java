@@ -7,6 +7,8 @@ import com.builtbroken.tabletop.game.items.ItemState;
 import junit.framework.TestCase;
 
 /**
+ * Tests {@link Inventory} implementation
+ *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 2/25/2017.
  */
@@ -46,6 +48,9 @@ public class InventoryTest extends TestCase
         }
     }
 
+    /**
+     * Tests {@link Inventory#insertItem(int, int, ItemState)}
+     */
     public void testAddItem()
     {
         Inventory inventory = new Inventory(2, 4);
@@ -65,7 +70,7 @@ public class InventoryTest extends TestCase
                 assertNotNull(slot);
 
                 //Test for item
-                if(yy < 3)
+                if (yy < 3)
                 {
                     //Test for root item
                     if (xx == 0 && yy == 0)
@@ -90,6 +95,9 @@ public class InventoryTest extends TestCase
         }
     }
 
+    /**
+     * Tests {@link Inventory#removeItem(int, int)}
+     */
     public void testRemoveItem()
     {
         Inventory inventory = new Inventory(2, 4);
