@@ -19,6 +19,33 @@ public class InventoryTest extends TestCase
         assertEquals(4, inventory.height);
     }
 
+    /**
+     * Tests {@link Inventory#canFit(int, int, ItemState)}
+     */
+    public void testCanFit()
+    {
+        Inventory inventory = new Inventory(2, 4);
+        Item item = new Item("tree");
+        item.height = 3;
+        item.width = 2;
+
+        ItemState itemState = new ItemState(item);
+
+        assertTrue(inventory.canFit(0, 0, itemState));
+        assertTrue(inventory.canFit(0, 1, itemState));
+
+        assertFalse(inventory.canFit(1, 0, itemState));
+        assertFalse(inventory.canFit(1, 1, itemState));
+
+        for (int xx = 0; xx < 2; xx++)
+        {
+            for (int yy = 2; yy < 4; yy++)
+            {
+                assertFalse(inventory.canFit(xx, yy, itemState));
+            }
+        }
+    }
+
     public void testAddItem()
     {
         Inventory inventory = new Inventory(2, 4);
