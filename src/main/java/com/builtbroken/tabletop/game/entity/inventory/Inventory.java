@@ -116,6 +116,17 @@ public class Inventory
     }
 
     /**
+     * Tries to insert the item in the first location it can find
+     *
+     * @param state
+     * @return
+     */
+    public boolean insertItem(ItemState state)
+    {
+        return false;
+    }
+
+    /**
      * Called to remove the item at the location
      *
      * @param x - start x point

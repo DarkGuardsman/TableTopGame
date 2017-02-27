@@ -20,7 +20,7 @@ public class Armor extends Item
         HEAD,
         CHEST,
         LEGS,
-        GLOVE,
+        GLOVES,
         BOOTS;
     }
 }

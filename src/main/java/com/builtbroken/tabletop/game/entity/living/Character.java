@@ -4,6 +4,7 @@ import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.entity.controller.Controller;
 import com.builtbroken.tabletop.game.entity.inventory.Inventory;
 import com.builtbroken.tabletop.game.entity.inventory.InventoryArmor;
+import com.builtbroken.tabletop.game.items.ItemState;
 
 import java.util.HashMap;
 
@@ -24,11 +25,31 @@ public class Character extends Entity
     /** Display name for the entity */
     protected String displayName;
 
+    /** What is currently controlling this character. */
     protected Controller controller;
 
     public Character(String name)
     {
         super("character");
         this.displayName = name;
+        this.armor = new InventoryArmor(this);
+    }
+
+    public void onEquipmentChanged(ItemState newGear, ItemState oldGear)
+    {
+
+    }
+
+    /**
+     * Called
+     * @return
+     */
+    public Inventory getInventory()
+    {
+        if (inventory == null)
+        {
+            //TODO init
+        }
+        return inventory;
     }
 }
