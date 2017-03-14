@@ -1,6 +1,5 @@
 package com.builtbroken.tabletop;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +19,6 @@ public class Main
         logger.info("Parsing arguments...");
 
         HashMap<String, String> launchSettings = loadArgs(args);
-
-
 
         System.exit(0);
     }
