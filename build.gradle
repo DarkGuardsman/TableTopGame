@@ -12,11 +12,9 @@ switch ( OperatingSystem.current() ) {
 		break
 }
 
-project.ext.lwjglVersion = "3.1.1"
+apply plugin: 'java'
 
-repositories {
-	mavenCentral()
-}
+project.ext.lwjglVersion = "3.1.1"
 
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/both/repos.gradle'
 
@@ -45,7 +43,10 @@ dependencies {
 	compile "org.lwjgl:lwjgl-xxhash:${lwjglVersion}"
     compile "com.google.guava:guava:11.0.2"
     compile "org.scala-lang:scala-library:2.11.1"
-    compile "com.builtbroken.codinglib:CodingLib:0.0.4b28:deobf"
+    compile "com.builtbroken.codinglib:CodingLib:0.2.0b35:deobf"
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.9.Final'
+    compile "org.apache.logging.log4j:log4j-core:2.0-beta9"
 	runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-assimp:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-bgfx:${lwjglVersion}:${lwjglNatives}"
@@ -63,6 +64,6 @@ dependencies {
 	runtime "org.lwjgl:lwjgl-sse:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-stb:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:${lwjglNatives}"
-	runtime "org.lwjgl:lwjgl-xxhash:${lwjglVersion}:${lwjglNatives}"    
+	runtime "org.lwjgl:lwjgl-xxhash:${lwjglVersion}:${lwjglNatives}"
     testCompile 'junit:junit:4.11'
 }
