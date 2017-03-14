@@ -24,5 +24,7 @@ public class RenderRect
         Shader.CHAR.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotate(rot)));
         texture.bind();
         mesh.render();
+        Shader.CHAR.disable();
+        texture.unbind();
     }
 }

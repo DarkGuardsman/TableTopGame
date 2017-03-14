@@ -2,7 +2,12 @@ package com.builtbroken.tabletop.client;
 
 
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.render.RenderRect;
+import com.builtbroken.tabletop.game.Game;
+import com.builtbroken.tabletop.game.entity.Entity;
+import com.builtbroken.tabletop.game.entity.living.Character;
 import com.builtbroken.tabletop.util.Matrix4f;
+import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -32,10 +37,16 @@ public class GameDisplay implements Runnable
     private int height = 720;
 
     private boolean running = true;
+    private Game game;
 
     private Thread thread;
 
-    public static GameDisplay createAndRun()
+    private Character player;
+
+    private RenderRect background_render;
+    private RenderRect character_render;
+
+    public static GameDisplay createAndRun(Game game)
     {
         GameDisplay display = new GameDisplay();
         display.thread = new Thread(display, "GameDisplayThread");
@@ -133,11 +144,15 @@ public class GameDisplay implements Runnable
         Shader.loadAll();
 
         Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-        Shader.BG.setUniformMat4f("pr_matrix", pr_matrix);
-        Shader.BG.setUniform1i("tex", 1);
 
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniform1i("tex", 1);
+
+        player = new Character("bob");
+        game.getWorld().getEntities().add(player);
+
+        background_render = new RenderRect("resources/assets/textures/background.png", 10, 10, 0);
+        character_render = new RenderRect("resources/assets/textures/char.png", 1, 1, 0.1f);
     }
 
     private void loop()
@@ -184,15 +199,26 @@ public class GameDisplay implements Runnable
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+        background_render.render(new Vector3f(0, 0, 0), 0);
+
+        for (Entity entity : game.getWorld().getEntities())
+        {
+            character_render.render(new Vector3f(entity.xi() / 16.0f, entity.yi() / 16.0f, entity.zi() / 16.0f), 0);
+        }
+
         int error = glGetError();
         if (error != GL_NO_ERROR)
+        {
             System.out.println(error);
+        }
 
         glfwSwapBuffers(windowID); // swap the color buffers
     }
 
     public static void main(String... args)
     {
-        createAndRun();
+        Game game = new Game();
+        game.load(false, "");
+        createAndRun(game);
     }
 }

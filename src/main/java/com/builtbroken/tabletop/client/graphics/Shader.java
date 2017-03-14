@@ -13,7 +13,7 @@ public class Shader
     public static final int VERTEX_ATTRIB = 0;
     public static final int TCOORD_ATTRIB = 1;
 
-    public static Shader BG, CHAR;
+    public static Shader CHAR;
 
     private boolean enabled = false;
 
@@ -27,7 +27,6 @@ public class Shader
 
     public static void loadAll()
     {
-        BG = new Shader("shaders/bg.vert", "shaders/bg.frag");
         CHAR = new Shader("shaders/char.vert", "shaders/char.frag");
     }
 

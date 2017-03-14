@@ -31,6 +31,11 @@ public class Game extends Thread
         }
     }
 
+    public World getWorld()
+    {
+        return world;
+    }
+
     public void save(boolean auto)
     {
 
@@ -38,6 +43,6 @@ public class Game extends Thread
 
     public void load(boolean saveCurrent, String saveName)
     {
-
+        world = new World(this);
     }
 }
