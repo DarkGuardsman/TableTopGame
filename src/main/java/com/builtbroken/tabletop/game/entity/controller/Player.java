@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.game.entity.controller;
 
-import com.builtbroken.tabletop.client.Input;
+import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.game.entity.living.Character;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,19 +28,19 @@ public class Player extends Controller
         {
             if(allowFreeMovement)
             {
-                if (Input.isKeyDown(GLFW_KEY_W))
+                if (KeyboardInput.isKeyDown(GLFW_KEY_W))
                 {
                     entity.move(0, (float) (speed * delta));
                 }
-                else if (Input.isKeyDown(GLFW_KEY_S))
+                else if (KeyboardInput.isKeyDown(GLFW_KEY_S))
                 {
                     entity.move(0, -(float) (speed * delta));
                 }
-                else if (Input.isKeyDown(GLFW_KEY_A))
+                else if (KeyboardInput.isKeyDown(GLFW_KEY_A))
                 {
                     entity.move(-(float) (speed * delta), 0);
                 }
-                else if (Input.isKeyDown(GLFW_KEY_D))
+                else if (KeyboardInput.isKeyDown(GLFW_KEY_D))
                 {
                     entity.move((float) (speed * delta), 0);
                 }

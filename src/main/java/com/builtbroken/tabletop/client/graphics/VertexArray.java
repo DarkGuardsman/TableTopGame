@@ -10,11 +10,31 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+/**
+ * Used to store mesh data
+ */
 public class VertexArray
 {
+    //Actual render data
     private int vao, vbo, ibo, tbo;
     private int count;
 
+    //Override used during rendering to change the data at the last min
+    private float scale_factor = 1f;
+
+    //Unmodified render data
+    private final float[] vertices;
+    private final byte[] indices;
+    private final float[] textureCoordinates;
+
+
+    /**
+     * Creates a mesh of the size
+     *
+     * @param size  - size
+     * @param layer - depth
+     * @return mesh
+     */
     public static VertexArray createMeshForSize(float size, float layer)
     {
         return new VertexArray(new float[]{
@@ -25,6 +45,14 @@ public class VertexArray
         });
     }
 
+    /**
+     * Creats a mesh for the given size data
+     *
+     * @param width  - x
+     * @param height - y
+     * @param layer  - depth, z
+     * @return mesh
+     */
     public static VertexArray createMeshForSize(float width, float height, float layer)
     {
         return new VertexArray(new float[]{
@@ -35,12 +63,13 @@ public class VertexArray
         });
     }
 
-    public VertexArray(int count)
-    {
-        this.count = count;
-        vao = glGenVertexArrays();
-    }
-
+    /**
+     * Creats a mesh using the vertices
+     * <p>
+     * Pre-sets indices and texture coords to save time
+     *
+     * @param vertices
+     */
     public VertexArray(float[] vertices)
     {
         this(vertices,
@@ -56,9 +85,34 @@ public class VertexArray
                 });
     }
 
+    /**
+     * Creates a mesh using the give data
+     *
+     * @param vertices
+     * @param indices
+     * @param textureCoordinates
+     */
     public VertexArray(float[] vertices, byte[] indices, float[] textureCoordinates)
     {
+        //Cache in case we need to change data
+        this.vertices = vertices;
+        this.indices = indices;
+        this.textureCoordinates = textureCoordinates;
+        generate();
+    }
+
+    /**
+     * Called to convert the data into usable render info
+     */
+    protected void generate()
+    {
         count = indices.length;
+
+        float[] vertices = new float[this.vertices.length];
+        for (int i = 0; i < vertices.length; i++)
+        {
+            vertices[i] = this.vertices[i] * scale_factor;
+        }
 
         vao = glGenVertexArrays();
         glBindVertexArray(vao);
@@ -84,6 +138,9 @@ public class VertexArray
         glBindVertexArray(0);
     }
 
+    /**
+     * Binds the mesh to be rendered
+     */
     public void bind()
     {
         glBindVertexArray(vao);
@@ -93,6 +150,9 @@ public class VertexArray
         }
     }
 
+    /**
+     * Unbinds the mesh
+     */
     public void unbind()
     {
         if (ibo > 0)
@@ -103,6 +163,9 @@ public class VertexArray
         glBindVertexArray(0);
     }
 
+    /**
+     * Draws the mesh on screen
+     */
     public void draw()
     {
         if (ibo > 0)
@@ -115,8 +178,19 @@ public class VertexArray
         }
     }
 
-    public void render()
+    /**
+     * Called to render the mesh
+     *
+     * @param scale - default to 1, used to change the mesh size at the last second
+     */
+    public void render(float scale)
     {
+        //Reload data if we need to change scale
+        if (Math.abs(scale_factor - scale) > 0.001)
+        {
+            scale_factor = scale;
+            generate();
+        }
         bind();
         draw();
     }

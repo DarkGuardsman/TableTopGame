@@ -26,8 +26,8 @@ public class TileRenders
         }
     }
 
-    public static void render(Tile tile, int x, int y)
+    public static void render(Tile tile, float x, float y, float scale)
     {
-        renders[tile.id].render(new Vector3f(x, y, 0), 0);
+        renders[tile.id].render(new Vector3f(x, y, 0), 0, scale);
     }
 }

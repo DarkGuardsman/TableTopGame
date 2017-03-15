@@ -1,6 +1,8 @@
 package com.builtbroken.tabletop.client;
 
 
+import com.builtbroken.tabletop.client.controls.KeyboardInput;
+import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
@@ -33,23 +35,26 @@ public class GameDisplay implements Runnable
     public static final float BOTTOM_CAMERA_BOUND = -10.0f * 9.0f / 16.0f;
     public static final float TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
 
+    protected Game game;
+    protected Character player;
 
-    private Game game;
-    private Character player;
+    protected float zoom = 1;
 
-    private int width = 1280;
-    private int height = 720;
+    protected int width = 1280;
+    protected int height = 720;
 
-    private Thread thread;
-    private boolean running = false;
+    protected Thread thread;
+    protected boolean running = false;
 
-    private long window;
+    protected long windowID;
 
-    RenderRect background_render;
-    RenderRect character_render;
+    protected RenderRect background_render;
+    protected RenderRect character_render;
 
-    Vector3f cameraPosition = new Vector3f(0, 0, 0);
-    Matrix4f pr_matrix;
+    protected Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    protected Matrix4f pr_matrix;
+
+    protected long lastZoom = 0L;
 
     public static void main(String... args)
     {
@@ -79,7 +84,7 @@ public class GameDisplay implements Runnable
         thread.start();
     }
 
-    private void init()
+    protected void init()
     {
         if (!glfwInit())
         {
@@ -88,20 +93,20 @@ public class GameDisplay implements Runnable
         }
 
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-        window = glfwCreateWindow(width, height, "Project TableTopGame", NULL, NULL);
-        if (window == NULL)
+        windowID = glfwCreateWindow(width, height, "Project TableTopGame", NULL, NULL);
+        if (windowID == NULL)
         {
             System.err.println("Could not create GLFW window!");
             return;
         }
 
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+        glfwSetWindowPos(windowID, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
-        glfwSetKeyCallback(window, new Input());
+        initControls();
 
-        glfwMakeContextCurrent(window);
-        glfwShowWindow(window);
+        glfwMakeContextCurrent(windowID);
+        glfwShowWindow(windowID);
         GL.createCapabilities();
 
 
@@ -128,6 +133,14 @@ public class GameDisplay implements Runnable
         TileRenders.load();
     }
 
+    //Loads callbacks for keyboard, mouse, and other input devices
+    protected void initControls()
+    {
+        glfwSetKeyCallback(windowID, new KeyboardInput());
+        MouseInput.init(windowID);
+    }
+
+    @Override
     public void run()
     {
         init();
@@ -158,26 +171,55 @@ public class GameDisplay implements Runnable
                 updates = 0;
                 frames = 0;
             }
-            if (glfwWindowShouldClose(window))
+            if (glfwWindowShouldClose(windowID))
             {
                 running = false;
             }
         }
 
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(windowID);
         glfwTerminate();
     }
 
-    private void update(double delta)
+    protected void update(double delta)
     {
+        long time = System.currentTimeMillis();
         glfwPollEvents();
         for (Entity entity : game.getWorld().getEntities())
         {
             entity.update(delta);
         }
+
+        if (time - lastZoom > 1000)
+        {
+            if (KeyboardInput.zoomOut())
+            {
+                if(zoom > 1f)
+                {
+                    zoom = 1f;
+                }
+                else
+                {
+                    zoom = .5f;
+                }
+                lastZoom = time;
+            }
+            else if (KeyboardInput.zoomIn())
+            {
+                if(zoom < 1f)
+                {
+                    zoom = 1f;
+                }
+                else
+                {
+                    zoom = 2f;
+                }
+                lastZoom = time;
+            }
+        }
     }
 
-    private void render()
+    protected void render()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -189,37 +231,47 @@ public class GameDisplay implements Runnable
             System.out.println(error);
         }
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(windowID);
     }
 
-    private void doRender()
+    protected void doRender()
     {
-        background_render.render(new Vector3f(-10, -10, 0), 0);
+        background_render.render(new Vector3f(-10, -10, 0), 0, zoom);
 
         renderMap();
 
         for (Entity entity : game.getWorld().getEntities())
         {
-            character_render.render(new Vector3f(entity.xf(), entity.yf(), entity.zf()), 0);
+            character_render.render(new Vector3f(entity.xf(), entity.yf(), entity.zf()), 0, zoom);
         }
     }
 
-    private void renderMap()
+    protected void renderMap()
     {
         //Find our bounds so we know what to render
-        int leftStart = (int)Math.floor(LEFT_CAMERA_BOUND + cameraPosition.x);
-        int rightStart = (int)Math.floor(RIGHT_CAMERA_BOUND + cameraPosition.x);
-        int bottomStart = (int)Math.floor(BOTTOM_CAMERA_BOUND + cameraPosition.y);
-        int topStart = (int)Math.floor(TOP_CAMERA_BOUND + cameraPosition.y);
+        int leftStart = (int) Math.floor(LEFT_CAMERA_BOUND + cameraPosition.x);
+        int rightStart = (int) Math.floor(RIGHT_CAMERA_BOUND + cameraPosition.x);
+        int bottomStart = (int) Math.floor(BOTTOM_CAMERA_BOUND + cameraPosition.y);
+        int topStart = (int) Math.floor(TOP_CAMERA_BOUND + cameraPosition.y);
 
-        for(int x = leftStart; x < rightStart; x++)
+        float x_size = rightStart - leftStart;
+        float y_size = topStart - bottomStart;
+
+        float tileSize = zoom;
+
+        int tiles_x = (int) Math.ceil(x_size / tileSize);
+        int tiles_y = (int) Math.ceil(y_size / tileSize);
+
+        for (int x = 0; x < tiles_x; x++)
         {
-            for(int y = bottomStart; y < topStart; y++)
+            for (int y = 0; y < tiles_y; y++)
             {
-                Tile tile = game.getWorld().getTile(x, y, 0);
-                if(tile != Tiles.AIR)
+                int tile_x = x + (int) (cameraPosition.x - (x_size / 2));
+                int tile_y = y + (int) (cameraPosition.y - (y_size / 2));
+                Tile tile = game.getWorld().getTile(tile_x, tile_y, 0);
+                if (tile != Tiles.AIR)
                 {
-                    TileRenders.render(tile, x, y);
+                    TileRenders.render(tile, x * tileSize + leftStart, y * tileSize + bottomStart, zoom);
                 }
             }
         }

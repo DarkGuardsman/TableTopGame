@@ -27,7 +27,7 @@ public class RenderRect
         this.texture = new Texture(texture);
     }
 
-    public void render(Vector3f position, float rot)
+    public void render(Vector3f position, float rot, float scale)
     {
         //Setup
         texture.bind();
@@ -42,7 +42,7 @@ public class RenderRect
         }
 
         //Render
-        mesh.render();
+        mesh.render(scale);
 
         //Clean up
         shader.disable();
