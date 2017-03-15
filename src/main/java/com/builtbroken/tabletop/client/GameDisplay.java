@@ -194,7 +194,7 @@ public class GameDisplay implements Runnable
         {
             if (KeyboardInput.zoomOut())
             {
-                if(zoom > 1f)
+                if (zoom > 1f)
                 {
                     zoom = 1f;
                 }
@@ -206,7 +206,7 @@ public class GameDisplay implements Runnable
             }
             else if (KeyboardInput.zoomIn())
             {
-                if(zoom < 1f)
+                if (zoom < 1f)
                 {
                     zoom = 1f;
                 }
@@ -236,7 +236,7 @@ public class GameDisplay implements Runnable
 
     protected void doRender()
     {
-        background_render.render(new Vector3f(-10, -10, 0), 0, zoom);
+        background_render.render(new Vector3f(-10, -10, 0), 0, 1);
 
         renderMap();
 
@@ -259,19 +259,25 @@ public class GameDisplay implements Runnable
 
         float tileSize = zoom;
 
-        int tiles_x = (int) Math.ceil(x_size / tileSize);
-        int tiles_y = (int) Math.ceil(y_size / tileSize);
+        int tiles_x = (int) Math.ceil(x_size / tileSize) + 2;
+        int tiles_y = (int) Math.ceil(y_size / tileSize) + 2;
+
+        int center_x = (int) (cameraPosition.x);
+        int center_y = (int) (cameraPosition.y);
+
+        int renderOffsetX = (tiles_x - 1) / 2;
+        int renderOffsetY = (tiles_y - 1) / 2;
 
         for (int x = 0; x < tiles_x; x++)
         {
             for (int y = 0; y < tiles_y; y++)
             {
-                int tile_x = x + (int) (cameraPosition.x - (x_size / 2));
-                int tile_y = y + (int) (cameraPosition.y - (y_size / 2));
+                int tile_x = x + center_x - renderOffsetX;
+                int tile_y = y + center_y - renderOffsetY;
                 Tile tile = game.getWorld().getTile(tile_x, tile_y, 0);
                 if (tile != Tiles.AIR)
                 {
-                    TileRenders.render(tile, x * tileSize + leftStart, y * tileSize + bottomStart, zoom);
+                    TileRenders.render(tile, tile_x * tileSize, tile_y * tileSize, zoom);
                 }
             }
         }
