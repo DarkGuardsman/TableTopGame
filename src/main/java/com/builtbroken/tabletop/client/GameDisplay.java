@@ -4,7 +4,10 @@ package com.builtbroken.tabletop.client;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.game.Game;
+import com.builtbroken.tabletop.game.entity.Entity;
+import com.builtbroken.tabletop.game.entity.controller.Player;
 import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -36,10 +39,18 @@ public class GameDisplay implements Runnable
     RenderRect background_render;
     RenderRect character_render;
 
+    Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    Matrix4f pr_matrix;
+
     public static void main(String... args)
     {
         Game game = new Game();
         game.load(false, "");
+
+        StaticMapData map = new StaticMapData();
+        map.load();
+        game.getWorld().setMapData(map);
+
         GameDisplay display = new GameDisplay(game);
         display.start();
     }
@@ -65,7 +76,7 @@ public class GameDisplay implements Runnable
         }
 
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-        window = glfwCreateWindow(width, height, "Flappy", NULL, NULL);
+        window = glfwCreateWindow(width, height, "Project TableTopGame", NULL, NULL);
         if (window == NULL)
         {
             System.err.println("Could not create GLFW window!");
@@ -89,7 +100,7 @@ public class GameDisplay implements Runnable
         System.out.println("OpenGL: " + glGetString(GL_VERSION));
         Shader.loadAll();
 
-        Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+        pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.BACKGROUND.setUniform1i("tex", 1);
 
@@ -97,9 +108,10 @@ public class GameDisplay implements Runnable
         Shader.CHAR.setUniform1i("tex", 1);
 
         player = new Character("bob");
+        player.setController(new Player(player));
         game.getWorld().getEntities().add(player);
 
-        background_render = new RenderRect("resources/textures/background.png", Shader.BACKGROUND, 10, 10, 0);
+        background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, 0);
         character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.1f);
     }
 
@@ -120,7 +132,7 @@ public class GameDisplay implements Runnable
             lastTime = now;
             if (delta >= 1.0)
             {
-                update();
+                update(delta);
                 updates++;
                 delta--;
             }
@@ -143,9 +155,13 @@ public class GameDisplay implements Runnable
         glfwTerminate();
     }
 
-    private void update()
+    private void update(double delta)
     {
         glfwPollEvents();
+        for (Entity entity : game.getWorld().getEntities())
+        {
+            entity.update(delta);
+        }
     }
 
     private void render()
@@ -165,6 +181,11 @@ public class GameDisplay implements Runnable
 
     private void doRender()
     {
-        background_render.render(new Vector3f(0, 0, 0), 0);
+        background_render.render(new Vector3f(-10, -10, 0), 0);
+
+        for (Entity entity : game.getWorld().getEntities())
+        {
+            character_render.render(new Vector3f(entity.xf(), entity.yf(), entity.zf()), 0);
+        }
     }
 }

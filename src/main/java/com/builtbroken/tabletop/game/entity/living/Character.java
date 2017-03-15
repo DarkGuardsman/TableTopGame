@@ -35,6 +35,16 @@ public class Character extends Entity
         this.armor = new InventoryArmor(this);
     }
 
+    @Override
+    public void update(double delta)
+    {
+        super.update(delta);
+        if (controller != null)
+        {
+            controller.update(delta);
+        }
+    }
+
     public void onEquipmentChanged(ItemState newGear, ItemState oldGear)
     {
 
@@ -42,6 +52,7 @@ public class Character extends Entity
 
     /**
      * Called
+     *
      * @return
      */
     public Inventory getInventory()
@@ -51,5 +62,10 @@ public class Character extends Entity
             //TODO init
         }
         return inventory;
+    }
+
+    public void setController(Controller controller)
+    {
+        this.controller = controller;
     }
 }

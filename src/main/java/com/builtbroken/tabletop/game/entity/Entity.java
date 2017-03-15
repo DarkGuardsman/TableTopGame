@@ -18,9 +18,9 @@ public class Entity extends GameObject
     /** Can the entity take damage from attacks */
     boolean canTakeDamae = true;
 
-    protected int x = 0;
-    protected int y = 0;
-    protected int z = 0;
+    protected float x = 0;
+    protected float y = 0;
+    protected float z = 0;
 
     /** Current health value, -1 means it was never set */
     private int health = -1;
@@ -37,6 +37,45 @@ public class Entity extends GameObject
         super("entity." + uniqueID);
     }
 
+    /**
+     * Called to update code that
+     * needs to run every tick
+     * @param delta
+     */
+    public void update(double delta)
+    {
+
+    }
+
+    /**
+     * Called to run decision making
+     * logic every tick. This should
+     * be used by AI code separately
+     * from the update loop. This way
+     * all entities can be controlled
+     * externally.
+     */
+    public void updateLogic()
+    {
+
+    }
+
+    public void setPosition(float x, float y, float z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void move(float x, float y, float z)
+    {
+        setPosition(xf() + x, yf() + y, zf() + z);
+    }
+
+    public void move(float x, float y)
+    {
+        move(x, y, 0);
+    }
 
     //==============================================
     // Damage code
@@ -301,17 +340,34 @@ public class Entity extends GameObject
 
     public int xi()
     {
-        return x;
+        return (int) x;
     }
 
 
     public int yi()
     {
-        return y;
+        return (int) y;
     }
 
 
     public int zi()
+    {
+        return (int) z;
+    }
+
+    public float xf()
+    {
+        return x;
+    }
+
+
+    public float yf()
+    {
+        return y;
+    }
+
+
+    public float zf()
     {
         return z;
     }

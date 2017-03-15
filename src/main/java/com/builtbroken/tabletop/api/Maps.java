@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.api;
 
-import com.builtbroken.tabletop.game.world.WorldMap;
+import com.builtbroken.tabletop.game.map.MapData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class Maps
 {
     /** All loaded maps */
-    HashMap<String, WorldMap> maps = new HashMap();
+    HashMap<String, MapData> maps = new HashMap();
     /** Category to maps, used to display maps to the user without showing a massive list */
     HashMap<String, List<String>> mapDisplayList = new HashMap();
 }

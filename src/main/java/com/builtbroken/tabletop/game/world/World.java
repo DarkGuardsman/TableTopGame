@@ -2,6 +2,7 @@ package com.builtbroken.tabletop.game.world;
 
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
+import com.builtbroken.tabletop.game.map.MapData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class World
     public final Game game;
 
     /** Current map this would represents */
-    private WorldMap map;
+    private MapData mapData;
     /** All entities placed into the world (Both living and non-living) */
     private List<Entity> entities;
 
@@ -24,6 +25,11 @@ public class World
     {
         this.game = game;
         entities = new ArrayList();
+    }
+
+    public void setMapData(MapData map)
+    {
+        this.mapData = map;
     }
 
     public List<Entity> getEntities()

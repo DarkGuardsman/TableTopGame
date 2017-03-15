@@ -1,5 +1,7 @@
 package com.builtbroken.tabletop.game.entity.controller;
 
+import com.builtbroken.tabletop.game.entity.living.Character;
+
 /**
  * What controls the entity and how it functions
  *
@@ -12,4 +14,18 @@ public class Controller
     int actionPoints;
     /** Number of tiles that the unit can move before using an action point */
     int movementPoints;
+
+    boolean allowMovement = true;
+
+    public Character entity;
+
+    public Controller(Character entity)
+    {
+        this.entity = entity;
+    }
+
+    public void update(double delta)
+    {
+
+    }
 }
