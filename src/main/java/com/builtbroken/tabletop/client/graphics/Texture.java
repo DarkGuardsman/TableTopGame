@@ -16,12 +16,15 @@ public class Texture
     private int width, height;
     private int texture;
 
+    private String path;
+
     public Texture(String path)
     {
-        texture = load(path);
+        this.path = path;
+        load(path);
     }
 
-    private int load(String path)
+    private void load(String path)
     {
         int[] pixels = null;
         try
@@ -48,13 +51,12 @@ public class Texture
             data[i] = a << 24 | b << 16 | g << 8 | r;
         }
 
-        int result = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, result);
+        texture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
         glBindTexture(GL_TEXTURE_2D, 0);
-        return result;
     }
 
     public void bind()
@@ -67,4 +69,10 @@ public class Texture
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+
+    @Override
+    public String toString()
+    {
+        return "Texture[t = " + texture + ", w = " + width + ", h = " + height + ", path = " + path + "]";
+    }
 }
