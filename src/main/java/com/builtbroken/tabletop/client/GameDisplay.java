@@ -57,10 +57,13 @@ public class GameDisplay implements Runnable
     @Override
     public void run()
     {
+    	init();
+    	
         //https://www.lwjgl.org/guide
         System.out.println("LWJGL " + Version.getVersion());
+        System.out.println("OpenGL: " + glGetString(GL_VERSION));
 
-        init();
+        
         loop();
 
         // Free the window callbacks and destroy the window
@@ -76,7 +79,7 @@ public class GameDisplay implements Runnable
     {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
-        GLFWErrorCallback.createPrint(System.err).set();
+        //GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (!glfwInit())
@@ -103,6 +106,7 @@ public class GameDisplay implements Runnable
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
             }
         });
+        glfwSetKeyCallback(windowID, new Input());
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush())
@@ -124,7 +128,7 @@ public class GameDisplay implements Runnable
             );
         } // the stack frame is popped automatically
 
-        glfwSetKeyCallback(windowID, new Input());
+
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowID);
@@ -140,7 +144,7 @@ public class GameDisplay implements Runnable
         glActiveTexture(GL_TEXTURE1);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        System.out.println("OpenGL: " + glGetString(GL_VERSION));
+       
         Shader.loadAll();
 
         Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);

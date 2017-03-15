@@ -13,12 +13,39 @@ switch ( OperatingSystem.current() ) {
 }
 
 apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+apply plugin: 'application'
 
 project.ext.lwjglVersion = "3.1.1"
+project.ext.steamworks4jVersion = "1.6.1"
+project.ext.jomlVersion = "1.9.2"
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.stehno:gradle-natives:0.3.0"
+    }
+}
+
+apply plugin: "com.stehno.natives"
+
 
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/both/repos.gradle'
 
 dependencies {
+    compile "com.google.guava:guava:11.0.2"
+    compile "org.scala-lang:scala-library:2.11.1"
+    compile "com.builtbroken.codinglib:CodingLib:0.2.0b35:deobf"
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.9.Final'
+    compile "org.apache.logging.log4j:log4j-core:2.0-beta9"
+
 	compile "org.lwjgl:lwjgl:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-assimp:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-bgfx:${lwjglVersion}"
@@ -41,12 +68,6 @@ dependencies {
 	compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-xxhash:${lwjglVersion}"
-    compile "com.google.guava:guava:11.0.2"
-    compile "org.scala-lang:scala-library:2.11.1"
-    compile "com.builtbroken.codinglib:CodingLib:0.2.0b35:deobf"
-    // https://mvnrepository.com/artifact/io.netty/netty-all
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.9.Final'
-    compile "org.apache.logging.log4j:log4j-core:2.0-beta9"
 	runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-assimp:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-bgfx:${lwjglVersion}:${lwjglNatives}"
@@ -65,5 +86,8 @@ dependencies {
 	runtime "org.lwjgl:lwjgl-stb:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:${lwjglNatives}"
 	runtime "org.lwjgl:lwjgl-xxhash:${lwjglVersion}:${lwjglNatives}"
+	compile "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
+	compile "org.joml:joml:${jomlVersion}"
+    
     testCompile 'junit:junit:4.11'
 }
