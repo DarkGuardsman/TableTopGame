@@ -3,6 +3,8 @@ package com.builtbroken.tabletop.game.world;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.map.MapData;
+import com.builtbroken.tabletop.game.map.Tile;
+import com.builtbroken.tabletop.game.map.Tiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,15 @@ public class World
     public void setMapData(MapData map)
     {
         this.mapData = map;
+    }
+
+    public Tile getTile(int x, int y, int floor)
+    {
+        if (mapData != null)
+        {
+            return mapData.getTile(x, y, floor);
+        }
+        return Tiles.AIR;
     }
 
     public List<Entity> getEntities()

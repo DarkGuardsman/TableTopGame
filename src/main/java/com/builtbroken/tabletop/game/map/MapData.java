@@ -36,6 +36,10 @@ public class MapData
     {
         if(floor >= 0 && floor < floors.length)
         {
+            if(floors[floor] == null)
+            {
+                floors[floor] = new Grid();
+            }
             floors[floor].setTile(tile, x, y);
         }
         return false;

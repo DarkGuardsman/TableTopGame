@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.game.map.examples;
 
 import com.builtbroken.tabletop.game.map.MapData;
+import com.builtbroken.tabletop.game.map.Tile;
 import com.builtbroken.tabletop.game.map.Tiles;
 
 /**
@@ -9,6 +10,30 @@ import com.builtbroken.tabletop.game.map.Tiles;
  */
 public class StaticMapData extends MapData
 {
+    public static final String[] map = new String[]
+            {
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSDDDDSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSDDSSSSSSSSS",
+                    "SSSSSSSSSSSDDDSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSDDDDSSSSSSS",
+                    "SSSSSSSSSSSSDDDSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSDDDDSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS",
+                    "SSSSSSSSSSSSSSSSSSSSSS"
+            };
+
     public StaticMapData()
     {
         super("staticData", 1);
@@ -17,10 +42,29 @@ public class StaticMapData extends MapData
     @Override
     public void load()
     {
-        setTile(Tiles.STONE, 0, -2, 0);
-        setTile(Tiles.STONE, 0, -1, 0);
-        setTile(Tiles.STONE, 0, 0, 0);
-        setTile(Tiles.STONE, 0, 1, 0);
-        setTile(Tiles.STONE, 0, 2, 0);
+        int y_size = map.length;
+        int x_size = map[0].length();
+        for (int y = 0; y < y_size; y++)
+        {
+            String string = map[y];
+            for (int x = 0; x < x_size; x++)
+            {
+                char c = string.charAt(x);
+                Tile tile = null;
+                if (c == 'S')
+                {
+                    tile = Tiles.STONE;
+                }
+                else if (c == 'D')
+                {
+                    tile = Tiles.DIRT;
+                }
+
+                if (tile != null)
+                {
+                    setTile(tile, x - 10, y - 10, 0);
+                }
+            }
+        }
     }
 }

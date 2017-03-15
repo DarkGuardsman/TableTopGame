@@ -13,6 +13,6 @@ public class MapTest extends TestCase
     @Test
     public void testInit()
     {
-        MapData map = new MapData("");
+        MapData map = new MapData("", 1);
     }
 }

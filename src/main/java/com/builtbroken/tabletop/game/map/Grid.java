@@ -42,9 +42,11 @@ public class Grid
     public void setTile(Tile tile, int x, int y)
     {
         Section section = getSection(x, y);
-        if (section != null)
+        if (section == null)
         {
-            section.setTile(tile, x & 15, y & 15);
+            section = new Section(x >> 4, y >> 4);
+            sections.put(sectionLocationToLong(x >> 4, y >> 4), section);
         }
+        section.setTile(tile, x & 15, y & 15);
     }
 }

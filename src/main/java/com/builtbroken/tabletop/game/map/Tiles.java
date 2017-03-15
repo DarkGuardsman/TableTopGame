@@ -8,4 +8,5 @@ public class Tiles
 {
     public static Tile AIR;
     public static Tile STONE;
+    public static Tile DIRT;
 }

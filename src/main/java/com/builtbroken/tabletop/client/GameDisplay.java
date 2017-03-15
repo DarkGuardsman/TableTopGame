@@ -3,10 +3,13 @@ package com.builtbroken.tabletop.client;
 
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
+import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.entity.controller.Player;
 import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.map.Tile;
+import com.builtbroken.tabletop.game.map.Tiles;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
@@ -25,6 +28,12 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class GameDisplay implements Runnable
 {
+    public static final float LEFT_CAMERA_BOUND = -10.0f;
+    public static final float RIGHT_CAMERA_BOUND = 10.0f;
+    public static final float BOTTOM_CAMERA_BOUND = -10.0f * 9.0f / 16.0f;
+    public static final float TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
+
+
     private Game game;
     private Character player;
 
@@ -47,9 +56,12 @@ public class GameDisplay implements Runnable
         Game game = new Game();
         game.load(false, "");
 
+        Tile.load();
+
         StaticMapData map = new StaticMapData();
         map.load();
         game.getWorld().setMapData(map);
+
 
         GameDisplay display = new GameDisplay(game);
         display.start();
@@ -100,7 +112,7 @@ public class GameDisplay implements Runnable
         System.out.println("OpenGL: " + glGetString(GL_VERSION));
         Shader.loadAll();
 
-        pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+        pr_matrix = Matrix4f.orthographic(LEFT_CAMERA_BOUND, RIGHT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND, TOP_CAMERA_BOUND, -1.0f, 1.0f);
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.BACKGROUND.setUniform1i("tex", 1);
 
@@ -112,7 +124,8 @@ public class GameDisplay implements Runnable
         game.getWorld().getEntities().add(player);
 
         background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, 0);
-        character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.1f);
+        character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.2f);
+        TileRenders.load();
     }
 
     public void run()
@@ -183,9 +196,32 @@ public class GameDisplay implements Runnable
     {
         background_render.render(new Vector3f(-10, -10, 0), 0);
 
+        renderMap();
+
         for (Entity entity : game.getWorld().getEntities())
         {
             character_render.render(new Vector3f(entity.xf(), entity.yf(), entity.zf()), 0);
+        }
+    }
+
+    private void renderMap()
+    {
+        //Find our bounds so we know what to render
+        int leftStart = (int)Math.floor(LEFT_CAMERA_BOUND + cameraPosition.x);
+        int rightStart = (int)Math.floor(RIGHT_CAMERA_BOUND + cameraPosition.x);
+        int bottomStart = (int)Math.floor(BOTTOM_CAMERA_BOUND + cameraPosition.y);
+        int topStart = (int)Math.floor(TOP_CAMERA_BOUND + cameraPosition.y);
+
+        for(int x = leftStart; x < rightStart; x++)
+        {
+            for(int y = bottomStart; y < topStart; y++)
+            {
+                Tile tile = game.getWorld().getTile(x, y, 0);
+                if(tile != Tiles.AIR)
+                {
+                    TileRenders.render(tile, x, y);
+                }
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ package com.builtbroken.tabletop.game.map;
  */
 public class Tile
 {
-    public final String renderName;
     public final String name;
     public final String localization;
 
@@ -18,9 +17,16 @@ public class Tile
 
     public static void load()
     {
-        TILES = new Tile[2];
-        Tiles.AIR = TILES[0] = new Tile("air", 0);
-        Tiles.STONE = TILES[1] = new Tile("stone", 1);
+        TILES = new Tile[3];
+        Tiles.AIR = newTiles(new Tile("air", 0));
+        Tiles.STONE = newTiles(new Tile("stone", 1));
+        Tiles.DIRT = newTiles(new Tile("dirt", 2));
+    }
+
+    private static Tile newTiles(Tile tile)
+    {
+        TILES[tile.id] = tile;
+        return tile;
     }
 
     public Tile(String name, int id)
@@ -28,12 +34,11 @@ public class Tile
         this.id = id;
         this.name = name;
         this.localization = "tile." + name + ".name";
-        this.renderName = "tile." + name;
     }
 
     public static Tile getFromID(int tile)
     {
-        if(tile > 0 && tile < TILES.length)
+        if (tile > 0 && tile < TILES.length)
         {
             return TILES[tile];
         }
