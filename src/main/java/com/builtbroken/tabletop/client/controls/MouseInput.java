@@ -37,7 +37,7 @@ public class MouseInput
             {
                 if (button >= 0 && button < mouseButtons.length)
                 {
-                    System.out.println("button: " + button + "  action: " + action);
+                    System.out.println("button: " + button + "  action: " + action + " x: " + mouseX + "  y: " + mouseY);
                     mouseButtons[button] = action != GLFW_RELEASE;
                 }
             }

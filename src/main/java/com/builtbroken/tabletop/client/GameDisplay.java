@@ -153,6 +153,7 @@ public class GameDisplay implements Runnable
         int frames = 0;
         while (running)
         {
+
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
@@ -223,7 +224,9 @@ public class GameDisplay implements Runnable
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        doRender();
+        float mouseLocationX = (float) (MouseInput.mouseX / width) - 0.5f;
+        float mouseLocationY = (float) (MouseInput.mouseY / height) - 0.5f;
+        doRender(mouseLocationX, mouseLocationY);
 
         int error = glGetError();
         if (error != GL_NO_ERROR)
@@ -234,11 +237,11 @@ public class GameDisplay implements Runnable
         glfwSwapBuffers(windowID);
     }
 
-    protected void doRender()
+    protected void doRender(float mouseLocationX, float mouseLocationY)
     {
         background_render.render(new Vector3f(-10, -10, 0), 0, 1);
 
-        renderMap();
+        renderMap(mouseLocationX, mouseLocationY);
 
         for (Entity entity : game.getWorld().getEntities())
         {
@@ -246,7 +249,7 @@ public class GameDisplay implements Runnable
         }
     }
 
-    protected void renderMap()
+    protected void renderMap(float mouseLocationX, float mouseLocationY)
     {
         //Find our bounds so we know what to render
         int leftStart = (int) Math.floor(LEFT_CAMERA_BOUND + cameraPosition.x);
@@ -268,6 +271,7 @@ public class GameDisplay implements Runnable
         int renderOffsetX = (tiles_x - 1) / 2;
         int renderOffsetY = (tiles_y - 1) / 2;
 
+        //Render tiles
         for (int x = 0; x < tiles_x; x++)
         {
             for (int y = 0; y < tiles_y; y++)
@@ -281,5 +285,10 @@ public class GameDisplay implements Runnable
                 }
             }
         }
+
+        //Render curse hover
+        float mouseTileX = mouseLocationX * x_size;
+        float mouseTileY = mouseLocationY * y_size;
+        TileRenders.render(Tiles.DIRT, mouseTileX - (tileSize / 2), -mouseTileY - (tileSize / 2), .2f, zoom);
     }
 }
