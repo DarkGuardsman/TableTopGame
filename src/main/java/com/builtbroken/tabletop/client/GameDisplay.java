@@ -222,6 +222,23 @@ public class GameDisplay implements Runnable
                 lastZoom = time;
             }
         }
+
+        if (KeyboardInput.LeftArrow())
+        {
+            cameraPosition.x -= .1;
+        }
+        else if (KeyboardInput.rightArrow())
+        {
+            cameraPosition.x += .1;
+        }
+        else if (KeyboardInput.upArrow())
+        {
+            cameraPosition.y += .1;
+        }
+        else if (KeyboardInput.downArrow())
+        {
+            cameraPosition.y -= .1;
+        }
     }
 
     protected void render()
@@ -276,16 +293,16 @@ public class GameDisplay implements Runnable
         int renderOffsetY = (tiles_y - 1) / 2;
 
         //Render tiles
-        for (int x = 0; x < tiles_x; x++)
+        for (int x = -renderOffsetX; x < renderOffsetX; x++)
         {
-            for (int y = -1; y < tiles_y; y++)
+            for (int y = -renderOffsetX; y < renderOffsetX; y++)
             {
-                int tile_x = x + center_x - renderOffsetX;
-                int tile_y = y + center_y - renderOffsetY;
+                int tile_x = x + center_x;
+                int tile_y = y + center_y;
                 Tile tile = game.getWorld().getTile(tile_x, tile_y, 0);
                 if (tile != Tiles.AIR)
                 {
-                    TileRenders.render(tile, tile_x * tileSize, tile_y * tileSize, zoom);
+                    TileRenders.render(tile, x * tileSize, y * tileSize, zoom);
                 }
             }
         }
@@ -296,15 +313,15 @@ public class GameDisplay implements Runnable
             //Ensure the entity is on the floor we are rendering
             if (entity.yi() == 0) //TODO replace with floor var
             {
-                int tile_x = entity.xi() + center_x;
-                int tile_y = entity.yi() + center_y;
+                float tile_x = entity.xf() - center_x;
+                float tile_y = entity.yf() - center_y;
 
                 //Ensure the entity is in the camera view
-                if (tile_x > leftStart && tile_x < rightStart)
+                if (tile_x >= leftStart && tile_x <= rightStart)
                 {
-                    if (tile_y > bottomStart && tile_y < topStart)
+                    if (tile_y >= bottomStart && tile_y <= topStart)
                     {
-                        character_render.render(new Vector3f(entity.xf() * tileSize, entity.yf() * tileSize, 0), 0, zoom);
+                        character_render.render(new Vector3f(tile_x * tileSize, tile_y * tileSize, 0), 0, zoom);
                     }
                 }
             }

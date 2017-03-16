@@ -30,7 +30,11 @@ public class StaticMapData extends MapData
             for (int x = 0; x < x_size; x++)
             {
                 int dx = mx - x;
-                if (x == 0 || y == 0)
+                if (x == mx && y == my)
+                {
+                    setTile(Tiles.METAL, x - mx, y - my, 0);
+                }
+                else if (x == 0 || y == 0)
                 {
                     setTile(Tiles.MAP_EDGE, x - mx, y - my, 0);
                 }
