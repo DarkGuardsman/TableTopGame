@@ -1,5 +1,8 @@
 package com.builtbroken.tabletop.game.map;
 
+import com.builtbroken.tabletop.game.tile.Tile;
+import com.builtbroken.tabletop.game.tile.Tiles;
+
 /**
  * Data about how the map looks and functions
  *

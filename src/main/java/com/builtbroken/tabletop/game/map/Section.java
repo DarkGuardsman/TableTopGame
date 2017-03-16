@@ -1,5 +1,8 @@
 package com.builtbroken.tabletop.game.map;
 
+import com.builtbroken.tabletop.game.tile.Tile;
+import com.builtbroken.tabletop.game.tile.Tiles;
+
 /**
  * A small area of the {@link com.builtbroken.tabletop.game.world.World} defined by the {@link MapData}
  *
@@ -27,7 +30,7 @@ public class Section
     {
         if (tiles != null)
         {
-            return Tile.getFromID(tiles[x + y * 16]);
+            return Tiles.getFromID(tiles[x + y * 16]);
         }
         return Tiles.AIR;
     }

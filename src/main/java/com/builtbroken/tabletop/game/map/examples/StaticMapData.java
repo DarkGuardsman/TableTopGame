@@ -1,8 +1,7 @@
 package com.builtbroken.tabletop.game.map.examples;
 
 import com.builtbroken.tabletop.game.map.MapData;
-import com.builtbroken.tabletop.game.map.Tile;
-import com.builtbroken.tabletop.game.map.Tiles;
+import com.builtbroken.tabletop.game.tile.Tiles;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -10,29 +9,6 @@ import com.builtbroken.tabletop.game.map.Tiles;
  */
 public class StaticMapData extends MapData
 {
-    public static final String[] map = new String[]
-            {
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSDDDDSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSDDSSSSSSSSS",
-                    "SSSSSSSSSSSDDDSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSDDDDSSSSSSS",
-                    "SSSSSSSSSSSSDDDSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSDDDDSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS",
-                    "SSSSSSSSSSSSSSSSSSSSSS"
-            };
 
     public StaticMapData()
     {
@@ -42,27 +18,33 @@ public class StaticMapData extends MapData
     @Override
     public void load()
     {
-        int y_size = map.length;
-        int x_size = map[0].length();
+        int x_size = 1000;
+        int y_size = 1000;
+
+        int mx = x_size / 2;
+        int my = y_size / 2;
+
         for (int y = 0; y < y_size; y++)
         {
-            String string = map[y];
+            int dy = my - y;
             for (int x = 0; x < x_size; x++)
             {
-                char c = string.charAt(x);
-                Tile tile = null;
-                if (c == 'S')
+                int dx = mx - x;
+                if (x == 0 || y == 0)
                 {
-                    tile = Tiles.STONE;
+                    setTile(Tiles.MAP_EDGE, x - mx, y - my, 0);
                 }
-                else if (c == 'D')
+                else if (Math.abs(dy) < 5 && Math.abs(dx) < 5)
                 {
-                    tile = Tiles.DIRT;
+                    setTile(Tiles.PLANKS, x - mx, y - my, 0);
                 }
-
-                if (tile != null)
+                else if (Math.abs(dy) < 5 || Math.abs(dx) < 5)
                 {
-                    setTile(tile, x - 10, y - 10, 0);
+                    setTile(Tiles.METAL, x - mx, y - my, 0);
+                }
+                else
+                {
+                    setTile(Tiles.STONE, x - mx, y - my, 0);
                 }
             }
         }

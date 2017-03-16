@@ -2,8 +2,8 @@ package com.builtbroken.tabletop.client.tile;
 
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
-import com.builtbroken.tabletop.game.map.Tile;
-import com.builtbroken.tabletop.game.map.Tiles;
+import com.builtbroken.tabletop.game.tile.Tile;
+import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Vector3f;
 
 /**
@@ -16,9 +16,13 @@ public class TileRenders
 
     public static void load()
     {
-        renders = new RenderRect[Tile.TILES.length];
-        for (Tile tile : Tile.TILES)
+        renders = new RenderRect[Tiles.TILES.length];
+        for (Tile tile : Tiles.TILES)
         {
+            if(tile == null)
+            {
+                break;
+            }
             if (tile != Tiles.AIR)
             {
                 renders[tile.id] = new RenderRect("resources/textures/tiles/" + tile.name + ".png", Shader.CHAR, 1, 1, 0.1f);

@@ -3,8 +3,8 @@ package com.builtbroken.tabletop.game.world;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.map.MapData;
-import com.builtbroken.tabletop.game.map.Tile;
-import com.builtbroken.tabletop.game.map.Tiles;
+import com.builtbroken.tabletop.game.tile.Tile;
+import com.builtbroken.tabletop.game.tile.Tiles;
 
 import java.util.ArrayList;
 import java.util.List;

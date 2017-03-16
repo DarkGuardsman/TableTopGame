@@ -10,9 +10,9 @@ import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.entity.controller.Player;
 import com.builtbroken.tabletop.game.entity.living.Character;
-import com.builtbroken.tabletop.game.map.Tile;
-import com.builtbroken.tabletop.game.map.Tiles;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
+import com.builtbroken.tabletop.game.tile.Tile;
+import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -61,7 +61,7 @@ public class GameDisplay implements Runnable
         Game game = new Game();
         game.load(false, "");
 
-        Tile.load();
+        Tiles.load();
 
         StaticMapData map = new StaticMapData();
         map.load();
@@ -242,11 +242,6 @@ public class GameDisplay implements Runnable
         background_render.render(new Vector3f(-10, -10, 0), 0, 1);
 
         renderMap(mouseLocationX, mouseLocationY);
-
-        for (Entity entity : game.getWorld().getEntities())
-        {
-            character_render.render(new Vector3f(entity.xf(), entity.yf(), entity.zf()), 0, zoom);
-        }
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
@@ -257,24 +252,29 @@ public class GameDisplay implements Runnable
         int bottomStart = (int) Math.floor(BOTTOM_CAMERA_BOUND + cameraPosition.y);
         int topStart = (int) Math.floor(TOP_CAMERA_BOUND + cameraPosition.y);
 
+        //Calculates the size of the screen 2D
         float x_size = rightStart - leftStart;
         float y_size = topStart - bottomStart;
 
+        //Calculate the tile size based on the zoom factor
         float tileSize = zoom;
 
+        //Calculate the number of tiles that can fit on screen
         int tiles_x = (int) Math.ceil(x_size / tileSize) + 2;
         int tiles_y = (int) Math.ceil(y_size / tileSize) + 2;
 
+        //Offset tile position based on camera
         int center_x = (int) (cameraPosition.x);
         int center_y = (int) (cameraPosition.y);
 
+        //Calculate the offset to make tiles render from the center
         int renderOffsetX = (tiles_x - 1) / 2;
         int renderOffsetY = (tiles_y - 1) / 2;
 
         //Render tiles
         for (int x = 0; x < tiles_x; x++)
         {
-            for (int y = 0; y < tiles_y; y++)
+            for (int y = -1; y < tiles_y; y++)
             {
                 int tile_x = x + center_x - renderOffsetX;
                 int tile_y = y + center_y - renderOffsetY;
@@ -282,6 +282,26 @@ public class GameDisplay implements Runnable
                 if (tile != Tiles.AIR)
                 {
                     TileRenders.render(tile, tile_x * tileSize, tile_y * tileSize, zoom);
+                }
+            }
+        }
+
+        //Render entities
+        for (Entity entity : game.getWorld().getEntities())
+        {
+            //Ensure the entity is on the floor we are rendering
+            if (entity.yi() == 0) //TODO replace with floor var
+            {
+                int tile_x = entity.xi() + center_x;
+                int tile_y = entity.yi() + center_y;
+
+                //Ensure the entity is in the camera view
+                if (tile_x > leftStart && tile_x < rightStart)
+                {
+                    if (tile_y > bottomStart && tile_y < topStart)
+                    {
+                        character_render.render(new Vector3f(entity.xf() * tileSize, entity.yf() * tileSize, 0), 0, zoom);
+                    }
                 }
             }
         }
