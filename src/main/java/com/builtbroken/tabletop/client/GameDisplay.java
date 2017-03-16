@@ -57,6 +57,7 @@ public class GameDisplay implements Runnable
     protected Matrix4f pr_matrix;
 
     protected long lastZoom = 0L;
+    protected boolean click = false;
 
     public static void main(String... args)
     {
@@ -195,7 +196,7 @@ public class GameDisplay implements Runnable
             entity.update(delta);
         }
 
-        if (time - lastZoom > 1000)
+        if (time - lastZoom > 500)
         {
             if (KeyboardInput.zoomOut())
             {
@@ -239,6 +240,11 @@ public class GameDisplay implements Runnable
         {
             cameraPosition.y -= .1;
         }
+
+        if (MouseInput.leftClick())
+        {
+            click = true;
+        }
     }
 
     protected void render()
@@ -246,7 +252,7 @@ public class GameDisplay implements Runnable
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float mouseLocationX = (float) (MouseInput.mouseX / width) - 0.5f;
-        float mouseLocationY = (float) (MouseInput.mouseY / height) - 0.5f;
+        float mouseLocationY = 0.5f - (float) (MouseInput.mouseY / height);
         doRender(mouseLocationX, mouseLocationY);
 
         int error = glGetError();
@@ -287,9 +293,9 @@ public class GameDisplay implements Runnable
         int renderOffsetY = (tiles_y - 1) / 2;
 
         //Render tiles
-        for (int x = -renderOffsetX; x < renderOffsetX; x++)
+        for (int x = -renderOffsetX; x < renderOffsetX; x++)   //TODO add floor var
         {
-            for (int y = -renderOffsetX; y < renderOffsetX; y++)
+            for (int y = -renderOffsetY; y < renderOffsetY; y++)
             {
                 int tile_x = x + center_x;
                 int tile_y = y + center_y;
@@ -305,7 +311,7 @@ public class GameDisplay implements Runnable
         for (Entity entity : game.getWorld().getEntities())
         {
             //Ensure the entity is on the floor we are rendering
-            if (entity.yi() == 0) //TODO replace with floor var
+            if (entity.zi() == 0) //TODO replace with floor var
             {
                 float tile_x = (entity.xf() - center_x) * tileSize;
                 float tile_y = (entity.yf() - center_y) * tileSize;
@@ -321,13 +327,26 @@ public class GameDisplay implements Runnable
             }
         }
 
-        //Render curse hover
-        float mouseTileX = mouseLocationX * x_size;
-        float mouseTileY = mouseLocationY * y_size;
-        //target_render.render(new Vector3f(mouseTileX - (tileSize / 2), -mouseTileY - (tileSize / 2), 0), 0, zoom);
+        float mx = mouseLocationX * x_size / tileSize;
+        float my = mouseLocationY * y_size / tileSize;
 
-        float selectX = (int) Math.floor(mouseTileX);
-        float selectY = (int) Math.floor(mouseTileY) + tileSize;
-        box_render.render(new Vector3f(selectX, -selectY, 0), 0, zoom);
+        int tx = (int) Math.floor(center_x + mx);
+        int ty = (int) Math.floor(center_y + my);
+
+        Tile tile = game.getWorld().getTile(tx, ty, 0);
+
+        float x = tx * tileSize;
+        float y = ty * tileSize;
+
+        System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
+
+        box_render.render(new Vector3f(x - center_x * tileSize, y, 0), 0, zoom);
+
+
+        if (!MouseInput.leftClick() && click)
+        {
+            click = false;
+            player.setPosition(tx, ty, 0);
+        }
     }
 }

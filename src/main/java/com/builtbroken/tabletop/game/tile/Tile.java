@@ -33,4 +33,10 @@ public class Tile
     {
         return canWalk;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Tile[" + id + ", " + name + "]";
+    }
 }

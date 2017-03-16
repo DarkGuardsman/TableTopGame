@@ -54,4 +54,14 @@ public class MouseInput
             }
         });
     }
+
+    public static boolean leftClick()
+    {
+        return mouseButtons[0];
+    }
+
+    public static boolean rightClick()
+    {
+        return mouseButtons[1];
+    }
 }
