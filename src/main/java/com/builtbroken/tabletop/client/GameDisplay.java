@@ -267,15 +267,9 @@ public class GameDisplay implements Runnable
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
     {
-        //Find our bounds so we know what to render
-        int leftStart = (int) Math.floor(LEFT_CAMERA_BOUND + cameraPosition.x);
-        int rightStart = (int) Math.floor(RIGHT_CAMERA_BOUND + cameraPosition.x);
-        int bottomStart = (int) Math.floor(BOTTOM_CAMERA_BOUND + cameraPosition.y);
-        int topStart = (int) Math.floor(TOP_CAMERA_BOUND + cameraPosition.y);
-
         //Calculates the size of the screen 2D
-        float x_size = rightStart - leftStart;
-        float y_size = topStart - bottomStart;
+        float x_size = RIGHT_CAMERA_BOUND - LEFT_CAMERA_BOUND;
+        float y_size = TOP_CAMERA_BOUND - BOTTOM_CAMERA_BOUND;
 
         //Calculate the tile size based on the zoom factor
         float tileSize = zoom;
@@ -313,15 +307,15 @@ public class GameDisplay implements Runnable
             //Ensure the entity is on the floor we are rendering
             if (entity.yi() == 0) //TODO replace with floor var
             {
-                float tile_x = entity.xf() - center_x;
-                float tile_y = entity.yf() - center_y;
+                float tile_x = (entity.xf() - center_x) * tileSize;
+                float tile_y = (entity.yf() - center_y) * tileSize;
 
                 //Ensure the entity is in the camera view
-                if (tile_x >= leftStart && tile_x <= rightStart)
+                if (tile_x >= LEFT_CAMERA_BOUND && tile_x <= RIGHT_CAMERA_BOUND)
                 {
-                    if (tile_y >= bottomStart && tile_y <= topStart)
+                    if (tile_y >= BOTTOM_CAMERA_BOUND && tile_y <= TOP_CAMERA_BOUND)
                     {
-                        character_render.render(new Vector3f(tile_x * tileSize, tile_y * tileSize, 0), 0, zoom);
+                        character_render.render(new Vector3f(tile_x, tile_y, 0), 0, zoom);
                     }
                 }
             }
