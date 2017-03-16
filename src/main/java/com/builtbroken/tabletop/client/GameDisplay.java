@@ -50,6 +50,8 @@ public class GameDisplay implements Runnable
 
     protected RenderRect background_render;
     protected RenderRect character_render;
+    protected RenderRect target_render;
+    protected RenderRect box_render;
 
     protected Vector3f cameraPosition = new Vector3f(0, 0, 0);
     protected Matrix4f pr_matrix;
@@ -130,6 +132,8 @@ public class GameDisplay implements Runnable
 
         background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, 0);
         character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.2f);
+        target_render = new RenderRect("resources/textures/target.png", Shader.CHAR, 1, 1, 0.4f);
+        box_render = new RenderRect("resources/textures/box.png", Shader.CHAR, 1, 1, 0.3f);
         TileRenders.load();
     }
 
@@ -309,6 +313,10 @@ public class GameDisplay implements Runnable
         //Render curse hover
         float mouseTileX = mouseLocationX * x_size;
         float mouseTileY = mouseLocationY * y_size;
-        TileRenders.render(Tiles.DIRT, mouseTileX - (tileSize / 2), -mouseTileY - (tileSize / 2), .2f, zoom);
+        //target_render.render(new Vector3f(mouseTileX - (tileSize / 2), -mouseTileY - (tileSize / 2), 0), 0, zoom);
+
+        float selectX = (int) Math.floor(mouseTileX);
+        float selectY = (int) Math.floor(mouseTileY) + tileSize;
+        box_render.render(new Vector3f(selectX, -selectY, 0), 0, zoom);
     }
 }
