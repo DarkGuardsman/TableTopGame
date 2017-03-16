@@ -51,4 +51,24 @@ public class KeyboardInput extends GLFWKeyCallback
     {
         return isKeyDown(GLFW.GLFW_KEY_DOWN);
     }
+
+    public static boolean forward()
+    {
+        return isKeyDown(GLFW.GLFW_KEY_W);
+    }
+
+    public static boolean back()
+    {
+        return isKeyDown(GLFW.GLFW_KEY_S);
+    }
+
+    public static boolean left()
+    {
+        return isKeyDown(GLFW.GLFW_KEY_A);
+    }
+
+    public static boolean right()
+    {
+        return isKeyDown(GLFW.GLFW_KEY_D);
+    }
 }

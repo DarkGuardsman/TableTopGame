@@ -57,7 +57,8 @@ public class GameDisplay implements Runnable
     protected Matrix4f pr_matrix;
 
     protected long lastZoom = 0L;
-    protected boolean click = false;
+    protected boolean clickLeft = false;
+    protected boolean clickRight = false;
 
     public static void main(String... args)
     {
@@ -224,26 +225,31 @@ public class GameDisplay implements Runnable
             }
         }
 
-        if (KeyboardInput.LeftArrow())
+        if (KeyboardInput.left())
         {
             cameraPosition.x -= .1;
         }
-        else if (KeyboardInput.rightArrow())
+        else if (KeyboardInput.right())
         {
             cameraPosition.x += .1;
         }
-        else if (KeyboardInput.upArrow())
+        else if (KeyboardInput.forward())
         {
             cameraPosition.y += .1;
         }
-        else if (KeyboardInput.downArrow())
+        else if (KeyboardInput.back())
         {
             cameraPosition.y -= .1;
         }
 
         if (MouseInput.leftClick())
         {
-            click = true;
+            clickLeft = true;
+        }
+
+        if (MouseInput.rightClick())
+        {
+            clickRight = true;
         }
     }
 
@@ -343,10 +349,26 @@ public class GameDisplay implements Runnable
         box_render.render(new Vector3f(x - center_x * tileSize, y, 0), 0, zoom);
 
 
-        if (!MouseInput.leftClick() && click)
+        if (!MouseInput.leftClick() && clickLeft)
         {
-            click = false;
-            player.setPosition(tx, ty, 0);
+            clickLeft = false;
+            doLeftClickAction(tx, ty, 0);
         }
+
+        if (!MouseInput.rightClick() && clickRight)
+        {
+            clickRight = false;
+            doRightClickAction(tx, ty, 0);
+        }
+    }
+
+    protected void doLeftClickAction(int tileX, int tileY, int floor)
+    {
+
+    }
+
+    protected void doRightClickAction(int tileX, int tileY, int floor)
+    {
+        player.setPosition(tileX, tileY, floor);
     }
 }
