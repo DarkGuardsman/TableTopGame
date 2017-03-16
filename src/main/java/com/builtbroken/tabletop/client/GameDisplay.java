@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.client;
 
 
+import com.builtbroken.jlib.math.dice.Dice;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
@@ -8,8 +9,10 @@ import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
-import com.builtbroken.tabletop.game.entity.controller.Player;
+import com.builtbroken.tabletop.game.entity.damage.Damage;
+import com.builtbroken.tabletop.game.entity.damage.DamageType;
 import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.items.weapons.Weapon;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
@@ -36,7 +39,7 @@ public class GameDisplay implements Runnable
     public static final float TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
 
     protected Game game;
-    protected Character player;
+    protected Entity selectedEntity;
 
     protected float zoom = 1;
 
@@ -59,6 +62,7 @@ public class GameDisplay implements Runnable
     protected long lastZoom = 0L;
     protected boolean clickLeft = false;
     protected boolean clickRight = false;
+    protected boolean attackMode = false;
 
     public static void main(String... args)
     {
@@ -128,9 +132,10 @@ public class GameDisplay implements Runnable
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniform1i("tex", 1);
 
-        player = new Character("bob");
-        player.setController(new Player(player));
-        game.getWorld().getEntities().add(player);
+        game.getWorld().getEntities().add(new Character("bob"));
+        game.getWorld().getEntities().add(new Character("jim"));
+        game.getWorld().getEntities().add(new Character("paul"));
+        game.getWorld().getEntities().add(new Character("tim"));
 
         background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, 0);
         character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.2f);
@@ -174,7 +179,7 @@ public class GameDisplay implements Runnable
             if (System.currentTimeMillis() - timer > 1000)
             {
                 timer += 1000;
-                System.out.println(updates + " ups, " + frames + " fps");
+                //System.out.println(updates + " ups, " + frames + " fps");
                 updates = 0;
                 frames = 0;
             }
@@ -250,6 +255,11 @@ public class GameDisplay implements Runnable
         if (MouseInput.rightClick())
         {
             clickRight = true;
+        }
+
+        if (KeyboardInput.isKeyDown(GLFW_KEY_E))
+        {
+            attackMode = true;
         }
     }
 
@@ -344,9 +354,16 @@ public class GameDisplay implements Runnable
         float x = tx * tileSize;
         float y = ty * tileSize;
 
-        System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
+        //System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
 
-        box_render.render(new Vector3f(x - center_x * tileSize, y, 0), 0, zoom);
+        if (attackMode)
+        {
+            target_render.render(new Vector3f(x - center_x * tileSize, y - center_y * tileSize, 0), 0, zoom);
+        }
+        else
+        {
+            box_render.render(new Vector3f(x - center_x * tileSize, y - center_y * tileSize, 0), 0, zoom);
+        }
 
 
         if (!MouseInput.leftClick() && clickLeft)
@@ -364,11 +381,44 @@ public class GameDisplay implements Runnable
 
     protected void doLeftClickAction(int tileX, int tileY, int floor)
     {
+        if (attackMode)
+        {
+            attackMode = false;
+            if (selectedEntity != null)
+            {
+                Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
+                if (entity != null)
+                {
+                    Weapon weapon = new Weapon("gun");
+                    weapon.damage = new Damage(new DamageType("laser"), new Dice(6), 2);
+                    selectedEntity.attack(entity, weapon);
 
+                    if(entity.getHealth() <= 0)
+                    {
+                        game.getWorld().getEntities().remove(entity);
+                    }
+                }
+            }
+        }
+        else
+        {
+            selectedEntity = game.getWorld().getEntity(tileX, tileY, floor);
+        }
     }
 
     protected void doRightClickAction(int tileX, int tileY, int floor)
     {
-        player.setPosition(tileX, tileY, floor);
+        if (attackMode)
+        {
+            attackMode = false;
+        }
+        else if (selectedEntity != null)
+        {
+            Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
+            if (entity == null)
+            {
+                selectedEntity.setPosition(tileX, tileY, floor);
+            }
+        }
     }
 }

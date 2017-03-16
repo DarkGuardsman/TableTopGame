@@ -33,6 +33,7 @@ public class Character extends Entity
         super("character");
         this.displayName = name;
         this.armor = new InventoryArmor(this);
+        this.health = 20;
     }
 
     @Override

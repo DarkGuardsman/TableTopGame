@@ -47,4 +47,16 @@ public class World
     {
         return entities;
     }
+
+    public Entity getEntity(int tileX, int tileY, int floor)
+    {
+        for (Entity entity : getEntities())
+        {
+            if (entity.xi() == tileX && entity.yi() == tileY && entity.zi() == floor)
+            {
+                return entity;
+            }
+        }
+        return null;
+    }
 }

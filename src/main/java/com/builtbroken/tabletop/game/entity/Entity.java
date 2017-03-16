@@ -23,9 +23,9 @@ public class Entity extends GameObject
     protected float z = 0;
 
     /** Current health value, -1 means it was never set */
-    private int health = -1;
+    protected int health = -1;
     /** Current shield value, works like HP, -1 means it was never set */
-    private int shield = -1;
+    protected int shield = -1;
 
     /**
      * Constructor
@@ -40,6 +40,7 @@ public class Entity extends GameObject
     /**
      * Called to update code that
      * needs to run every tick
+     *
      * @param delta
      */
     public void update(double delta)
@@ -90,6 +91,7 @@ public class Entity extends GameObject
      */
     public HitResult onAttacked(Damage damage, boolean glance)
     {
+        System.out.println("onAttacked(" + damage + ", " + glance + ")");
         //Ignore all damage if we can not take damage
         if (canTakeDamae)
         {
@@ -166,6 +168,7 @@ public class Entity extends GameObject
      */
     public void applyDamage(Damage damage, int damageAmount, boolean glance, boolean crit)
     {
+        System.out.println("applyDamage(" + damage + ", " + damageAmount + ", " + glance + ", " + crit + ")");
         if (glance)
         {
             damageAmount = damageAmount / 2;
@@ -235,6 +238,7 @@ public class Entity extends GameObject
     {
         //Calculate hit ability
         int RHR = getHitRating(weapon.isRanged()) - entityToAttack.getReactionRating(weapon.isRanged());
+        System.out.println("RHR: " + RHR + "  dice: " + diceRollD20);
         //Hit if the dice roll is less than hit ability
         if (diceRollD20 < RHR)
         {
@@ -340,19 +344,19 @@ public class Entity extends GameObject
 
     public int xi()
     {
-        return (int) x;
+        return (int) Math.floor(x);
     }
 
 
     public int yi()
     {
-        return (int) y;
+        return (int) Math.floor(y);
     }
 
 
     public int zi()
     {
-        return (int) z;
+        return (int) Math.floor(z);
     }
 
     public float xf()
