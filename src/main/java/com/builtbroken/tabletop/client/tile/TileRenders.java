@@ -1,5 +1,6 @@
 package com.builtbroken.tabletop.client.tile;
 
+import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.game.tile.Tile;
@@ -18,7 +19,7 @@ public class TileRenders
         renders = new RenderRect[Tiles.TILES.length];
         for (Tile tile : Tiles.TILES)
         {
-            if(tile == null)
+            if (tile == null)
             {
                 break;
             }
@@ -31,11 +32,20 @@ public class TileRenders
 
     public static void render(Tile tile, float x, float y, float scale)
     {
-        render(tile, x, y, 0, scale);
+        render(tile, x, y, GameDisplay.TILE_LAYER, scale);
     }
 
     public static void render(Tile tile, float x, float y, float z, float scale)
     {
-        renders[tile.id].render(x, y, z, 0, scale);
+        render(tile, x, y, z, 0, scale);
+    }
+
+    public static void render(Tile tile, float x, float y, float z, float rot, float scale)
+    {
+        RenderRect rect = renders[tile.id];
+        if (rect != null)
+        {
+            rect.render(x, y, z, rot, scale);
+        }
     }
 }

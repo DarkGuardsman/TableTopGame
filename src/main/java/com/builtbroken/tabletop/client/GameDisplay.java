@@ -5,6 +5,9 @@ import com.builtbroken.jlib.math.dice.Dice;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.gui.Gui;
+import com.builtbroken.tabletop.client.gui.component.Component;
+import com.builtbroken.tabletop.client.gui.component.ComponentContainer;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
@@ -21,6 +24,8 @@ import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import java.util.HashMap;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -33,24 +38,47 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class GameDisplay implements Runnable
 {
+    //Display run data
+    protected Thread thread;
+    protected boolean running = false;
+
+    //Cemera bounds
     public static final float LEFT_CAMERA_BOUND = -10.0f;
     public static final float RIGHT_CAMERA_BOUND = 10.0f;
     public static final float BOTTOM_CAMERA_BOUND = -10.0f * 9.0f / 16.0f;
     public static final float TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
 
+    //Calculates the size of the screen 2D
+    public static final float SCREEN_SIZE_X = RIGHT_CAMERA_BOUND - LEFT_CAMERA_BOUND;
+    public static final float SCREEN_SIZE_Y = TOP_CAMERA_BOUND - BOTTOM_CAMERA_BOUND;
+
+    //Render layers
+    public static final float TILE_LAYER = 0f;
+    public static final float TILE_LAYER_2 = .1f;
+    public static final float ENTITY_LAYER = .2f;
+    public static final float ENTITY_LAYER_2 = .3f;
+    public static final float SELECTION_LAYER = 0.4f;
+    public static final float EFFECT_LAYER = .5f;
+    public static final float TILE_LAYER_3 = .6f;
+    public static final float GAME_GUI_LAYER = .7f;
+    public static final float MENU_GUI_LAYER = .8f;
+
+    //Game logic data
     protected Game game;
     protected Entity selectedEntity;
 
+    //GUIS
+    protected HashMap<String, Gui> guiMap = new HashMap();
+
+    //Render logic data
     protected float zoom = 1;
 
     protected int width = 1280;
     protected int height = 720;
 
-    protected Thread thread;
-    protected boolean running = false;
-
     protected long windowID;
 
+    //Renders
     protected RenderRect background_render;
     protected RenderRect character_render;
     protected RenderRect target_render;
@@ -59,11 +87,13 @@ public class GameDisplay implements Runnable
     protected Vector3f cameraPosition = new Vector3f(0, 0, 0);
     protected Matrix4f pr_matrix;
 
+    //Controls
     protected long lastZoom = 0L;
     protected boolean clickLeft = false;
     protected boolean clickRight = false;
     protected boolean attackMode = false;
 
+    //Main method
     public static void main(String... args)
     {
         Game game = new Game();
@@ -137,11 +167,18 @@ public class GameDisplay implements Runnable
         game.getWorld().getEntities().add(new Character("paul"));
         game.getWorld().getEntities().add(new Character("tim"));
 
-        background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, 0);
-        character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, 0.2f);
-        target_render = new RenderRect("resources/textures/target.png", Shader.CHAR, 1, 1, 0.4f);
-        box_render = new RenderRect("resources/textures/box.png", Shader.CHAR, 1, 1, 0.3f);
+        background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, -0.98f);
+        character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, EFFECT_LAYER);
+        target_render = new RenderRect("resources/textures/target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+        box_render = new RenderRect("resources/textures/box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         TileRenders.load();
+
+        //camera is 20x 11.5y
+        Gui gameGUI = new Gui();
+        ComponentContainer container = new ComponentContainer(SCREEN_SIZE_X, SCREEN_SIZE_Y * .1f, "resources/textures/gui/buttonContainer.png", new Vector3f(LEFT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND, 0));
+        container.add(new Component(SCREEN_SIZE_X * 0.2f, SCREEN_SIZE_X * 0.04f, "resources/textures/gui/button.png", new Vector3f(LEFT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND + 0.01f, .01f)));
+        gameGUI.add(container);
+        guiMap.put("game", gameGUI);
     }
 
     //Loads callbacks for keyboard, mouse, and other input devices
@@ -289,16 +326,13 @@ public class GameDisplay implements Runnable
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
     {
-        //Calculates the size of the screen 2D
-        float x_size = RIGHT_CAMERA_BOUND - LEFT_CAMERA_BOUND;
-        float y_size = TOP_CAMERA_BOUND - BOTTOM_CAMERA_BOUND;
 
         //Calculate the tile size based on the zoom factor
         float tileSize = zoom;
 
         //Calculate the number of tiles that can fit on screen
-        int tiles_x = (int) Math.ceil(x_size / tileSize) + 2;
-        int tiles_y = (int) Math.ceil(y_size / tileSize) + 2;
+        int tiles_x = (int) Math.ceil(SCREEN_SIZE_X / tileSize) + 2;
+        int tiles_y = (int) Math.ceil(SCREEN_SIZE_Y / tileSize) + 2;
 
         //Offset tile position based on camera
         int center_x = (int) (cameraPosition.x);
@@ -343,8 +377,17 @@ public class GameDisplay implements Runnable
             }
         }
 
-        float mx = mouseLocationX * x_size / tileSize;
-        float my = mouseLocationY * y_size / tileSize;
+        //Render GUIs
+        for (Gui gui : guiMap.values())
+        {
+            if (gui != null)
+            {
+                gui.render(mouseLocationX * SCREEN_SIZE_X, mouseLocationY * SCREEN_SIZE_Y);
+            }
+        }
+
+        float mx = mouseLocationX * SCREEN_SIZE_X / tileSize;
+        float my = mouseLocationY * SCREEN_SIZE_Y / tileSize;
 
         int tx = (int) Math.floor(center_x + mx);
         int ty = (int) Math.floor(center_y + my);
@@ -393,7 +436,7 @@ public class GameDisplay implements Runnable
                     weapon.damage = new Damage(new DamageType("laser"), new Dice(6), 2);
                     selectedEntity.attack(entity, weapon);
 
-                    if(entity.getHealth() <= 0)
+                    if (entity.getHealth() <= 0)
                     {
                         game.getWorld().getEntities().remove(entity);
                     }
