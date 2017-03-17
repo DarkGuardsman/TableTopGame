@@ -4,7 +4,6 @@ import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
-import com.builtbroken.tabletop.util.Vector3f;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -37,6 +36,6 @@ public class TileRenders
 
     public static void render(Tile tile, float x, float y, float z, float scale)
     {
-        renders[tile.id].render(new Vector3f(x, y, z), 0, scale);
+        renders[tile.id].render(x, y, z, 0, scale);
     }
 }

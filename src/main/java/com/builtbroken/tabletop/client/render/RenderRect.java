@@ -13,6 +13,8 @@ public class RenderRect
     private Texture texture;
     private Shader shader;
 
+    private Matrix4f cache = new Matrix4f();
+
     public RenderRect(String texture, Shader shader, float width, float height, float layer)
     {
         this.shader = shader;
@@ -29,16 +31,22 @@ public class RenderRect
 
     public void render(Vector3f position, float rot, float scale)
     {
+        render(position.x, position.y, position.z, rot, scale);
+    }
+
+    public void render(float x, float y, float z, float rot, float scale)
+    {
         //Setup
         texture.bind();
         shader.enable();
         if (shader == Shader.CHAR)
         {
-            shader.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotate(rot)));
+            cache = cache.resetToIdentity().translate(x, y, z);
+            shader.setUniformMat4f("ml_matrix", cache);
         }
         else if (shader == Shader.BACKGROUND)
         {
-            shader.setUniformMat4f("vw_matrix", Matrix4f.translate(new Vector3f(0f, 0.0f, 0.0f)));
+            shader.setUniformMat4f("vw_matrix", cache.resetToIdentity().translate(0f, 0.0f, 0.0f));
         }
 
         //Render

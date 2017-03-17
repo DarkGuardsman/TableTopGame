@@ -282,7 +282,7 @@ public class GameDisplay implements Runnable
 
     protected void doRender(float mouseLocationX, float mouseLocationY)
     {
-        background_render.render(new Vector3f(-10, -10, 0), 0, 1);
+        background_render.render(-10, -10, 0, 0, 1);
 
         renderMap(mouseLocationX, mouseLocationY);
     }
@@ -337,7 +337,7 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= BOTTOM_CAMERA_BOUND && tile_y <= TOP_CAMERA_BOUND)
                     {
-                        character_render.render(new Vector3f(tile_x, tile_y, 0), 0, zoom);
+                        character_render.render(tile_x, tile_y, 0, 0, zoom);
                     }
                 }
             }
@@ -358,11 +358,11 @@ public class GameDisplay implements Runnable
 
         if (attackMode)
         {
-            target_render.render(new Vector3f(x - center_x * tileSize, y - center_y * tileSize, 0), 0, zoom);
+            target_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }
         else
         {
-            box_render.render(new Vector3f(x - center_x * tileSize, y - center_y * tileSize, 0), 0, zoom);
+            box_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }
 
 

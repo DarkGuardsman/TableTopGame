@@ -12,18 +12,29 @@ public class Matrix4f
 
     }
 
+    public Matrix4f reset()
+    {
+        for (int i = 0; i < SIZE; i++)
+        {
+            elements[i] = 0.0f;
+        }
+        return this;
+    }
+
+    public Matrix4f resetToIdentity()
+    {
+        reset();
+        elements[0 + 0 * 4] = 1.0f;
+        elements[1 + 1 * 4] = 1.0f;
+        elements[2 + 2 * 4] = 1.0f;
+        elements[3 + 3 * 4] = 1.0f;
+        return this;
+    }
+
     public static Matrix4f identity()
     {
         Matrix4f result = new Matrix4f();
-        for (int i = 0; i < SIZE; i++)
-        {
-            result.elements[i] = 0.0f;
-        }
-        result.elements[0 + 0 * 4] = 1.0f;
-        result.elements[1 + 1 * 4] = 1.0f;
-        result.elements[2 + 2 * 4] = 1.0f;
-        result.elements[3 + 3 * 4] = 1.0f;
-
+        result.resetToIdentity();
         return result;
     }
 
@@ -44,13 +55,22 @@ public class Matrix4f
         return result;
     }
 
-    public static Matrix4f translate(Vector3f vector)
+    public static Matrix4f translated(Vector3f vector)
     {
-        Matrix4f result = identity();
-        result.elements[0 + 3 * 4] = vector.x;
-        result.elements[1 + 3 * 4] = vector.y;
-        result.elements[2 + 3 * 4] = vector.z;
-        return result;
+        return identity().translate(vector);
+    }
+
+    public Matrix4f translate(Vector3f vector)
+    {
+        return translate(vector.x, vector.y, vector.z);
+    }
+
+    public Matrix4f translate(float x, float y, float z)
+    {
+        elements[0 + 3 * 4] = x;
+        elements[1 + 3 * 4] = y;
+        elements[2 + 3 * 4] = z;
+        return this;
     }
 
     public static Matrix4f rotate(float angle)
