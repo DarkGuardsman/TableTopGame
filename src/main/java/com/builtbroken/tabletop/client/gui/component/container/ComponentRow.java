@@ -12,6 +12,8 @@ public class ComponentRow extends ComponentContainer
 {
     public float spacing = 0.05f;
 
+    public PositionLogic componentPositionLogic = PositionLogic.FLOAT_LEFT;
+
     @Override
     public void onResize(GameDisplay display)
     {
@@ -22,14 +24,35 @@ public class ComponentRow extends ComponentContainer
 
     protected void positionComponents()
     {
-        if (getPositionLogic() != PositionLogic.FLOAT_LEFT)
+        if (componentPositionLogic == PositionLogic.FLOAT_LEFT)
         {
+            //Left to right button placement
+            //1 2 3 4 5
             float x = spacing;
             for (Component component : componentList)
             {
                 component.setPosition(x, 0);
                 x += component.getWidth() + spacing;
             }
+        }
+        else if (componentPositionLogic == PositionLogic.FLOAT_RIGHT)
+        {
+            //Right to left button placement
+            //5 4 3 2 1
+            float x = getWidth() - spacing;
+            for (Component component : componentList)
+            {
+                component.setPosition(x - component.getWidth(), 0);
+                x -= component.getWidth() + spacing;
+            }
+        }
+        else if (componentPositionLogic == PositionLogic.FLOAT_DOWN)
+        {
+            //bottom to top button placement
+        }
+        else if (componentPositionLogic == PositionLogic.FLOAT_UP)
+        {
+            //top to bottom button placement
         }
     }
 

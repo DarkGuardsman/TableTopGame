@@ -304,11 +304,23 @@ public class GameDisplay implements Runnable
     {
         long time = System.currentTimeMillis();
         glfwPollEvents();
+
+        //Update entities
         for (Entity entity : game.getWorld().getEntities())
         {
             entity.update(delta);
         }
 
+        //update GUI
+        for (Gui gui : guiMap.values())
+        {
+            if (gui != null)
+            {
+                gui.update(this);
+            }
+        }
+
+        //Zoom controls
         if (time - lastZoom > 500)
         {
             if (KeyboardInput.zoomOut())
@@ -337,6 +349,7 @@ public class GameDisplay implements Runnable
             }
         }
 
+        //Movement camera controls
         if (KeyboardInput.left())
         {
             cameraPosition.x -= .1;
@@ -354,6 +367,7 @@ public class GameDisplay implements Runnable
             cameraPosition.y -= .1;
         }
 
+        //Key handlers
         if (MouseInput.leftClick())
         {
             clickLeft = true;
@@ -362,11 +376,6 @@ public class GameDisplay implements Runnable
         if (MouseInput.rightClick())
         {
             clickRight = true;
-        }
-
-        if (KeyboardInput.isKeyDown(GLFW_KEY_E))
-        {
-            attackMode = true;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.builtbroken.tabletop.client.gui.component.container;
 
+import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.Component;
 
 import java.util.ArrayList;
@@ -24,12 +25,7 @@ public class ComponentContainer extends Component
         super(width, height, texture, x, y);
     }
 
-    /**
-     * Render the GUI on the screen
-     *
-     * @param mouseX
-     * @param mouseY
-     */
+    @Override
     public void render(float mouseX, float mouseY)
     {
         super.render(mouseX, mouseY);
@@ -39,6 +35,16 @@ public class ComponentContainer extends Component
             {
                 component.render(mouseX, mouseY, x, y, 0);
             }
+        }
+    }
+
+    @Override
+    public void updatePosition(GameDisplay display)
+    {
+        super.updatePosition(display);
+        for (Component component : componentList)
+        {
+            component.updatePosition(display);
         }
     }
 

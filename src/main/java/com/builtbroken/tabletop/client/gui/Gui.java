@@ -19,6 +19,19 @@ public class Gui
     public boolean isVisible = true;
 
     /**
+     * Called to update the display
+     *
+     * @param display
+     */
+    public void update(GameDisplay display)
+    {
+        for (Component component : componentList)
+        {
+            component.update(display);
+        }
+    }
+
+    /**
      * Render the GUI on the screen
      *
      * @param mouseX
@@ -42,7 +55,7 @@ public class Gui
      */
     public void onResize(GameDisplay display)
     {
-        for(Component component : componentList)
+        for (Component component : componentList)
         {
             component.onResize(display);
         }
