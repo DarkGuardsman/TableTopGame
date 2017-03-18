@@ -1,5 +1,6 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
+import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentRow;
 import com.builtbroken.tabletop.client.render.RenderRect;
 
@@ -18,8 +19,33 @@ public class ButtonScrollRow extends ComponentRow
 
     public Button increaseButton, decreaseButton;
 
-    public ButtonScrollRow()
+    public ButtonScrollRow(PositionLogic logic, RenderRect buttonBackground, int buttons, float buttonWidth, float buttonHeight)
     {
+        super(logic);
+        if (logic.left())
+        {
+            increaseButton = new Button(leftArrow, 1, 1);
+            decreaseButton = new Button(rightArrow, 1, 1);
+        }
+        else if (logic.right())
+        {
+            increaseButton = new Button(rightArrow, 1, 1);
+            decreaseButton = new Button(leftArrow, 1, 1);
+        }
+        else if (logic.top())
+        {
+            increaseButton = new Button(upArrow, 1, 1);
+            decreaseButton = new Button(downArrow, 1, 1);
+        }
+        else if (logic.bottom())
+        {
+            increaseButton = new Button(downArrow, 1, 1);
+            decreaseButton = new Button(upArrow, 1, 1);
+        }
 
+        for (int i = 0; i < buttons; i++)
+        {
+            add(new Button(buttonBackground, buttonWidth, buttonHeight));
+        }
     }
 }

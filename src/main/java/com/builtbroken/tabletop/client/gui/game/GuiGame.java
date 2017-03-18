@@ -6,6 +6,7 @@ import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.button.Button;
+import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentRow;
 import com.builtbroken.tabletop.client.render.RenderRect;
 
@@ -16,8 +17,8 @@ import com.builtbroken.tabletop.client.render.RenderRect;
 public class GuiGame extends Gui
 {
     //GUI parts
-    ComponentRow itemRow;
-    ComponentRow weaponRow;
+    ButtonScrollRow itemRow;
+    ButtonScrollRow weaponRow;
     ComponentRow unitRow;
 
     //Render objects, cached for reuse
@@ -37,26 +38,17 @@ public class GuiGame extends Gui
         componentList.clear();
 
         //Build item row, float to left of screen
-        itemRow = new ComponentRow(PositionLogic.LEFT); //set sub comp pos
+        itemRow = new ButtonScrollRow(PositionLogic.LEFT, itemButtonBackground, 4, 1, 1); //set sub comp pos
         itemRow.setVisible(false); //no need to render
-        itemRow.setPositionLogic(PositionLogic.LEFT); //set self pos
-
-        itemRow.add(new Button(itemButtonBackground, 1, 1));
-        itemRow.add(new Button(itemButtonBackground, 1, 1));
-        itemRow.add(new Button(itemButtonBackground, 1, 1));
-        itemRow.add(new Button(itemButtonBackground, 1, 1));
+        itemRow.setPositionLogic(PositionLogic.BOTTOM_LEFT); //set self pos
 
 
         //Build weapon row, float to right of screen
-        weaponRow = new ComponentRow(PositionLogic.RIGHT); //set sub comp pos
+        weaponRow = new ButtonScrollRow(PositionLogic.RIGHT, itemButtonBackground, 4, 1, 1); //set sub comp pos
         weaponRow.setVisible(false); //no need to render
-        weaponRow.setPositionLogic(PositionLogic.RIGHT); //set self pos
+        weaponRow.setPositionLogic(PositionLogic.BOTTOM_RIGHT); //set self pos
 
-        weaponRow.add(new Button(weaponButtonBackground, 1, 1));
-        weaponRow.add(new Button(weaponButtonBackground, 1, 1));
-        weaponRow.add(new Button(weaponButtonBackground, 1, 1));
-        weaponRow.add(new Button(weaponButtonBackground, 1, 1));
-
+        //Build unit row
         unitRow = new ComponentRow(PositionLogic.BOTTOM);
         unitRow.setVisible(false);
         unitRow.setPositionLogic(PositionLogic.TOP_LEFT);
