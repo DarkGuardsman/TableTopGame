@@ -60,11 +60,12 @@ public class ComponentContainer extends Component
         return null;
     }
 
-    public void add(Component component)
+    public <C extends Component> C add(C component)
     {
         if (!componentList.contains(component))
         {
             componentList.add(component);
         }
+        return component;
     }
 }

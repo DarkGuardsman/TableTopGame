@@ -13,7 +13,7 @@ import com.builtbroken.tabletop.client.render.RenderRect;
 public class Component
 {
     /** Render object for the component background */
-    protected RenderRect background;
+    public RenderRect background;
     /** Toggle to note something has changed in the GUI */
     protected boolean hasChanged = false;
 
@@ -152,7 +152,7 @@ public class Component
                 //Resize mesh or later init if mesh was not set
                 if (prev_height != height || prev_width != width || background.mesh == null)
                 {
-                    background.setSize(width, height, GameDisplay.GAME_GUI_LAYER);
+                    background.setSize(width, height);
                     prev_height = height;
                     prev_width = width;
                 }

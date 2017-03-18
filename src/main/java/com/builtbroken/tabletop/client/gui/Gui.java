@@ -28,6 +28,7 @@ public class Gui
         for (Component component : componentList)
         {
             component.update(display);
+            component.updatePosition(display);
         }
     }
 

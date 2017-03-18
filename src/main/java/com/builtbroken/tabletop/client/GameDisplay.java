@@ -6,6 +6,7 @@ import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.gui.Gui;
+import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.game.GuiGame;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
@@ -62,6 +63,10 @@ public class GameDisplay implements Runnable
     //Default screen size
     public static final int DEFAULT_WIDTH = 1280;
     public static final int DEFAULT_HEIGHT = 720;
+
+    public static final String RESOURCE_PATH = "resources/";
+    public static final String TEXTURE_PATH = RESOURCE_PATH + "textures/";
+    public static final String GUI_PATH = TEXTURE_PATH + "gui/";
 
     //Game logic data
     protected Game game;
@@ -196,10 +201,16 @@ public class GameDisplay implements Runnable
 
 
         //Init render code
-        background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, -0.98f);
-        character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, EFFECT_LAYER);
-        target_render = new RenderRect("resources/textures/target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
-        box_render = new RenderRect("resources/textures/box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+        background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
+        character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, EFFECT_LAYER);
+        target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+        box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+
+        ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
+        ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
+        ButtonScrollRow.leftArrow = new RenderRect(GUI_PATH + "button.left.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
+        ButtonScrollRow.rightArrow = new RenderRect(GUI_PATH + "button.right.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
+
         TileRenders.load();
 
         loadGUIs();

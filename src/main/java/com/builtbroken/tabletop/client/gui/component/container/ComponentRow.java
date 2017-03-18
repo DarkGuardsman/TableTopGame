@@ -27,65 +27,78 @@ public class ComponentRow extends ComponentContainer
     public void onResize(GameDisplay display)
     {
         super.onResize(display);
-        calculateWidth();
+        calculateSize();
         positionComponents();
     }
 
     protected void positionComponents()
     {
-        if (componentPositionLogic == PositionLogic.LEFT)
+        positionComponents(0, 0, 0, 0);
+    }
+
+    protected void positionComponents(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom)
+    {
+        if (componentPositionLogic == PositionLogic.LEFT || componentPositionLogic == PositionLogic.RIGHT)
         {
             //Left to right button placement
             //1 2 3 4 5
-            float x = spacing;
+            float x = spacing + paddingLeft;
             for (Component component : componentList)
             {
                 component.setPosition(x, 0);
                 x += component.getWidth() + spacing;
             }
         }
-        else if (componentPositionLogic == PositionLogic.RIGHT)
-        {
-            //Right to left button placement
-            //5 4 3 2 1
-            float x = getWidth() - spacing;
-            for (Component component : componentList)
-            {
-                component.setPosition(x - component.getWidth(), 0);
-                x -= component.getWidth() + spacing;
-            }
-        }
-        else if (componentPositionLogic == PositionLogic.BOTTOM)
+        else if (componentPositionLogic == PositionLogic.TOP || componentPositionLogic == PositionLogic.BOTTOM)
         {
             //bottom to top button placement
-        }
-        else if (componentPositionLogic == PositionLogic.TOP)
-        {
-            //top to bottom button placement
+            float y = spacing + paddingTop;
+            for (Component component : componentList)
+            {
+                component.setPosition(0, y);
+                y += component.getHeight() + spacing;
+            }
         }
     }
 
-    protected void calculateWidth()
+    protected void calculateSize()
     {
         float width = 0;
         float height = 0;
-        for (Component component : componentList)
+        if (componentPositionLogic == PositionLogic.LEFT || componentPositionLogic == PositionLogic.RIGHT)
         {
-            width += component.getWidth();
-            if (component.getHeight() > height)
+            for (Component component : componentList)
             {
-                height = component.getHeight();
+                width += component.getWidth();
+                if (component.getHeight() > height)
+                {
+                    height = component.getHeight();
+                }
             }
+            setWidth(width + ((componentList.size() + 1) * spacing));
+            setHeight(height);
         }
-        setWidth(width + ((componentList.size() + 1) * spacing));
-        setHeight(height);
+        else
+        {
+            for (Component component : componentList)
+            {
+                height += component.getHeight();
+                if (component.getWidth() > width)
+                {
+                    width = component.getWidth();
+                }
+            }
+            setWidth(width);
+            setHeight(height + ((componentList.size() + 1) * spacing));
+        }
     }
 
     @Override
-    public void add(Component component)
+    public <C extends Component> C add(C component)
     {
         super.add(component);
-        calculateWidth();
+        calculateSize();
         positionComponents();
+        return component;
     }
 }

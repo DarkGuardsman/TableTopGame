@@ -15,6 +15,10 @@ public class RenderRect
 
     private Matrix4f cache;
 
+    private float width, height, layer;
+
+    private boolean allowResize = true;
+
 
     public RenderRect(String texture, Shader shader)
     {
@@ -34,13 +38,24 @@ public class RenderRect
         this.mesh = mesh;
     }
 
+    public void setSize(float width, float height)
+    {
+        setSize(width, height, layer);
+    }
+
     public void setSize(float width, float height, float layer)
     {
-        if (this.mesh != null)
+        if(allowResize || mesh == null)
         {
-            this.mesh.delete();
+            if (this.mesh != null)
+            {
+                this.mesh.delete();
+            }
+            this.width = width;
+            this.height = height;
+            this.layer = layer;
+            this.mesh = VertexArray.createMeshForSize(width, height, layer);
         }
-        this.mesh = VertexArray.createMeshForSize(width, height, layer);
     }
 
     public void render(Vector3f position, float rot, float scale)

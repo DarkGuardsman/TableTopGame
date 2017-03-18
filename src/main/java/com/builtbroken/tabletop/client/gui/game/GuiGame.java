@@ -19,16 +19,18 @@ public class GuiGame extends Gui
     //GUI parts
     ButtonScrollRow itemRow;
     ButtonScrollRow weaponRow;
-    ComponentRow unitRow;
+    ButtonScrollRow unitRow;
 
     //Render objects, cached for reuse
     RenderRect itemButtonBackground;
     RenderRect weaponButtonBackground;
+    RenderRect enemyButtonBackground;
 
     public GuiGame(GameDisplay display)
     {
         this.itemButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER);
         this.weaponButtonBackground = this.itemButtonBackground;
+        this.enemyButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 0.4f, 0.4f, GameDisplay.GAME_GUI_LAYER);
         init(display);
     }
 
@@ -49,19 +51,24 @@ public class GuiGame extends Gui
         weaponRow.setPositionLogic(PositionLogic.BOTTOM_RIGHT); //set self pos
 
         //Build unit row
-        unitRow = new ComponentRow(PositionLogic.BOTTOM);
+        unitRow = new ButtonScrollRow(PositionLogic.BOTTOM, itemButtonBackground, 4, 1, 1);
         unitRow.setVisible(false);
         unitRow.setPositionLogic(PositionLogic.TOP_LEFT);
 
-        unitRow.add(new Button(weaponButtonBackground, 1, 1));
-        unitRow.add(new Button(weaponButtonBackground, 1, 1));
-        unitRow.add(new Button(weaponButtonBackground, 1, 1));
-        unitRow.add(new Button(weaponButtonBackground, 1, 1));
+        ComponentRow unitRow2 = new ComponentRow(PositionLogic.TOP);
+        unitRow2.setVisible(false);
+        unitRow2.setPositionLogic(PositionLogic.TOP_RIGHT);
+
+        for (int i = 0; i < 20; i++)
+        {
+            unitRow2.add(new Button(enemyButtonBackground, 0.4f, 0.4f));
+        }
 
         //Add containers
         add(itemRow);
         add(weaponRow);
         add(unitRow);
+        add(unitRow2);
 
         //update all
         for (Component component : componentList)

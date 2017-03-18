@@ -17,35 +17,66 @@ public class ButtonScrollRow extends ComponentRow
     public static RenderRect leftArrow;
     public static RenderRect rightArrow;
 
-    public Button increaseButton, decreaseButton;
+    public RenderRect buttonBackground;
+    float buttonWidth;
+    float buttonHeight;
+
+    public Button arrowButtonA, arrowButtonB;
+    public Button[] buttonEntries;
+
+    public float arrowButtonSize = 0.2f;
 
     public ButtonScrollRow(PositionLogic logic, RenderRect buttonBackground, int buttons, float buttonWidth, float buttonHeight)
     {
         super(logic);
-        if (logic.left())
-        {
-            increaseButton = new Button(leftArrow, 1, 1);
-            decreaseButton = new Button(rightArrow, 1, 1);
-        }
-        else if (logic.right())
-        {
-            increaseButton = new Button(rightArrow, 1, 1);
-            decreaseButton = new Button(leftArrow, 1, 1);
-        }
-        else if (logic.top())
-        {
-            increaseButton = new Button(upArrow, 1, 1);
-            decreaseButton = new Button(downArrow, 1, 1);
-        }
-        else if (logic.bottom())
-        {
-            increaseButton = new Button(downArrow, 1, 1);
-            decreaseButton = new Button(upArrow, 1, 1);
-        }
+        this.buttonBackground = buttonBackground;
+        this.buttonWidth = buttonWidth;
+        this.buttonHeight = buttonHeight;
 
+        if (logic.left() || logic.right())
+        {
+            arrowButtonA = add(new Button(leftArrow, arrowButtonSize, buttonHeight));
+            setButtons(buttons);
+            arrowButtonB = add(new Button(rightArrow, arrowButtonSize, buttonHeight));
+        }
+        else if (logic.top() || logic.bottom())
+        {
+            arrowButtonA = add(new Button(downArrow, buttonWidth, arrowButtonSize));
+            setButtons(buttons);
+            arrowButtonB = add(new Button(upArrow, buttonWidth, arrowButtonSize));
+        }
+        else
+        {
+            throw new IllegalArgumentException("ButtonScrollRow: position logic value " + logic + " is invalid, position logic can only be set to left, right, top, or bottom.");
+        }
+    }
+
+    public void setButtons(int buttons)
+    {
+        boolean reset = false;
+
+        //Clear if we already had buttons
+        if (buttonEntries != null)
+        {
+            reset = true;
+            componentList.clear();
+        }
+        //If reset add button back
+        if (reset)
+        {
+            add(arrowButtonA);
+        }
+        buttonEntries = new Button[buttons];
+        //Init buttons
         for (int i = 0; i < buttons; i++)
         {
-            add(new Button(buttonBackground, buttonWidth, buttonHeight));
+            buttonEntries[i] = add(new Button(buttonBackground, buttonWidth, buttonHeight));
+        }
+        //If reset add button back
+        if (reset)
+        {
+            add(arrowButtonB);
+            calculateSize();
         }
     }
 }
