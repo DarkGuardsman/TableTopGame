@@ -22,6 +22,7 @@ import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
 import java.util.HashMap;
@@ -43,14 +44,10 @@ public class GameDisplay implements Runnable
     protected boolean running = false;
 
     //Cemera bounds
-    public static final float LEFT_CAMERA_BOUND = -10.0f;
-    public static final float RIGHT_CAMERA_BOUND = 10.0f;
-    public static final float BOTTOM_CAMERA_BOUND = -10.0f * 9.0f / 16.0f;
-    public static final float TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
-
-    //Calculates the size of the screen 2D
-    public static final float SCREEN_SIZE_X = RIGHT_CAMERA_BOUND - LEFT_CAMERA_BOUND;
-    public static final float SCREEN_SIZE_Y = TOP_CAMERA_BOUND - BOTTOM_CAMERA_BOUND;
+    public static final float DEFAULT_LEFT_CAMERA_BOUND = -10.0f;
+    public static final float DEFAULT_RIGHT_CAMERA_BOUND = 10.0f;
+    public static final float DEFAULT_BOTTOM_CAMERA_BOUND = -10.0f * 9.0f / 16.0f;
+    public static final float DEFAULT_TOP_CAMERA_BOUND = 10.0f * 9.0f / 16.0f;
 
     //Render layers
     public static final float TILE_LAYER = 0f;
@@ -62,6 +59,10 @@ public class GameDisplay implements Runnable
     public static final float TILE_LAYER_3 = .6f;
     public static final float GAME_GUI_LAYER = .7f;
     public static final float MENU_GUI_LAYER = .8f;
+
+    //Default screen size
+    public static final int DEFAULT_WIDTH = 1280;
+    public static final int DEFAULT_HEIGHT = 720;
 
     //Game logic data
     protected Game game;
@@ -75,6 +76,14 @@ public class GameDisplay implements Runnable
 
     protected int width = 1280;
     protected int height = 720;
+
+    //Calculates the size of the screen 2D
+    public float screenSizeX;
+    public float screenSizeY;
+    public float cameraBoundLeft;
+    public float cameraBoundRight;
+    public float cameraBoundBottom;
+    public float cameraBoundTop;
 
     protected long windowID;
 
@@ -96,16 +105,26 @@ public class GameDisplay implements Runnable
     //Main method
     public static void main(String... args)
     {
+        //Load test game
         Game game = new Game();
         game.load(false, "");
 
+        //Init tiles
         Tiles.load();
 
+        //Create a test map
         StaticMapData map = new StaticMapData();
         map.load();
         game.getWorld().setMapData(map);
 
 
+        //Generate some characters to render
+        game.getWorld().getEntities().add(new Character("bob"));
+        game.getWorld().getEntities().add(new Character("jim"));
+        game.getWorld().getEntities().add(new Character("paul"));
+        game.getWorld().getEntities().add(new Character("tim"));
+
+        //Create display and start display thread
         GameDisplay display = new GameDisplay(game);
         display.start();
     }
@@ -147,26 +166,37 @@ public class GameDisplay implements Runnable
         glfwShowWindow(windowID);
         GL.createCapabilities();
 
+        ///Debug gl version
+        System.out.println("OpenGL: " + glGetString(GL_VERSION));
+
 
         glEnable(GL_DEPTH_TEST);
         glActiveTexture(GL_TEXTURE1);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        System.out.println("OpenGL: " + glGetString(GL_VERSION));
+
+        //Load shader programs
         Shader.loadAll();
-
-        pr_matrix = Matrix4f.orthographic(LEFT_CAMERA_BOUND, RIGHT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND, TOP_CAMERA_BOUND, -1.0f, 1.0f);
-        Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.BACKGROUND.setUniform1i("tex", 1);
-
-        Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniform1i("tex", 1);
 
-        game.getWorld().getEntities().add(new Character("bob"));
-        game.getWorld().getEntities().add(new Character("jim"));
-        game.getWorld().getEntities().add(new Character("paul"));
-        game.getWorld().getEntities().add(new Character("tim"));
+        //Init display data
+        resizeDisplay();
 
+        //Register event for resize
+        glfwSetWindowSizeCallback(windowID, new GLFWWindowSizeCallback()
+        {
+            @Override
+            public void invoke(long window, int width, int height)
+            {
+                GameDisplay.this.width = width;
+                GameDisplay.this.height = height;
+                resizeDisplay();
+            }
+        });
+
+
+        //Init render code
         background_render = new RenderRect("resources/textures/background.png", Shader.CHAR, 20, 20, -0.98f);
         character_render = new RenderRect("resources/textures/char.png", Shader.CHAR, 1, 1, EFFECT_LAYER);
         target_render = new RenderRect("resources/textures/target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
@@ -175,10 +205,34 @@ public class GameDisplay implements Runnable
 
         //camera is 20x 11.5y
         Gui gameGUI = new Gui();
-        ComponentContainer container = new ComponentContainer(SCREEN_SIZE_X, SCREEN_SIZE_Y * .1f, "resources/textures/gui/buttonContainer.png", new Vector3f(LEFT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND, 0));
-        container.add(new Component(SCREEN_SIZE_X * 0.2f, SCREEN_SIZE_X * 0.04f, "resources/textures/gui/button.png", new Vector3f(LEFT_CAMERA_BOUND, BOTTOM_CAMERA_BOUND + 0.01f, .01f)));
+        ComponentContainer container = new ComponentContainer(screenSizeX, screenSizeY * .1f, "resources/textures/gui/buttonContainer.png", new Vector3f(DEFAULT_LEFT_CAMERA_BOUND, DEFAULT_BOTTOM_CAMERA_BOUND, 0));
+        container.add(new Component(screenSizeX * 0.2f, screenSizeX * 0.04f, "resources/textures/gui/button.png", new Vector3f(DEFAULT_LEFT_CAMERA_BOUND, DEFAULT_BOTTOM_CAMERA_BOUND + 0.01f, .01f)));
         gameGUI.add(container);
         guiMap.put("game", gameGUI);
+    }
+
+    protected void resizeDisplay()
+    {
+        //Reset screen render size, lock to min value
+        glViewport(0, 0, Math.max(width, DEFAULT_WIDTH), Math.max(height, DEFAULT_HEIGHT));
+
+        float pw = (width / (float)DEFAULT_WIDTH) - 1;
+        float ph = (height / (float)DEFAULT_HEIGHT) - 1;
+
+        cameraBoundLeft = DEFAULT_LEFT_CAMERA_BOUND + (DEFAULT_LEFT_CAMERA_BOUND * pw / 2);
+        cameraBoundRight = DEFAULT_RIGHT_CAMERA_BOUND + (DEFAULT_RIGHT_CAMERA_BOUND * pw / 2);
+        cameraBoundBottom = DEFAULT_BOTTOM_CAMERA_BOUND + (DEFAULT_BOTTOM_CAMERA_BOUND * ph / 2);
+        cameraBoundTop = DEFAULT_TOP_CAMERA_BOUND + (DEFAULT_TOP_CAMERA_BOUND * ph / 2);
+
+        screenSizeX = cameraBoundRight - cameraBoundLeft;
+        screenSizeY = cameraBoundTop - cameraBoundBottom;
+
+        //Rebuild projection matrix
+        pr_matrix = Matrix4f.orthographic(cameraBoundLeft, cameraBoundRight, cameraBoundBottom, cameraBoundTop, -1.0f, 1.0f);
+
+        //Load projection matrix into shader
+        Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
+        Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
     }
 
     //Loads callbacks for keyboard, mouse, and other input devices
@@ -311,7 +365,7 @@ public class GameDisplay implements Runnable
         int error = glGetError();
         if (error != GL_NO_ERROR)
         {
-            System.out.println(error);
+            System.out.println("GLError: " + error);
         }
 
         glfwSwapBuffers(windowID);
@@ -331,8 +385,8 @@ public class GameDisplay implements Runnable
         float tileSize = zoom;
 
         //Calculate the number of tiles that can fit on screen
-        int tiles_x = (int) Math.ceil(SCREEN_SIZE_X / tileSize) + 2;
-        int tiles_y = (int) Math.ceil(SCREEN_SIZE_Y / tileSize) + 2;
+        int tiles_x = (int) Math.ceil(screenSizeX / tileSize) + 2;
+        int tiles_y = (int) Math.ceil(screenSizeY / tileSize) + 2;
 
         //Offset tile position based on camera
         int center_x = (int) (cameraPosition.x);
@@ -367,9 +421,9 @@ public class GameDisplay implements Runnable
                 float tile_y = (entity.yf() - center_y) * tileSize;
 
                 //Ensure the entity is in the camera view
-                if (tile_x >= LEFT_CAMERA_BOUND && tile_x <= RIGHT_CAMERA_BOUND)
+                if (tile_x >= cameraBoundLeft && tile_x <= cameraBoundRight)
                 {
-                    if (tile_y >= BOTTOM_CAMERA_BOUND && tile_y <= TOP_CAMERA_BOUND)
+                    if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
                         character_render.render(tile_x, tile_y, 0, 0, zoom);
                     }
@@ -382,12 +436,12 @@ public class GameDisplay implements Runnable
         {
             if (gui != null)
             {
-                gui.render(mouseLocationX * SCREEN_SIZE_X, mouseLocationY * SCREEN_SIZE_Y);
+                gui.render(mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
             }
         }
 
-        float mx = mouseLocationX * SCREEN_SIZE_X / tileSize;
-        float my = mouseLocationY * SCREEN_SIZE_Y / tileSize;
+        float mx = mouseLocationX * screenSizeX / tileSize;
+        float my = mouseLocationY * screenSizeY / tileSize;
 
         int tx = (int) Math.floor(center_x + mx);
         int ty = (int) Math.floor(center_y + my);
