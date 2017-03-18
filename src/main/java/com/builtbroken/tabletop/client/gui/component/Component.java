@@ -41,6 +41,19 @@ public class Component
     /**
      * Creates a new component
      *
+     * @param width      - dimension in the x
+     * @param height     - dimension in the y
+     * @param background - render object to use for rendering the background of the component
+     */
+    public Component(RenderRect background, float width, float height)
+    {
+        this.background = background;
+        this.setSize(width, height);
+    }
+
+    /**
+     * Creates a new component
+     *
      * @param width   - dimension in the x
      * @param height  - dimension in the y
      * @param texture - path to texture file
@@ -49,7 +62,21 @@ public class Component
      */
     public Component(float width, float height, String texture, float x, float y)
     {
-        background = new RenderRect(texture, Shader.CHAR);
+        this(width, height, new RenderRect(texture, Shader.CHAR), x, y);
+    }
+
+    /**
+     * Creates a new component
+     *
+     * @param width      - dimension in the x
+     * @param height     - dimension in the y
+     * @param background - render object to use for rendering the background of the component
+     * @param x          - location x, relative to container
+     * @param y          - location y, relative to container
+     */
+    public Component(float width, float height, RenderRect background, float x, float y)
+    {
+        this.background = background;
         this.setSize(width, height);
         this.setPosition(x, y);
     }
@@ -152,13 +179,27 @@ public class Component
     public void updatePosition(GameDisplay display)
     {
         //it is assumed the starting point of a component is the bottom left
-        if (getPositionLogic() == PositionLogic.FLOAT_LEFT)
+        if (getPositionLogic() != PositionLogic.NOTHING)
         {
-            setPosition(display.cameraBoundLeft, display.cameraBoundBottom);
-        }
-        else if (getPositionLogic() == PositionLogic.FLOAT_RIGHT)
-        {
-            setPosition(display.cameraBoundRight - getWidth(), display.cameraBoundBottom);
+            //Set left or right
+            if (getPositionLogic().left())
+            {
+                setPosition(display.cameraBoundLeft, y);
+            }
+            else if (getPositionLogic().right())
+            {
+                setPosition(display.cameraBoundRight - getWidth(), y);
+            }
+
+            //Set top or bottom
+            if (getPositionLogic().top())
+            {
+                setPosition(x, display.cameraBoundTop - getHeight());
+            }
+            else if (getPositionLogic().bottom())
+            {
+                setPosition(x, display.cameraBoundBottom);
+            }
         }
     }
 

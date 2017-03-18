@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
 import com.builtbroken.tabletop.client.gui.component.Component;
+import com.builtbroken.tabletop.client.render.RenderRect;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -9,6 +10,11 @@ import com.builtbroken.tabletop.client.gui.component.Component;
 public class Button extends Component
 {
     ButtonClickAction event;
+
+    public Button(RenderRect background, float width, float height)
+    {
+        super(background, width, height);
+    }
 
     public Button(String texture, float width, float height)
     {
