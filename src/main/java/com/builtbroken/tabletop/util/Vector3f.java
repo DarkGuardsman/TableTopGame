@@ -11,6 +11,11 @@ public class Vector3f
         this.z = z;
     }
 
+    public Vector3f copy()
+    {
+        return new Vector3f(x, y, z);
+    }
+
     @Override
     public boolean equals(Object object)
     {

@@ -6,8 +6,7 @@ import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.gui.Gui;
-import com.builtbroken.tabletop.client.gui.component.Component;
-import com.builtbroken.tabletop.client.gui.component.ComponentContainer;
+import com.builtbroken.tabletop.client.gui.game.GuiGame;
 import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
@@ -203,27 +202,35 @@ public class GameDisplay implements Runnable
         box_render = new RenderRect("resources/textures/box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         TileRenders.load();
 
+        loadGUIs();
+    }
+
+    protected void loadGUIs()
+    {
         //camera is 20x 11.5y
-        Gui gameGUI = new Gui();
-        ComponentContainer container = new ComponentContainer(screenSizeX, screenSizeY * .1f, "resources/textures/gui/buttonContainer.png", new Vector3f(DEFAULT_LEFT_CAMERA_BOUND, DEFAULT_BOTTOM_CAMERA_BOUND, 0));
-        container.add(new Component(screenSizeX * 0.2f, screenSizeX * 0.04f, "resources/textures/gui/button.png", new Vector3f(DEFAULT_LEFT_CAMERA_BOUND, DEFAULT_BOTTOM_CAMERA_BOUND + 0.01f, .01f)));
-        gameGUI.add(container);
-        guiMap.put("game", gameGUI);
+        guiMap.put("game", new GuiGame(this));
     }
 
     protected void resizeDisplay()
     {
+        //Enforce min value
+        width = Math.max(width, DEFAULT_WIDTH);
+        height = Math.max(height, DEFAULT_HEIGHT);
+
         //Reset screen render size, lock to min value
-        glViewport(0, 0, Math.max(width, DEFAULT_WIDTH), Math.max(height, DEFAULT_HEIGHT));
+        glViewport(0, 0, width, height);
 
-        float pw = (width / (float)DEFAULT_WIDTH) - 1;
-        float ph = (height / (float)DEFAULT_HEIGHT) - 1;
+        //Get change in size from orginal
+        float pw = (width / (float) DEFAULT_WIDTH) - 1;
+        float ph = (height / (float) DEFAULT_HEIGHT) - 1;
 
+        //Reset the camera bounds
         cameraBoundLeft = DEFAULT_LEFT_CAMERA_BOUND + (DEFAULT_LEFT_CAMERA_BOUND * pw / 2);
         cameraBoundRight = DEFAULT_RIGHT_CAMERA_BOUND + (DEFAULT_RIGHT_CAMERA_BOUND * pw / 2);
         cameraBoundBottom = DEFAULT_BOTTOM_CAMERA_BOUND + (DEFAULT_BOTTOM_CAMERA_BOUND * ph / 2);
         cameraBoundTop = DEFAULT_TOP_CAMERA_BOUND + (DEFAULT_TOP_CAMERA_BOUND * ph / 2);
 
+        //Recalc size of camera
         screenSizeX = cameraBoundRight - cameraBoundLeft;
         screenSizeY = cameraBoundTop - cameraBoundBottom;
 
@@ -233,6 +240,15 @@ public class GameDisplay implements Runnable
         //Load projection matrix into shader
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
+
+        //Note that screen has resized
+        for (Gui gui : guiMap.values())
+        {
+            if (gui != null)
+            {
+                gui.onResize(this);
+            }
+        }
     }
 
     //Loads callbacks for keyboard, mouse, and other input devices

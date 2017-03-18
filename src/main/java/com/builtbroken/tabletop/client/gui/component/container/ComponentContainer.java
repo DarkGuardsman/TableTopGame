@@ -1,6 +1,6 @@
-package com.builtbroken.tabletop.client.gui.component;
+package com.builtbroken.tabletop.client.gui.component.container;
 
-import com.builtbroken.tabletop.util.Vector3f;
+import com.builtbroken.tabletop.client.gui.component.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +13,15 @@ public class ComponentContainer extends Component
 {
     public List<Component> componentList = new ArrayList();
 
-    public boolean isVisible = true;
+    public boolean areComponentsVisible = true;
 
     public ComponentContainer()
     {
     }
 
-    public ComponentContainer(float width, float height, String texture, Vector3f position)
+    public ComponentContainer(float width, float height, String texture, float x, float y)
     {
-        super(width, height, texture, position);
+        super(width, height, texture, x, y);
     }
 
     /**
@@ -33,11 +33,11 @@ public class ComponentContainer extends Component
     public void render(float mouseX, float mouseY)
     {
         super.render(mouseX, mouseY);
-        if (isVisible)
+        if (areComponentsVisible)
         {
             for (Component component : componentList)
             {
-                component.render(mouseX, mouseY);
+                component.render(mouseX, mouseY, x, y, 0);
             }
         }
     }

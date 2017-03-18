@@ -1,5 +1,6 @@
 package com.builtbroken.tabletop.client.gui;
 
+import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.Component;
 
 import java.util.ArrayList;
@@ -31,6 +32,19 @@ public class Gui
             {
                 component.render(mouseX, mouseY);
             }
+        }
+    }
+
+    /**
+     * Called when the game display has resized
+     *
+     * @param display
+     */
+    public void onResize(GameDisplay display)
+    {
+        for(Component component : componentList)
+        {
+            component.onResize(display);
         }
     }
 

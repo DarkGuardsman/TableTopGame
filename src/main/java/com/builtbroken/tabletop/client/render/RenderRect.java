@@ -9,24 +9,38 @@ import com.builtbroken.tabletop.util.Vector3f;
 
 public class RenderRect
 {
-    private VertexArray mesh;
-    private Texture texture;
-    private Shader shader;
+    public VertexArray mesh;
+    public Texture texture;
+    public Shader shader;
 
     private Matrix4f cache;
 
-    public RenderRect(String texture, Shader shader, float width, float height, float layer)
+
+    public RenderRect(String texture, Shader shader)
     {
         this.shader = shader;
-        this.mesh = VertexArray.createMeshForSize(width, height, layer);
         this.texture = new Texture(texture);
+    }
+
+    public RenderRect(String texture, Shader shader, float width, float height, float layer)
+    {
+        this(texture, shader);
+        setSize(width, height, layer);
     }
 
     public RenderRect(String texture, Shader shader, VertexArray mesh)
     {
-        this.shader = shader;
+        this(texture, shader);
         this.mesh = mesh;
-        this.texture = new Texture(texture);
+    }
+
+    public void setSize(float width, float height, float layer)
+    {
+        if (this.mesh != null)
+        {
+            this.mesh.delete();
+        }
+        this.mesh = VertexArray.createMeshForSize(width, height, layer);
     }
 
     public void render(Vector3f position, float rot, float scale)
@@ -41,7 +55,7 @@ public class RenderRect
         shader.enable();
         if (shader == Shader.CHAR)
         {
-            if(cache == null)
+            if (cache == null)
             {
                 cache = new Matrix4f();
             }
@@ -50,7 +64,7 @@ public class RenderRect
         }
         else if (shader == Shader.BACKGROUND)
         {
-            if(cache == null)
+            if (cache == null)
             {
                 cache = new Matrix4f().resetToIdentity().translate(0f, 0.0f, 0.0f);
             }

@@ -7,8 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Used to store mesh data
@@ -138,6 +137,15 @@ public class VertexArray
         glBindVertexArray(0);
     }
 
+    public void delete()
+    {
+        //TODO recycle data
+        glDeleteVertexArrays(vao);
+        glDeleteBuffers(vbo);
+        glDeleteBuffers(tbo);
+        glDeleteBuffers(ibo);
+    }
+
     /**
      * Binds the mesh to be rendered
      */
@@ -189,10 +197,10 @@ public class VertexArray
         if (Math.abs(scale_factor - scale) > 0.001)
         {
             scale_factor = scale;
+            delete();
             generate();
         }
         bind();
         draw();
     }
-
 }
