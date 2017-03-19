@@ -10,8 +10,10 @@ public class Tiles
     public static Tile MAP_EDGE;
     public static Tile STONE;
     public static Tile DIRT;
+    public static Tile GRASS;
     public static Tile PLANKS;
     public static Tile METAL;
+    public static Tile ROAD;
 
 
     /** Array of tiles */
@@ -24,9 +26,11 @@ public class Tiles
         Tiles.AIR = newTile("air").setCanWalk(false);
         Tiles.MAP_EDGE = newTile("mapEdge").setCanWalk(false);
         Tiles.STONE = newTile("stone");
-        Tiles.DIRT = newTile("dirt");
+        Tiles.DIRT = newTile("grass");
+        Tiles.GRASS = newTile("dirt");
         Tiles.PLANKS = newTile("planks");
         Tiles.METAL = newTile("metal");
+        Tiles.ROAD = newTile("road");
     }
 
     private static Tile newTile(String name)

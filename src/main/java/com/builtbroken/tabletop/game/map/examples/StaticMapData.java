@@ -44,7 +44,7 @@ public class StaticMapData extends MapData
                 }
                 else if (Math.abs(dy) < 5 || Math.abs(dx) < 5)
                 {
-                    setTile(Tiles.METAL, x - mx, y - my, 0);
+                    setTile(Tiles.ROAD, x - mx, y - my, 0);
                 }
                 else
                 {

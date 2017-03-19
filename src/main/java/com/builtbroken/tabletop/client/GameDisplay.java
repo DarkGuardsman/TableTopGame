@@ -2,6 +2,7 @@ package com.builtbroken.tabletop.client;
 
 
 import com.builtbroken.jlib.math.dice.Dice;
+import com.builtbroken.tabletop.client.controls.ControlMode;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
@@ -104,7 +105,7 @@ public class GameDisplay implements Runnable
     protected long lastZoom = 0L;
     protected boolean clickLeft = false;
     protected boolean clickRight = false;
-    protected boolean attackMode = false;
+    protected ControlMode controlMode = ControlMode.SELECTION;
 
     //Main method
     public static void main(String... args)
@@ -123,10 +124,10 @@ public class GameDisplay implements Runnable
 
 
         //Generate some characters to render
-        game.getWorld().getEntities().add(new Character("bob"));
-        game.getWorld().getEntities().add(new Character("jim"));
-        game.getWorld().getEntities().add(new Character("paul"));
-        game.getWorld().getEntities().add(new Character("tim"));
+        game.getWorld().getEntities().add(new Character("bob").setPosition(2, 0, 0));
+        game.getWorld().getEntities().add(new Character("jim").setPosition(-2, 0, 0));
+        game.getWorld().getEntities().add(new Character("paul").setPosition(0, 2, 0));
+        game.getWorld().getEntities().add(new Character("tim").setPosition(0, -2, 0));
 
         //Create display and start display thread
         GameDisplay display = new GameDisplay(game);
@@ -305,6 +306,11 @@ public class GameDisplay implements Runnable
             {
                 running = false;
             }
+
+            //End update
+            //Update data for next tick
+            MouseInput.prev_mouseX = MouseInput.mouseX;
+            MouseInput.prev_mouseY = MouseInput.mouseY;
         }
 
         glfwDestroyWindow(windowID);
@@ -387,6 +393,23 @@ public class GameDisplay implements Runnable
         if (MouseInput.rightClick())
         {
             clickRight = true;
+        }
+
+        if (KeyboardInput.isKeyDown(GLFW_KEY_LEFT_SHIFT) && MouseInput.rightClick())
+        {
+            //disable left and right click actions
+            clickLeft = false;
+            clickRight = false;
+
+            //Move screen
+            double deltaX = ((MouseInput.prev_mouseX - MouseInput.mouseX) / width) * screenSizeX;
+            double deltaY = -((MouseInput.prev_mouseY - MouseInput.mouseY) / height) * screenSizeY;
+            if (deltaX != 0 || deltaY != 0)
+            {
+                System.out.println(deltaX + "  " + deltaY);
+                this.cameraPosition.x += deltaX;
+                this.cameraPosition.y += deltaY;
+            }
         }
     }
 
@@ -489,7 +512,7 @@ public class GameDisplay implements Runnable
 
         //System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
 
-        if (attackMode)
+        if (controlMode == ControlMode.SELECTION)
         {
             target_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }
@@ -497,7 +520,6 @@ public class GameDisplay implements Runnable
         {
             box_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }
-
 
         if (!MouseInput.leftClick() && clickLeft)
         {
@@ -514,9 +536,9 @@ public class GameDisplay implements Runnable
 
     protected void doLeftClickAction(int tileX, int tileY, int floor)
     {
-        if (attackMode)
+        if (controlMode == ControlMode.ATTACK)
         {
-            attackMode = false;
+            controlMode = ControlMode.SELECTION;
             if (selectedEntity != null)
             {
                 Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
@@ -533,7 +555,7 @@ public class GameDisplay implements Runnable
                 }
             }
         }
-        else
+        else if (controlMode == ControlMode.SELECTION)
         {
             selectedEntity = game.getWorld().getEntity(tileX, tileY, floor);
         }
@@ -541,16 +563,19 @@ public class GameDisplay implements Runnable
 
     protected void doRightClickAction(int tileX, int tileY, int floor)
     {
-        if (attackMode)
+        if (controlMode == ControlMode.ATTACK)
         {
-            attackMode = false;
+            controlMode = ControlMode.SELECTION;
         }
-        else if (selectedEntity != null)
+        else if (controlMode == ControlMode.MOVE)
         {
-            Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
-            if (entity == null)
+            if (selectedEntity != null)
             {
-                selectedEntity.setPosition(tileX, tileY, floor);
+                Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
+                if (entity == null)
+                {
+                    selectedEntity.setPosition(tileX, tileY, floor);
+                }
             }
         }
     }

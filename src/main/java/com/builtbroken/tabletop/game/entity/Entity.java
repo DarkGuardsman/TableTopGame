@@ -61,11 +61,12 @@ public class Entity extends GameObject
 
     }
 
-    public void setPosition(float x, float y, float z)
+    public Entity setPosition(float x, float y, float z)
     {
         this.x = x;
         this.y = y;
         this.z = z;
+        return this;
     }
 
     public void move(float x, float y, float z)

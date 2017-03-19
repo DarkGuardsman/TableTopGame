@@ -13,6 +13,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MouseInput
 {
     public static double mouseX, mouseY;
+    public static double prev_mouseX, prev_mouseY;
     public static boolean inWindow;
 
     public static boolean[] mouseButtons = new boolean[20];
