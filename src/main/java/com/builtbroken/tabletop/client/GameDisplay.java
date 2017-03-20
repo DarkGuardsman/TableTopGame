@@ -407,7 +407,6 @@ public class GameDisplay implements Runnable
             double deltaY = -((MouseInput.prev_mouseY - MouseInput.mouseY) / height) * screenSizeY;
             if (deltaX != 0 || deltaY != 0)
             {
-                System.out.println(deltaX + "  " + deltaY);
                 this.cameraPosition.x += deltaX;
                 this.cameraPosition.y += deltaY;
             }
@@ -513,7 +512,7 @@ public class GameDisplay implements Runnable
 
         //System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
 
-        if (controlMode == ControlMode.SELECTION)
+        if (controlMode == ControlMode.ATTACK)
         {
             target_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }

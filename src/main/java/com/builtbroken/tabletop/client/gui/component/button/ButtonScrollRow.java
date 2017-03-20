@@ -35,15 +35,15 @@ public class ButtonScrollRow extends ComponentRow
 
         if (logic.left() || logic.right())
         {
-            arrowButtonA = add(new Button(leftArrow, arrowButtonSize, buttonHeight));
+            arrowButtonA = add(new Button("leftArrow", leftArrow, arrowButtonSize, buttonHeight));
             setButtons(buttons);
-            arrowButtonB = add(new Button(rightArrow, arrowButtonSize, buttonHeight));
+            arrowButtonB = add(new Button("rightArrow", rightArrow, arrowButtonSize, buttonHeight));
         }
         else if (logic.top() || logic.bottom())
         {
-            arrowButtonA = add(new Button(downArrow, buttonWidth, arrowButtonSize));
+            arrowButtonA = add(new Button("downArrow", downArrow, buttonWidth, arrowButtonSize));
             setButtons(buttons);
-            arrowButtonB = add(new Button(upArrow, buttonWidth, arrowButtonSize));
+            arrowButtonB = add(new Button("upArrow", upArrow, buttonWidth, arrowButtonSize));
         }
         else
         {
@@ -70,7 +70,7 @@ public class ButtonScrollRow extends ComponentRow
         //Init buttons
         for (int i = 0; i < buttons; i++)
         {
-            buttonEntries[i] = add(new Button(buttonBackground, buttonWidth, buttonHeight));
+            buttonEntries[i] = add(new Button("b" + i, buttonBackground, buttonWidth, buttonHeight));
         }
         //If reset add button back
         if (reset)

@@ -27,12 +27,15 @@ public class GuiGame extends Gui
     RenderRect itemButtonBackground;
     RenderRect weaponButtonBackground;
     RenderRect enemyButtonBackground;
+    RenderRect abilityButtonBackground;
 
     public GuiGame(GameDisplay display)
     {
         this.itemButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER);
         this.weaponButtonBackground = this.itemButtonBackground;
-        this.enemyButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 0.4f, 0.4f, GameDisplay.GAME_GUI_LAYER);
+        this.enemyButtonBackground = new RenderRect("resources/textures/icons/enemy/icon.enemy.1.png", Shader.CHAR, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
+        this.abilityButtonBackground = new RenderRect("resources/textures/icons/abilities/icon.ability.png", Shader.CHAR, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
+        //icon.ability
         init(display);
     }
 
@@ -58,23 +61,23 @@ public class GuiGame extends Gui
         unitRow.setPositionLogic(PositionLogic.TOP_LEFT);
 
         //Enemy units
-        enemyUnitRow = new ComponentGrid(5, 10);
+        enemyUnitRow = new ComponentGrid(4, 12);
         enemyUnitRow.setVisible(false);
         enemyUnitRow.setPositionLogic(PositionLogic.TOP_RIGHT);
 
         for (int i = 0; i < 32; i++)
         {
-            enemyUnitRow.add(new Button(enemyButtonBackground, 0.3f, 0.3f));
+            enemyUnitRow.add(new Button("e" + i, enemyButtonBackground, 0.5f, 0.5f));
         }
 
-        abilityRow = new ComponentGrid(7, 4);
+        abilityRow = new ComponentGrid(9, 3);
         abilityRow.centerX = true;
         abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
         //abilityRow.setVisible(false);
         abilityRow.setPositionLogic(PositionLogic.BOTTOM);
-        for (int i = 0; i < 7 * 4; i++)
+        for (int i = 0; i < 9 * 3; i++)
         {
-            abilityRow.add(new Button(enemyButtonBackground, 0.3f, 0.3f));
+            abilityRow.add(new Button("a" + i, abilityButtonBackground, 0.5f, 0.5f));
         }
 
         //Add containers

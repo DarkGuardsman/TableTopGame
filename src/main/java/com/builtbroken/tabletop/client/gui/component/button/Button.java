@@ -9,20 +9,24 @@ import com.builtbroken.tabletop.client.render.RenderRect;
  */
 public class Button extends Component
 {
-    ButtonClickAction event;
+    public final String name;
 
-    public Button(RenderRect background, float width, float height)
+    protected ButtonClickAction event;
+
+    public Button(String name, RenderRect background, float width, float height)
     {
         super(background, width, height);
+        this.name = name;
     }
 
-    public Button(String texture, float width, float height)
+    public Button(String name, String texture, float width, float height)
     {
-        this(texture, 0, 0, width, height);
+        this(name, texture, 0, 0, width, height);
     }
 
-    public Button(String texture, float x, float y, float width, float height)
+    public Button(String name, String texture, float x, float y, float width, float height)
     {
         super(width, height, texture, x, y);
+        this.name = name;
     }
 }
