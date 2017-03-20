@@ -395,6 +395,7 @@ public class GameDisplay implements Runnable
             clickRight = true;
         }
 
+        //Handles movement of camera
         if (KeyboardInput.isKeyDown(GLFW_KEY_LEFT_SHIFT) && MouseInput.rightClick())
         {
             //disable left and right click actions

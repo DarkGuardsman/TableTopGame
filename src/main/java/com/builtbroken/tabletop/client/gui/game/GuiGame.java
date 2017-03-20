@@ -7,7 +7,7 @@ import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.button.Button;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
-import com.builtbroken.tabletop.client.gui.component.container.ComponentRow;
+import com.builtbroken.tabletop.client.gui.component.container.ComponentGrid;
 import com.builtbroken.tabletop.client.render.RenderRect;
 
 /**
@@ -20,6 +20,8 @@ public class GuiGame extends Gui
     ButtonScrollRow itemRow;
     ButtonScrollRow weaponRow;
     ButtonScrollRow unitRow;
+    ComponentGrid enemyUnitRow;
+    ComponentGrid abilityRow;
 
     //Render objects, cached for reuse
     RenderRect itemButtonBackground;
@@ -55,20 +57,31 @@ public class GuiGame extends Gui
         unitRow.setVisible(false);
         unitRow.setPositionLogic(PositionLogic.TOP_LEFT);
 
-        ComponentRow unitRow2 = new ComponentRow(PositionLogic.TOP);
-        unitRow2.setVisible(false);
-        unitRow2.setPositionLogic(PositionLogic.TOP_RIGHT);
+        //Enemy units
+        enemyUnitRow = new ComponentGrid(5, 10);
+        enemyUnitRow.setVisible(false);
+        enemyUnitRow.setPositionLogic(PositionLogic.TOP_RIGHT);
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 32; i++)
         {
-            unitRow2.add(new Button(enemyButtonBackground, 0.4f, 0.4f));
+            enemyUnitRow.add(new Button(enemyButtonBackground, 0.3f, 0.3f));
+        }
+
+        abilityRow = new ComponentGrid(7, 4);
+        abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
+        //abilityRow.setVisible(false);
+        abilityRow.setPositionLogic(PositionLogic.BOTTOM);
+        for (int i = 0; i < 7 * 4; i++)
+        {
+            abilityRow.add(new Button(enemyButtonBackground, 0.3f, 0.3f));
         }
 
         //Add containers
         add(itemRow);
         add(weaponRow);
         add(unitRow);
-        add(unitRow2);
+        add(enemyUnitRow);
+        add(abilityRow);
 
         //update all
         for (Component component : componentList)
