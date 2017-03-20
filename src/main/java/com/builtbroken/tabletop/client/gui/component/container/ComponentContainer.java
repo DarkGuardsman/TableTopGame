@@ -33,7 +33,7 @@ public class ComponentContainer extends Component
         {
             for (Component component : componentList)
             {
-                component.render(mouseX, mouseY, x, y, 0);
+                component.render(mouseX, mouseY, x(), y(), 0);
             }
         }
     }

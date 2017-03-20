@@ -68,6 +68,7 @@ public class GuiGame extends Gui
         }
 
         abilityRow = new ComponentGrid(7, 4);
+        abilityRow.centerX = true;
         abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
         //abilityRow.setVisible(false);
         abilityRow.setPositionLogic(PositionLogic.BOTTOM);

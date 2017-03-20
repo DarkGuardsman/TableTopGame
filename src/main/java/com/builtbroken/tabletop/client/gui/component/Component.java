@@ -14,11 +14,17 @@ public class Component
 {
     /** Render object for the component background */
     public RenderRect background;
+    /** Toggle to center the component in the x by the width */
+    public boolean centerX = false;
+    /** Toggle to center the component in the y by the height */
+    public boolean centerY = false;
+
+
     /** Toggle to note something has changed in the GUI */
     protected boolean hasChanged = false;
 
     /** Location of the component, relative to container */
-    public float x, y;
+    private float x_location, y_location;
 
     //Is the component visible
     private boolean isVisible = true;
@@ -107,8 +113,8 @@ public class Component
      */
     public void setPosition(float x, float y)
     {
-        this.x = x;
-        this.y = y;
+        this.x_location = x;
+        this.y_location = y;
         hasChanged = true;
     }
 
@@ -156,7 +162,7 @@ public class Component
                     prev_height = height;
                     prev_width = width;
                 }
-                background.render(x + xoffset, y + yoffset, zoffset, 0, 1);
+                background.render(x() + xoffset, y() + yoffset, zoffset, 0, 1);
             }
         }
     }
@@ -184,23 +190,33 @@ public class Component
             //Set left or right
             if (getPositionLogic().left())
             {
-                setPosition(display.cameraBoundLeft, y);
+                x_location = display.cameraBoundLeft;
             }
             else if (getPositionLogic().right())
             {
-                setPosition(display.cameraBoundRight - getWidth(), y);
+                x_location = display.cameraBoundRight - getWidth();
             }
 
             //Set top or bottom
             if (getPositionLogic().top())
             {
-                setPosition(x, display.cameraBoundTop - getHeight());
+                y_location = display.cameraBoundTop - getHeight();
             }
             else if (getPositionLogic().bottom())
             {
-                setPosition(x, display.cameraBoundBottom);
+                y_location = display.cameraBoundBottom;
             }
         }
+    }
+
+    public float x()
+    {
+        return x_location - (centerX ? (width / 2f) : 0);
+    }
+
+    public float y()
+    {
+        return y_location - (centerY ? (height / 2f) : 0);
     }
 
     public boolean isVisible()
