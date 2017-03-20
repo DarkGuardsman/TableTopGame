@@ -1,4 +1,4 @@
-package com.builtbroken.tabletop.client.graphics;
+package com.builtbroken.tabletop.client.graphics.textures;
 
 
 import com.builtbroken.tabletop.util.BufferUtils;
@@ -12,19 +12,26 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Texture
 {
+    public int width, height;
+    protected int texture;
 
-    private int width, height;
-    private int texture;
-
-    private String path;
+    protected final String path;
 
     public Texture(String path)
     {
-        this.path = path;
-        load(path);
+        this(path, true);
     }
 
-    private void load(String path)
+    public Texture(String path, boolean load)
+    {
+        this.path = path;
+        if(load)
+        {
+            load();
+        }
+    }
+
+    protected void load()
     {
         int[] pixels = null;
         try

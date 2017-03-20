@@ -1,15 +1,15 @@
-package com.builtbroken.tabletop.client.render;
+package com.builtbroken.tabletop.client.graphics.render;
 
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.Texture;
-import com.builtbroken.tabletop.client.graphics.VertexArray;
+import com.builtbroken.tabletop.client.graphics.textures.Texture;
+import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 
 
 public class RenderRect
 {
-    public VertexArray mesh;
+    public Mesh mesh;
     public Texture texture;
     public Shader shader;
 
@@ -32,7 +32,7 @@ public class RenderRect
         setSize(width, height, layer);
     }
 
-    public RenderRect(String texture, Shader shader, VertexArray mesh)
+    public RenderRect(String texture, Shader shader, Mesh mesh)
     {
         this(texture, shader);
         this.mesh = mesh;
@@ -54,7 +54,7 @@ public class RenderRect
             this.width = width;
             this.height = height;
             this.layer = layer;
-            this.mesh = VertexArray.createMeshForSize(width, height, layer);
+            this.mesh = Mesh.createMeshForSize(width, height, layer);
         }
     }
 

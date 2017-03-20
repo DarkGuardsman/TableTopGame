@@ -6,10 +6,11 @@ import com.builtbroken.tabletop.client.controls.ControlMode;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.graphics.render.FontRender;
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.game.GuiGame;
-import com.builtbroken.tabletop.client.render.RenderRect;
 import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
@@ -97,6 +98,7 @@ public class GameDisplay implements Runnable
     protected RenderRect character_render;
     protected RenderRect target_render;
     protected RenderRect box_render;
+    protected FontRender fontRender;
 
     protected Vector3f cameraPosition = new Vector3f(0, 0, 0);
     protected Matrix4f pr_matrix;
@@ -203,9 +205,11 @@ public class GameDisplay implements Runnable
 
         //Init render code
         background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
-        character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, EFFECT_LAYER);
+        character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
         target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+        //fontRender = new FontRender(GUI_PATH + "font_texture.png", 1);
+        fontRender = new FontRender(GUI_PATH + "font/ExportedFont.png", GUI_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.05f);
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
@@ -420,6 +424,8 @@ public class GameDisplay implements Runnable
         float mouseLocationX = (float) (MouseInput.mouseX / width) - 0.5f;
         float mouseLocationY = 0.5f - (float) (MouseInput.mouseY / height);
         doRender(mouseLocationX, mouseLocationY);
+
+        fontRender.render("abcdefghijklmnopqrstuvwxyz", 0, 0, 0, 0, .5f);
 
         int error = glGetError();
         if (error != GL_NO_ERROR)

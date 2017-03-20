@@ -2,7 +2,7 @@ package com.builtbroken.tabletop.client.tile;
 
 import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.render.RenderRect;
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
 

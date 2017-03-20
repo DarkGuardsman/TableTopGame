@@ -2,7 +2,7 @@ package com.builtbroken.tabletop.client.gui.component.button;
 
 import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentRow;
-import com.builtbroken.tabletop.client.render.RenderRect;
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 
 /**
  * Row of buttons that has a button on either side to scroll through the list

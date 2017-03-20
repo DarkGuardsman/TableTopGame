@@ -8,7 +8,7 @@ import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.button.Button;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentGrid;
-import com.builtbroken.tabletop.client.render.RenderRect;
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.

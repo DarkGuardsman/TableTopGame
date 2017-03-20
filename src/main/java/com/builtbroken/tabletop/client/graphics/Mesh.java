@@ -12,8 +12,21 @@ import static org.lwjgl.opengl.GL30.*;
 /**
  * Used to store mesh data
  */
-public class VertexArray
+public class Mesh
 {
+
+    private static final byte[] DEFAULT_INDICES = new byte[]{
+            0, 1, 2,
+            2, 3, 0
+    };
+
+    private static final float[] DEFULAT_TEXTURE_COORDS = new float[]{
+            0, 1,
+            0, 0,
+            1, 0,
+            1, 1
+    };
+
     //Actual render data
     private int vao, vbo, ibo, tbo;
     private int count;
@@ -34,9 +47,9 @@ public class VertexArray
      * @param layer - depth
      * @return mesh
      */
-    public static VertexArray createMeshForSize(float size, float layer)
+    public static Mesh createMeshForSize(float size, float layer)
     {
-        return new VertexArray(new float[]{
+        return new Mesh(new float[]{
                 -size / 2.0f, -size / 2.0f, layer,
                 -size / 2.0f, size / 2.0f, layer,
                 size / 2.0f, size / 2.0f, layer,
@@ -52,14 +65,24 @@ public class VertexArray
      * @param layer  - depth, z
      * @return mesh
      */
-    public static VertexArray createMeshForSize(float width, float height, float layer)
+    public static Mesh createMeshForSize(float width, float height, float layer)
     {
-        return new VertexArray(new float[]{
+        return new Mesh(new float[]{
                 0.0f, 0.0f, layer,
                 0.0f, height, layer,
                 width, height, layer,
                 width, 0.0f, layer
         });
+    }
+
+    public static Mesh createMeshForSize(float width, float height, float layer, float[] UVs)
+    {
+        return new Mesh(new float[]{
+                0.0f, 0.0f, layer,
+                0.0f, height, layer,
+                width, height, layer,
+                width, 0.0f, layer
+        }, DEFAULT_INDICES, UVs);
     }
 
     /**
@@ -69,19 +92,9 @@ public class VertexArray
      *
      * @param vertices
      */
-    public VertexArray(float[] vertices)
+    public Mesh(float[] vertices)
     {
-        this(vertices,
-                new byte[]{
-                        0, 1, 2,
-                        2, 3, 0
-                },
-                new float[]{
-                        0, 1,
-                        0, 0,
-                        1, 0,
-                        1, 1
-                });
+        this(vertices, DEFAULT_INDICES, DEFULAT_TEXTURE_COORDS);
     }
 
     /**
@@ -91,7 +104,7 @@ public class VertexArray
      * @param indices
      * @param textureCoordinates
      */
-    public VertexArray(float[] vertices, byte[] indices, float[] textureCoordinates)
+    public Mesh(float[] vertices, byte[] indices, float[] textureCoordinates)
     {
         //Cache in case we need to change data
         this.vertices = vertices;
@@ -202,5 +215,6 @@ public class VertexArray
         }
         bind();
         draw();
+        unbind();
     }
 }
