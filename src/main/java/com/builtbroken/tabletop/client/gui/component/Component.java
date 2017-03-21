@@ -216,6 +216,11 @@ public class Component
         }
     }
 
+    public void onClick(GameDisplay display, float mouseX, float mouseY, boolean left)
+    {
+        System.out.println("Click " + left + "  " + this);
+    }
+
     public float x()
     {
         return x_location - (centerX ? (width / 2f) : 0);

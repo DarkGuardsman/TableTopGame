@@ -376,4 +376,19 @@ public class Entity extends GameObject
     {
         return z;
     }
+
+    //==============================================
+    // Data
+    //==============================================
+
+    public String getDisplayName()
+    {
+        return "Entity[" + uniqueID + "]";
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Entity[" + uniqueID + "]@" + hashCode();
+    }
 }

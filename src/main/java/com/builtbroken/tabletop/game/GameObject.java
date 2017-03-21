@@ -20,4 +20,10 @@ public class GameObject
     {
         this.uniqueID = uniqueID;
     }
+
+    @Override
+    public String toString()
+    {
+        return "GameObject[" + uniqueID + "]@" + hashCode();
+    }
 }

@@ -9,6 +9,7 @@ import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.graphics.render.FontRender;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.gui.Gui;
+import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.game.GuiGame;
 import com.builtbroken.tabletop.client.tile.TileRenders;
@@ -113,7 +114,11 @@ public class GameDisplay implements Runnable
     protected long lastZoom = 0L;
     protected boolean clickLeft = false;
     protected boolean clickRight = false;
+
+    /** Current mod the mouse is in */
     protected ControlMode controlMode = ControlMode.SELECTION;
+    /** Current GUI part that the mouse is over and the user is manipulating */
+    protected Component currentGuiComponetInUse;
 
     //Main method
     public static void main(String... args)
@@ -133,7 +138,7 @@ public class GameDisplay implements Runnable
 
         //Generate some characters to render
         game.getWorld().getEntities().add(new Character("bob").setPosition(2, 0, 0));
-        game.getWorld().getEntities().add(new Character("jim").setPosition(-2, 0, 0));
+        game.getWorld().getEntities().add(new Character("joe").setPosition(-2, 0, 0));
         game.getWorld().getEntities().add(new Character("paul").setPosition(0, 2, 0));
         game.getWorld().getEntities().add(new Character("tim").setPosition(0, -2, 0));
 
@@ -214,8 +219,8 @@ public class GameDisplay implements Runnable
         character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
         target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
-        //fontRender = new FontRender(GUI_PATH + "font_texture.png", 1);
-        fontRender = new FontRender(GUI_PATH + "font/ExportedFont.png", GUI_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.05f);
+
+        fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
@@ -351,11 +356,16 @@ public class GameDisplay implements Runnable
         }
 
         //update GUI
+        currentGuiComponetInUse = null;
         for (Gui gui : guiMap.values())
         {
             if (gui != null)
             {
-                gui.update(this, mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
+                Component component = gui.update(this, mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
+                if (component != null)
+                {
+                    currentGuiComponetInUse = component;
+                }
             }
         }
 
@@ -452,16 +462,28 @@ public class GameDisplay implements Runnable
 
     protected void doRender(float mouseLocationX, float mouseLocationY)
     {
+        //Render background behind map
         background_render.render(-10, -10, 0, 0, 1);
+
+        //Render map
         renderMap(mouseLocationX, mouseLocationY);
 
+        //Render GUIs
+        for (Gui gui : guiMap.values())
+        {
+            if (gui != null)
+            {
+                gui.render(mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
+            }
+        }
+
+        //Render text
         String s = "FPS: " + prev_frames + "  UPS: " + prev_updates;
         fontRender.render(s, -1, cameraBoundTop - 0.5f, 0, 0, .5f);
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
     {
-
         //Calculate the tile size based on the zoom factor
         float tileSize = zoom;
 
@@ -476,6 +498,15 @@ public class GameDisplay implements Runnable
         //Calculate the offset to make tiles render from the center
         int renderOffsetX = (tiles_x - 1) / 2;
         int renderOffsetY = (tiles_y - 1) / 2;
+
+
+        float mx = mouseLocationX * screenSizeX / tileSize;
+        float my = mouseLocationY * screenSizeY / tileSize;
+
+        int tx = (int) Math.floor(center_x + mx);
+        int ty = (int) Math.floor(center_y + my);
+
+        Tile tileUnderMouse = game.getWorld().getTile(tx, ty, 0);
 
         //Render tiles
         for (int x = -renderOffsetX; x < renderOffsetX; x++)   //TODO add floor var
@@ -507,27 +538,15 @@ public class GameDisplay implements Runnable
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
                         character_render.render(tile_x, tile_y, 0, 0, zoom);
+                        if (tx == (int) tile_x && ty == (int) tile_y)
+                        {
+                            String s = entity.getDisplayName();
+                            fontRender.render(s, tile_x, tile_y, 0, 0, .5f);
+                        }
                     }
                 }
             }
         }
-
-        //Render GUIs
-        for (Gui gui : guiMap.values())
-        {
-            if (gui != null)
-            {
-                gui.render(mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
-            }
-        }
-
-        float mx = mouseLocationX * screenSizeX / tileSize;
-        float my = mouseLocationY * screenSizeY / tileSize;
-
-        int tx = (int) Math.floor(center_x + mx);
-        int ty = (int) Math.floor(center_y + my);
-
-        Tile tile = game.getWorld().getTile(tx, ty, 0);
 
         float x = tx * tileSize;
         float y = ty * tileSize;
@@ -546,19 +565,23 @@ public class GameDisplay implements Runnable
         if (!MouseInput.leftClick() && clickLeft)
         {
             clickLeft = false;
-            doLeftClickAction(tx, ty, 0);
+            doLeftClickAction(tx, ty, 0, mouseLocationX, mouseLocationY);
         }
 
         if (!MouseInput.rightClick() && clickRight)
         {
             clickRight = false;
-            doRightClickAction(tx, ty, 0);
+            doRightClickAction(tx, ty, 0, mouseLocationX, mouseLocationY);
         }
     }
 
-    protected void doLeftClickAction(int tileX, int tileY, int floor)
+    protected void doLeftClickAction(int tileX, int tileY, int floor, float mouseLocationX, float mouseLocationY)
     {
-        if (controlMode == ControlMode.ATTACK)
+        if (currentGuiComponetInUse != null)
+        {
+            currentGuiComponetInUse.onClick(this, mouseLocationX, mouseLocationY, true);
+        }
+        else if (controlMode == ControlMode.ATTACK)
         {
             controlMode = ControlMode.SELECTION;
             if (selectedEntity != null)
@@ -583,9 +606,13 @@ public class GameDisplay implements Runnable
         }
     }
 
-    protected void doRightClickAction(int tileX, int tileY, int floor)
+    protected void doRightClickAction(int tileX, int tileY, int floor, float mouseLocationX, float mouseLocationY)
     {
-        if (controlMode == ControlMode.ATTACK)
+        if (currentGuiComponetInUse != null)
+        {
+            currentGuiComponetInUse.onClick(this, mouseLocationX, mouseLocationY, false);
+        }
+        else if (controlMode == ControlMode.ATTACK)
         {
             controlMode = ControlMode.SELECTION;
         }

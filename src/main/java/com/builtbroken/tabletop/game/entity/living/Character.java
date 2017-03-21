@@ -69,4 +69,10 @@ public class Character extends Entity
     {
         this.controller = controller;
     }
+
+    @Override
+    public String getDisplayName()
+    {
+        return displayName;
+    }
 }

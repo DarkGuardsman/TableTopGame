@@ -7,8 +7,8 @@ import com.builtbroken.tabletop.util.Matrix4f;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -26,50 +26,156 @@ public class FontRender
 
     private float layer;
 
-    private HashMap<Character, CharFontData> charMap = new HashMap();
     private CharFontData[] fontData = new CharFontData[256];
 
-    public FontRender(String textureFile, String dataFile, float size, float layer)
+
+    //Font data read in from .csv file
+    public int imageWidth;
+    public int imageHeight;
+    public int cellWidth;
+    public int cellHeight;
+    public int starChar;
+
+    public String fontName;
+    public String textureFile = null;
+
+    public int fontHeight;
+    public int fontWidthDefault;
+    public int fontGlobalWidthOffset;
+    public int fontGlobalXOffset;
+    public int fontGlobalYOffset;
+
+    public FontRender(String dataFile, float size, float layer)
     {
         this.layer = layer;
         this.size = size;
         int line = 0;
+
         try
         {
             //Load data file for font
             BufferedReader reader = new BufferedReader(new FileReader(dataFile));
             String buffer;
-    /*
+
             while ((buffer = reader.readLine()) != null)
             {
-                if (line == 0)
+                String[] split = buffer.split(",");
+                String prop = split[0];
+                String value = split[1];
+                if (prop.startsWith("Image"))
                 {
-                    textureFile = buffer;
+                    if (prop.contains("file"))
+                    {
+                        textureFile = value;
+                    }
+                    else if (prop.contains("Height"))
+                    {
+                        imageHeight = Integer.parseInt(value);
+                    }
+                    else if (prop.contains("Width"))
+                    {
+                        imageWidth = Integer.parseInt(value);
+                    }
                 }
-                else
+                else if (prop.startsWith("Font"))
+                {
+                    if (prop.contains("Name"))
+                    {
+                        fontName = value;
+                    }
+                    else if (prop.contains("Height"))
+                    {
+                        fontHeight = Integer.parseInt(value);
+                    }
+                    else if (prop.contains("Width"))
+                    {
+                        fontWidthDefault = Integer.parseInt(value);
+                    }
+                }
+                else if (prop.startsWith("Cell"))
+                {
+                    if (prop.contains("Height"))
+                    {
+                        cellHeight = Integer.parseInt(value);
+                    }
+                    else if (prop.contains("Width"))
+                    {
+                        cellWidth = Integer.parseInt(value);
+                    }
+                }
+                else if (prop.startsWith("Global"))
+                {
+                    if (prop.contains("Width Offset"))
+                    {
+                        fontGlobalWidthOffset = Integer.parseInt(value);
+                    }
+                    else if (prop.contains("Y Offset"))
+                    {
+                        fontGlobalYOffset = Integer.parseInt(value);
+                    }
+                    else if (prop.contains("X Offset"))
+                    {
+                        fontGlobalXOffset = Integer.parseInt(value);
+                    }
+                }
+                else if (prop.startsWith("Char"))
                 {
                     //Split line into segments
                     //Parse data
-                    CharFontData data = new CharFontData();
-                    data.c = buffer.charAt(0);
-                    data.width = Integer.parseInt(buffer.substring(2, buffer.length()).trim());
-                    data.fontSheetIndex = line - 1;
+                    String num = prop.substring(5, prop.length());
+                    num = num.substring(0, num.indexOf(' '));
+                    byte c = Byte.parseByte(num);
 
-                    //Store data
-                    charMap.put(data.c, data);
-                    fontData[line - 1] = data;
+                    CharFontData data;
+                    if (c > 0)
+                    {
+                        if (fontData[c] != null)
+                        {
+                            data = fontData[c];
+                        }
+                        else
+                        {
+                            data = new CharFontData();
+                            data.c = c;
+                            fontData[c] = data;
+                        }
+
+                        if (prop.contains("Base Width"))
+                        {
+                            data.width = Integer.parseInt(value);
+                        }
+                        else if (prop.contains("Width Offset"))
+                        {
+                            data.widthOffset = Integer.parseInt(value);
+                        }
+                        else if (prop.contains("X Offset"))
+                        {
+                            data.widthXOffset = Integer.parseInt(value);
+                        }
+                        else if (prop.contains("Y Offset"))
+                        {
+                            data.widthYOffset = Integer.parseInt(value);
+                        }
+                    }
                 }
                 line++;
             }
-            */
-            reader.close();
+            try
+            {
+                reader.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Error reading line " + line, e);
+            new RuntimeException("Failed reading line " + line, e);
         }
 
-        sheet = new TextureSheet(textureFile, 512, 1024, 32, 32);
+
+        sheet = new TextureSheet(dataFile.substring(0, dataFile.lastIndexOf("/") + 1) + (textureFile != null ? textureFile : fontName + ".png"), imageWidth, imageHeight, cellWidth, cellHeight);
         generate();
     }
 
@@ -137,14 +243,16 @@ public class FontRender
     //Data object
     protected final static class CharFontData
     {
-        public char c;
-        public int fontSheetIndex;
+        public byte c;
         public int width;
+        public int widthOffset;
+        public int widthXOffset;
+        public int widthYOffset;
 
         @Override
         public String toString()
         {
-            return "CharFontData[" + c + " " + fontSheetIndex + "]";
+            return "CharFontData[" + c + " " + width + "]";
         }
     }
 }

@@ -16,17 +16,21 @@ import java.util.List;
  */
 public class Gui
 {
+    /** List of components contained in the GUI */
     public List<Component> componentList = new ArrayList();
 
+    /** Can the user see the GUI / should it render */
     public boolean isVisible = true;
+    /** Can the user use the GUI */
+    public boolean isActivate = true;
 
     /**
      * Called to update the display
      *
      * @param display
-     * @return true if the GUI has priority over the mouse
+     * @return component the mouse is currently over
      */
-    public boolean update(GameDisplay display, float mouseX, float mouseY)
+    public Component update(GameDisplay display, float mouseX, float mouseY)
     {
         //Update all components
         for (Component component : componentList)
@@ -34,18 +38,17 @@ public class Gui
             component.update(display);
             component.setMouseOver(false);
         }
-        if (MouseInput.inWindow)
+        if (MouseInput.inWindow && isVisible && isActivate)
         {
             //Get current component that the mouse is over
             Component selected = getComponent(mouseX, mouseY);
             if (selected != null)
             {
                 selected.setMouseOver(true);
-                System.out.println("" + selected);
-                return true;
+                return selected;
             }
         }
-        return false;
+        return null;
     }
 
     /**
