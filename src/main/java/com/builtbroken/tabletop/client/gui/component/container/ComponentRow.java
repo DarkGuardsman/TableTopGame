@@ -14,12 +14,14 @@ public class ComponentRow extends ComponentContainer
 
     public PositionLogic componentPositionLogic = PositionLogic.LEFT;
 
-    public ComponentRow()
+    public ComponentRow(String name)
     {
+        super(name);
     }
 
-    public ComponentRow(PositionLogic logic)
+    public ComponentRow(String name, PositionLogic logic)
     {
+        super(name);
         this.componentPositionLogic = logic;
     }
 
@@ -100,5 +102,11 @@ public class ComponentRow extends ComponentContainer
         calculateSize();
         positionComponents();
         return component;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ComponentRow[" + name + "  " + x() + "x  " + y() + "y  " + componentPositionLogic + "]@" + hashCode();
     }
 }

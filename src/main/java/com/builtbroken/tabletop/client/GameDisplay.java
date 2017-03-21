@@ -93,6 +93,12 @@ public class GameDisplay implements Runnable
 
     protected long windowID;
 
+    protected int updates = 0;
+    protected int frames = 0;
+
+    protected int prev_updates = 0;
+    protected int prev_frames = 0;
+
     //Renders
     protected RenderRect background_render;
     protected RenderRect character_render;
@@ -283,29 +289,41 @@ public class GameDisplay implements Runnable
         double delta = 0.0;
         double ns = 1000000000.0 / 60.0;
         long timer = System.currentTimeMillis();
-        int updates = 0;
-        int frames = 0;
         while (running)
         {
-
+            //Calculate the amount of time since last tick
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
+
+
+            //Calculate position of mouse on the screen based on the camera
+            float mouseLocationX = (float) (MouseInput.mouseX / width) - 0.5f;
+            float mouseLocationY = 0.5f - (float) (MouseInput.mouseY / height);
+
+            //Only update 60 times a second
             if (delta >= 1.0)
             {
-                update(delta);
+                update(delta, mouseLocationX, mouseLocationY);
                 updates++;
                 delta--;
             }
-            render();
+
+            //Render and track frames
+            render(mouseLocationX, mouseLocationY);
             frames++;
+
+            //If 1 second passes reset
             if (System.currentTimeMillis() - timer > 1000)
             {
                 timer += 1000;
-                //System.out.println(updates + " ups, " + frames + " fps");
+                prev_frames = frames;
+                prev_updates = updates;
                 updates = 0;
                 frames = 0;
             }
+
+            //Detect if window needs to close
             if (glfwWindowShouldClose(windowID))
             {
                 running = false;
@@ -321,7 +339,7 @@ public class GameDisplay implements Runnable
         glfwTerminate();
     }
 
-    protected void update(double delta)
+    protected void update(double delta, float mouseLocationX, float mouseLocationY)
     {
         long time = System.currentTimeMillis();
         glfwPollEvents();
@@ -337,7 +355,7 @@ public class GameDisplay implements Runnable
         {
             if (gui != null)
             {
-                gui.update(this);
+                gui.update(this, mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
             }
         }
 
@@ -417,15 +435,11 @@ public class GameDisplay implements Runnable
         }
     }
 
-    protected void render()
+    protected void render(float mouseLocationX, float mouseLocationY)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float mouseLocationX = (float) (MouseInput.mouseX / width) - 0.5f;
-        float mouseLocationY = 0.5f - (float) (MouseInput.mouseY / height);
         doRender(mouseLocationX, mouseLocationY);
-
-        fontRender.render("abcdefghijklmnopqrstuvwxyz", 0, 0, 0, 0, .5f);
 
         int error = glGetError();
         if (error != GL_NO_ERROR)
@@ -439,8 +453,10 @@ public class GameDisplay implements Runnable
     protected void doRender(float mouseLocationX, float mouseLocationY)
     {
         background_render.render(-10, -10, 0, 0, 1);
-
         renderMap(mouseLocationX, mouseLocationY);
+
+        String s = "FPS: " + prev_frames + "  UPS: " + prev_updates;
+        fontRender.render(s, -1, cameraBoundTop - 0.5f, 0, 0, .5f);
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)

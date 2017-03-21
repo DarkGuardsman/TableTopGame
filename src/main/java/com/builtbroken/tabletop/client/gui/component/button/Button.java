@@ -1,7 +1,7 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
-import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
+import com.builtbroken.tabletop.client.gui.component.Component;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -9,14 +9,11 @@ import com.builtbroken.tabletop.client.graphics.render.RenderRect;
  */
 public class Button extends Component
 {
-    public final String name;
-
     protected ButtonClickAction event;
 
     public Button(String name, RenderRect background, float width, float height)
     {
-        super(background, width, height);
-        this.name = name;
+        super(name, background, width, height);
     }
 
     public Button(String name, String texture, float width, float height)
@@ -26,7 +23,12 @@ public class Button extends Component
 
     public Button(String name, String texture, float x, float y, float width, float height)
     {
-        super(width, height, texture, x, y);
-        this.name = name;
+        super(name, width, height, texture, x, y);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Button[" + name + "  " + x() + "x  " + y() + "y]";
     }
 }

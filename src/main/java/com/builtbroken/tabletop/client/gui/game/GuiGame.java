@@ -45,23 +45,23 @@ public class GuiGame extends Gui
         componentList.clear();
 
         //Build item row, float to left of screen
-        itemRow = new ButtonScrollRow(PositionLogic.LEFT, itemButtonBackground, 4, 1, 1); //set sub comp pos
+        itemRow = new ButtonScrollRow("itemRow", PositionLogic.LEFT, itemButtonBackground, 4, 1, 1); //set sub comp pos
         itemRow.setVisible(false); //no need to render
         itemRow.setPositionLogic(PositionLogic.BOTTOM_LEFT); //set self pos
 
 
         //Build weapon row, float to right of screen
-        weaponRow = new ButtonScrollRow(PositionLogic.RIGHT, itemButtonBackground, 4, 1, 1); //set sub comp pos
+        weaponRow = new ButtonScrollRow("weaponRow", PositionLogic.RIGHT, itemButtonBackground, 4, 1, 1); //set sub comp pos
         weaponRow.setVisible(false); //no need to render
         weaponRow.setPositionLogic(PositionLogic.BOTTOM_RIGHT); //set self pos
 
         //Build unit row
-        unitRow = new ButtonScrollRow(PositionLogic.BOTTOM, itemButtonBackground, 4, 1, 1);
+        unitRow = new ButtonScrollRow("unitRow", PositionLogic.BOTTOM, itemButtonBackground, 4, 1, 1);
         unitRow.setVisible(false);
         unitRow.setPositionLogic(PositionLogic.TOP_LEFT);
 
         //Enemy units
-        enemyUnitRow = new ComponentGrid(4, 12);
+        enemyUnitRow = new ComponentGrid("enemyRow", 4, 12);
         enemyUnitRow.setVisible(false);
         enemyUnitRow.setPositionLogic(PositionLogic.TOP_RIGHT);
 
@@ -70,7 +70,7 @@ public class GuiGame extends Gui
             enemyUnitRow.add(new Button("e" + i, enemyButtonBackground, 0.5f, 0.5f));
         }
 
-        abilityRow = new ComponentGrid(9, 3);
+        abilityRow = new ComponentGrid("abilityGrid", 9, 3);
         abilityRow.centerX = true;
         abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
         //abilityRow.setVisible(false);

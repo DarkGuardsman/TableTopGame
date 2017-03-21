@@ -18,8 +18,9 @@ public class ComponentGrid extends ComponentContainer
 
     public int rows, cols;
 
-    public ComponentGrid(int rows, int cols)
+    public ComponentGrid(String name, int rows, int cols)
     {
+        super(name);
         this.rows = rows;
         this.cols = cols;
         calculateSize();
@@ -108,5 +109,11 @@ public class ComponentGrid extends ComponentContainer
         calculateSize();
         positionComponents();
         return component;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Component[" + name + "  " + x() + "x  " + y() + "y " + rows + "x" +  cols + "]@" + hashCode();
     }
 }

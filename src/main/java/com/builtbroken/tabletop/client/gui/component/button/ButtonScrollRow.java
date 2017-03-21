@@ -1,8 +1,8 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentRow;
-import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 
 /**
  * Row of buttons that has a button on either side to scroll through the list
@@ -26,9 +26,9 @@ public class ButtonScrollRow extends ComponentRow
 
     public float arrowButtonSize = 0.2f;
 
-    public ButtonScrollRow(PositionLogic logic, RenderRect buttonBackground, int buttons, float buttonWidth, float buttonHeight)
+    public ButtonScrollRow(String name, PositionLogic logic, RenderRect buttonBackground, int buttons, float buttonWidth, float buttonHeight)
     {
-        super(logic);
+        super(name, logic);
         this.buttonBackground = buttonBackground;
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
@@ -78,5 +78,11 @@ public class ButtonScrollRow extends ComponentRow
             add(arrowButtonB);
             calculateSize();
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ButtonScrollRow[" + name + "  " + x() + "x  " + y() + "y]";
     }
 }

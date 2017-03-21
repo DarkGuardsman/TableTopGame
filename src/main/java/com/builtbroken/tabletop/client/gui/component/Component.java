@@ -12,6 +12,7 @@ import com.builtbroken.tabletop.client.graphics.render.RenderRect;
  */
 public class Component
 {
+    public final String name;
     /** Render object for the component background */
     public RenderRect background;
     /** Toggle to center the component in the x by the width */
@@ -22,6 +23,8 @@ public class Component
 
     /** Toggle to note something has changed in the GUI */
     protected boolean hasChanged = false;
+
+    protected boolean isMouseOver;
 
     /** Location of the component, relative to container */
     private float x_location, y_location;
@@ -40,8 +43,10 @@ public class Component
     //Logic for adjusting position on change or resize of display
     private PositionLogic positionLogic = PositionLogic.NOTHING;
 
-    public Component()
+
+    public Component(String name)
     {
+        this.name = name;
     }
 
     /**
@@ -51,8 +56,9 @@ public class Component
      * @param height     - dimension in the y
      * @param background - render object to use for rendering the background of the component
      */
-    public Component(RenderRect background, float width, float height)
+    public Component(String name, RenderRect background, float width, float height)
     {
+        this.name = name;
         this.background = background;
         this.setSize(width, height);
     }
@@ -66,9 +72,9 @@ public class Component
      * @param x       - location x, relative to container
      * @param y       - location y, relative to container
      */
-    public Component(float width, float height, String texture, float x, float y)
+    public Component(String name, float width, float height, String texture, float x, float y)
     {
-        this(width, height, new RenderRect(texture, Shader.CHAR), x, y);
+        this(name, width, height, new RenderRect(texture, Shader.CHAR), x, y);
     }
 
     /**
@@ -80,8 +86,9 @@ public class Component
      * @param x          - location x, relative to container
      * @param y          - location y, relative to container
      */
-    public Component(float width, float height, RenderRect background, float x, float y)
+    public Component(String name, float width, float height, RenderRect background, float x, float y)
     {
+        this.name = name;
         this.background = background;
         this.setSize(width, height);
         this.setPosition(x, y);
@@ -261,5 +268,16 @@ public class Component
     {
         this.positionLogic = positionLogic;
         hasChanged = true;
+    }
+
+    public void setMouseOver(boolean mouseOver)
+    {
+        this.isMouseOver = mouseOver;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Component[" + name + "  " + x() + "x  " + y() + "y]@" + hashCode();
     }
 }

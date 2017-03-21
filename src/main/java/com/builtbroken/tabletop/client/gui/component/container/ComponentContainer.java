@@ -16,13 +16,14 @@ public class ComponentContainer extends Component
 
     public boolean areComponentsVisible = true;
 
-    public ComponentContainer()
+    public ComponentContainer(String name)
     {
+        super(name);
     }
 
-    public ComponentContainer(float width, float height, String texture, float x, float y)
+    public ComponentContainer(String name, float width, float height, String texture, float x, float y)
     {
-        super(width, height, texture, x, y);
+        super(name, width, height, texture, x, y);
     }
 
     @Override
@@ -57,6 +58,25 @@ public class ComponentContainer extends Component
      */
     public Component getComponent(float mouseX, float mouseY)
     {
+        for (Component component : componentList)
+        {
+            float lowerX = component.x() + x();
+            float higherX = component.x() + x() + component.getWidth();
+            float lowerY = component.y() + y();
+            float higherY = component.y() + y() + component.getHeight();
+            if (mouseX > lowerX && mouseX < higherX && mouseY > lowerY && mouseY < higherY)
+            {
+                if (component instanceof ComponentContainer)
+                {
+                    Component c = ((ComponentContainer) component).getComponent(mouseX, mouseY);
+                    if (c != null)
+                    {
+                        return c;
+                    }
+                }
+                return component;
+            }
+        }
         return null;
     }
 
@@ -67,5 +87,11 @@ public class ComponentContainer extends Component
             componentList.add(component);
         }
         return component;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ComponentContainer[" + name + "  " + x() + "x,  " + y() + "y,  n = " + componentList.size() + "]@" + hashCode();
     }
 }
