@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.game.entity.living;
 
 import com.builtbroken.tabletop.game.entity.Entity;
+import com.builtbroken.tabletop.game.entity.actions.ActionMove;
 import com.builtbroken.tabletop.game.entity.controller.Controller;
 import com.builtbroken.tabletop.game.entity.inventory.Inventory;
 import com.builtbroken.tabletop.game.entity.inventory.InventoryArmor;
@@ -28,12 +29,21 @@ public class Character extends Entity
     /** What is currently controlling this character. */
     protected Controller controller;
 
+    protected int movementPoints = 10;
+
     public Character(String name)
     {
         super("character");
         this.displayName = name;
         this.armor = new InventoryArmor(this);
         this.health = 20;
+        init(); //TODO move to world load or something
+    }
+
+    public void init()
+    {
+        //Add actions to entity
+        actions.add(ActionMove.KEY);
     }
 
     @Override
@@ -65,14 +75,26 @@ public class Character extends Entity
         return inventory;
     }
 
-    public void setController(Controller controller)
+    public Character setController(Controller controller)
     {
         this.controller = controller;
+        return this;
+    }
+
+    public Controller controller()
+    {
+        return controller;
     }
 
     @Override
     public String getDisplayName()
     {
         return displayName;
+    }
+
+    @Override
+    public boolean canMove()
+    {
+        return movementPoints > 0;
     }
 }

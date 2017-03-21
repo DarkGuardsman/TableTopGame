@@ -7,6 +7,9 @@ import com.builtbroken.tabletop.game.entity.damage.DamageType;
 import com.builtbroken.tabletop.game.entity.damage.HitResult;
 import com.builtbroken.tabletop.game.items.weapons.Weapon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Something that is placed in the game world
  *
@@ -26,6 +29,9 @@ public class Entity extends GameObject
     protected int health = -1;
     /** Current shield value, works like HP, -1 means it was never set */
     protected int shield = -1;
+
+    /** List of actions this any can perform */
+    public final List<String> actions = new ArrayList();
 
     /**
      * Constructor
@@ -59,24 +65,6 @@ public class Entity extends GameObject
     public void updateLogic()
     {
 
-    }
-
-    public Entity setPosition(float x, float y, float z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
-    }
-
-    public void move(float x, float y, float z)
-    {
-        setPosition(xf() + x, yf() + y, zf() + z);
-    }
-
-    public void move(float x, float y)
-    {
-        move(x, y, 0);
     }
 
     //==============================================
@@ -342,6 +330,30 @@ public class Entity extends GameObject
     //==============================================
     // Movement and location code
     //==============================================
+
+
+    public Entity setPosition(float x, float y, float z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    }
+
+    public void move(float x, float y, float z)
+    {
+        setPosition(xf() + x, yf() + y, zf() + z);
+    }
+
+    public void move(float x, float y)
+    {
+        move(x, y, 0);
+    }
+
+    public boolean canMove()
+    {
+        return false;
+    }
 
     public int xi()
     {

@@ -1,7 +1,6 @@
 package com.builtbroken.tabletop.game.entity.ai;
 
 import com.builtbroken.tabletop.game.entity.controller.Controller;
-import com.builtbroken.tabletop.game.entity.living.Character;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -9,8 +8,4 @@ import com.builtbroken.tabletop.game.entity.living.Character;
  */
 public class AI extends Controller
 {
-    public AI(Character entity)
-    {
-        super(entity);
-    }
 }

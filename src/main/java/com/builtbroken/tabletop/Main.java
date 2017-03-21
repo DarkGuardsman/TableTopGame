@@ -1,5 +1,7 @@
 package com.builtbroken.tabletop;
 
+import com.builtbroken.tabletop.client.GameDisplay;
+import com.builtbroken.tabletop.game.Game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +13,7 @@ import java.util.HashMap;
  */
 public class Main
 {
-    public static void main(String... args)
+    public static void main(String... args) throws InterruptedException
     {
         Logger logger = LogManager.getRootLogger();
 
@@ -20,6 +22,32 @@ public class Main
 
         HashMap<String, String> launchSettings = loadArgs(args);
 
+        logger.info("Creating game object");
+        Game game = new Game();
+
+        logger.info("Creating display object");
+        //Create display, TODO check if server only
+        GameDisplay display = new GameDisplay(game);
+
+        logger.info("Starting threads");
+        //Start threads
+        game.start();
+        display.start();
+
+        while (display.running || game.running)
+        {
+            if (!display.running)
+            {
+                game.running = false;
+                game.save(true);
+            }
+            if (!game.running)
+            {
+                display.running = false;
+            }
+            Thread.sleep(1000);
+        }
+        logger.info("End of main");
         System.exit(0);
     }
 

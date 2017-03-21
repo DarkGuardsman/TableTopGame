@@ -1,5 +1,6 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
+import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.gui.component.Component;
 
@@ -24,6 +25,16 @@ public class Button extends Component
     public Button(String name, String texture, float x, float y, float width, float height)
     {
         super(name, width, height, texture, x, y);
+    }
+
+    @Override
+    public void onClick(GameDisplay display, float mouseX, float mouseY, boolean left)
+    {
+        if(event != null)
+        {
+
+        }
+        System.out.println("Click " + left + "  " + this);
     }
 
     @Override

@@ -19,11 +19,6 @@ public class Controller
 
     public Character entity;
 
-    public Controller(Character entity)
-    {
-        this.entity = entity;
-    }
-
     public void update(double delta)
     {
 

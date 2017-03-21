@@ -19,7 +19,6 @@ import com.builtbroken.tabletop.game.entity.damage.Damage;
 import com.builtbroken.tabletop.game.entity.damage.DamageType;
 import com.builtbroken.tabletop.game.entity.living.Character;
 import com.builtbroken.tabletop.game.items.weapons.Weapon;
-import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Matrix4f;
@@ -43,8 +42,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class GameDisplay implements Runnable
 {
     //Display run data
-    protected Thread thread;
-    protected boolean running = false;
+    public Thread thread;
+    public boolean running = false;
 
     //Cemera bounds
     public static final float DEFAULT_LEFT_CAMERA_BOUND = -10.0f;
@@ -103,6 +102,7 @@ public class GameDisplay implements Runnable
     //Renders
     protected RenderRect background_render;
     protected RenderRect character_render;
+    protected RenderRect character_render2;
     protected RenderRect target_render;
     protected RenderRect box_render;
     protected FontRender fontRender;
@@ -120,33 +120,6 @@ public class GameDisplay implements Runnable
     /** Current GUI part that the mouse is over and the user is manipulating */
     protected Component currentGuiComponetInUse;
 
-    //Main method
-    public static void main(String... args)
-    {
-        //Load test game
-        Game game = new Game();
-        game.load(false, "");
-
-        //Init tiles
-        Tiles.load();
-
-        //Create a test map
-        StaticMapData map = new StaticMapData();
-        map.load();
-        game.getWorld().setMapData(map);
-
-
-        //Generate some characters to render
-        game.getWorld().getEntities().add(new Character("bob").setPosition(2, 0, 0));
-        game.getWorld().getEntities().add(new Character("joe").setPosition(-2, 0, 0));
-        game.getWorld().getEntities().add(new Character("paul").setPosition(0, 2, 0));
-        game.getWorld().getEntities().add(new Character("tim").setPosition(0, -2, 0));
-
-        //Create display and start display thread
-        GameDisplay display = new GameDisplay(game);
-        display.start();
-    }
-
     public GameDisplay(Game game)
     {
         this.game = game;
@@ -155,7 +128,7 @@ public class GameDisplay implements Runnable
     public void start()
     {
         running = true;
-        thread = new Thread(this, "Game");
+        thread = new Thread(this, "GameGraphics");
         thread.start();
     }
 
@@ -217,6 +190,7 @@ public class GameDisplay implements Runnable
         //Init render code
         background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
         character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
+        character_render2 = new RenderRect(TEXTURE_PATH + "char2.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
         target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
@@ -348,12 +322,6 @@ public class GameDisplay implements Runnable
     {
         long time = System.currentTimeMillis();
         glfwPollEvents();
-
-        //Update entities
-        for (Entity entity : game.getWorld().getEntities())
-        {
-            entity.update(delta);
-        }
 
         //update GUI
         currentGuiComponetInUse = null;
@@ -537,7 +505,14 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        character_render.render(tile_x, tile_y, 0, 0, zoom);
+                        if(entity instanceof Character && ((Character) entity).controller() == game.player)
+                        {
+                            character_render.render(tile_x, tile_y, 0, 0, zoom);
+                        }
+                        else
+                        {
+                            character_render2.render(tile_x, tile_y, 0, 0, zoom);
+                        }
                         if (tx == (int) tile_x && ty == (int) tile_y)
                         {
                             String s = entity.getDisplayName();
