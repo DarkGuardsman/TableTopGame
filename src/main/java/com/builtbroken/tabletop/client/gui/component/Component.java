@@ -182,11 +182,11 @@ public class Component
             if (background != null)
             {
                 //Resize mesh or later init if mesh was not set
-                if (prev_height != height || prev_width != width || background.mesh == null)
+                if (prev_height != getHeight() || prev_width != getWidth() || background.mesh == null)
                 {
-                    background.setSize(width, height);
-                    prev_height = height;
-                    prev_width = width;
+                    background.setSize(getWidth(), getHeight());
+                    prev_height = getHeight();
+                    prev_width = getWidth();
                 }
                 background.render(x() + xoffset, y() + yoffset, zoffset, 0, 1);
             }

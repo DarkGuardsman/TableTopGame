@@ -29,11 +29,20 @@ public class Button extends Component
     }
 
     @Override
+    public void render(float mouseX, float mouseY, float xoffset, float yoffset, float zoffset)
+    {
+        if (isVisible() && logic != null)
+        {
+            logic.render(mouseX, mouseY, xoffset, yoffset, zoffset);
+        }
+    }
+
+    @Override
     public void onClick(float mouseX, float mouseY, boolean left)
     {
-        if (logic != null && logic.isEnabled(display()))
+        if (logic != null && logic.isEnabled())
         {
-            logic.onClick(display(), this, mouseX, mouseY, left);
+            logic.onClick(mouseX, mouseY, left);
         }
         System.out.println("Click " + left + "  " + this);
     }
@@ -41,7 +50,7 @@ public class Button extends Component
     @Override
     public boolean isVisible()
     {
-        return super.isVisible() && (logic == null || logic.shouldRender(display()));
+        return super.isVisible() && (logic == null || logic.shouldRender());
     }
 
     @Override
@@ -53,6 +62,7 @@ public class Button extends Component
     public Button setLogic(ButtonLogic logic)
     {
         this.logic = logic;
+        this.logic.button = this;
         return this;
     }
 
@@ -65,9 +75,9 @@ public class Button extends Component
     @Override
     public float getWidth()
     {
-        if (logic != null && logic.getWidth(display()) > 0)
+        if (logic != null && logic.getWidth() > 0)
         {
-            return logic.getWidth(display());
+            return logic.getWidth();
         }
         return super.getWidth();
     }
@@ -75,9 +85,9 @@ public class Button extends Component
     @Override
     public float getHeight()
     {
-        if (logic != null && logic.getHeight(display()) > 0)
+        if (logic != null && logic.getHeight() > 0)
         {
-            return logic.getHeight(display());
+            return logic.getHeight();
         }
         return super.getHeight();
     }

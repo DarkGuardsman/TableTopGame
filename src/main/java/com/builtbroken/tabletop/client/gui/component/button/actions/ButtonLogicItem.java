@@ -1,7 +1,5 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
-import com.builtbroken.tabletop.client.GameDisplay;
-import com.builtbroken.tabletop.client.gui.component.button.Button;
 import com.builtbroken.tabletop.game.entity.living.Character;
 
 /**
@@ -18,30 +16,30 @@ public class ButtonLogicItem extends ButtonLogic
     }
 
     @Override
-    protected void leftClick(GameDisplay display, Button button, float mouseX, float mouseY)
+    protected void leftClick(float mouseX, float mouseY)
     {
-        if (display.selectedEntity instanceof Character && ((Character) display.selectedEntity).actionableItems.size() > itemIndex)
+        if (button.display().selectedEntity instanceof Character && ((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
         {
-            ((Character) display.selectedEntity).activeItem = ((Character) display.selectedEntity).actionableItems.get(itemIndex);
+            ((Character) button.display().selectedEntity).activeItem = ((Character) button.display().selectedEntity).actionableItems.get(itemIndex);
         }
     }
 
     @Override
-    public float getWidth(GameDisplay display)
+    public float getWidth()
     {
-        if (((Character) display.selectedEntity).actionableItems.size() > itemIndex)
+        if (((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
         {
-            return ((Character) display.selectedEntity).actionableItems.get(itemIndex).width;
+            return ((Character) button.display().selectedEntity).actionableItems.get(itemIndex).width;
         }
         return -1;
     }
 
     @Override
-    public float getHeight(GameDisplay display)
+    public float getHeight()
     {
-        if (((Character) display.selectedEntity).actionableItems.size() > itemIndex)
+        if (((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
         {
-            return ((Character) display.selectedEntity).actionableItems.get(itemIndex).height;
+            return ((Character) button.display().selectedEntity).actionableItems.get(itemIndex).height;
         }
         return -1;
     }

@@ -1,6 +1,5 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
-import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.button.Button;
 
 /**
@@ -11,53 +10,58 @@ import com.builtbroken.tabletop.client.gui.component.button.Button;
  */
 public class ButtonLogic
 {
+    public Button button;
     /**
      * Called when a button has been clicked
      *
-     * @param display
      * @param mouseX
      * @param mouseY
      * @param left
      */
-    public void onClick(GameDisplay display, Button button, float mouseX, float mouseY, boolean left)
+    public void onClick(float mouseX, float mouseY, boolean left)
     {
         if (left)
         {
-            leftClick(display, button, mouseX, mouseY);
+            leftClick(mouseX, mouseY);
         }
         else
         {
-            rightClick(display, button, mouseX, mouseY);
+            rightClick(mouseX, mouseY);
         }
     }
 
-    protected void leftClick(GameDisplay display, Button button, float mouseX, float mouseY)
+    protected void leftClick(float mouseX, float mouseY)
     {
 
     }
 
 
-    protected void rightClick(GameDisplay display, Button button, float mouseX, float mouseY)
+    protected void rightClick(float mouseX, float mouseY)
     {
 
     }
 
-    public boolean isEnabled(GameDisplay display)
+    public void render(float mouseX, float mouseY, float xoffset, float yoffset, float zoffset)
+    {
+
+    }
+
+    public boolean isEnabled()
     {
         return true;
     }
 
-    public boolean shouldRender(GameDisplay display)
+    public boolean shouldRender()
     {
         return true;
     }
 
-    public float getWidth(GameDisplay display)
+    public float getWidth()
     {
         return -1;
     }
 
-    public float getHeight(GameDisplay display)
+    public float getHeight()
     {
         return -1;
     }
