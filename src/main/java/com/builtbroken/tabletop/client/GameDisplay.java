@@ -103,7 +103,7 @@ public class GameDisplay implements Runnable
     protected RenderRect character_render2;
     protected RenderRect target_render;
     protected RenderRect box_render;
-    protected FontRender fontRender;
+    public FontRender fontRender;
 
     /** Location of the camera on the map X */
     protected float cameraPosX = 0;
@@ -458,6 +458,9 @@ public class GameDisplay implements Runnable
 
         s = "Action: " + (currentSelectedEntityAction != null ? currentSelectedEntityAction : "none");
         fontRender.render(s, cameraBoundLeft + 1.2f, cameraBoundTop - 1.1f, 0, 0, .5f);
+
+        s = "A";
+        fontRender.render(s, 0, 0, 0, 0, .5f);
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)

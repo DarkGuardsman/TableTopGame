@@ -31,9 +31,10 @@ public class Button extends Component
     @Override
     public void render(float mouseX, float mouseY, float xoffset, float yoffset, float zoffset)
     {
+        super.render(mouseX, mouseY, xoffset, yoffset, zoffset);
         if (isVisible() && logic != null)
         {
-            logic.render(mouseX, mouseY, xoffset, yoffset, zoffset);
+            logic.render(mouseX, mouseY, x() + xoffset, y() + yoffset, zoffset);
         }
     }
 

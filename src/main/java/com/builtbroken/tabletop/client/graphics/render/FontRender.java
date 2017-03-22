@@ -21,6 +21,7 @@ public class FontRender
     private Matrix4f cache;
 
     private Mesh[] meshs;
+    private RenderRect background;
 
     private float size;
 
@@ -47,6 +48,7 @@ public class FontRender
 
     public FontRender(String dataFile, float size, float layer)
     {
+        background = new RenderRect("resources/textures/gui/font.back.png", Shader.CHAR, 1, 1, layer - 0.05f);
         this.layer = layer;
         this.size = size;
         int line = 0;
@@ -213,8 +215,19 @@ public class FontRender
 
     public void render(String text, float x, float y, float z, float rot, float scale)
     {
+        render(text, x, y, z, rot, scale, true);
+    }
+
+    public void render(String text, float x, float y, float z, float rot, float scale, boolean background)
+    {
         byte[] chars = text.getBytes(Charset.forName("ISO-8859-1"));
         int numChars = chars.length;
+
+        if (background)
+        {
+            this.background.setSize(size * numChars, size);
+            this.background.render(x, y, z, rot, scale); //TODO something is off about position
+        }
 
         //Setup
         sheet.bind();

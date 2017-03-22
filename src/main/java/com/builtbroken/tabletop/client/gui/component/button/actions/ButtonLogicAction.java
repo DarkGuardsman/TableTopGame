@@ -26,8 +26,8 @@ public class ButtonLogicAction extends ButtonLogic
     }
 
     @Override
-    public void render(float mouseX, float mouseY, float xoffset, float yoffset, float zoffset)
+    public void render(float mouseX, float mouseY, float x, float y, float z)
     {
-
+        button.display().fontRender.render(actionID.substring(0, 1).toUpperCase(), x, y - 0.5f, z, 0, 1);
     }
 }
