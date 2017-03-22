@@ -459,8 +459,11 @@ public class GameDisplay implements Runnable
         s = "Action: " + (currentSelectedEntityAction != null ? currentSelectedEntityAction : "none");
         fontRender.render(s, cameraBoundLeft + 1.2f, cameraBoundTop - 1.1f, 0, 0, .5f);
 
-        //s = String.valueOf(java.lang.Character.toChars(KeyboardInput.currentKey));
-        //fontRender.render(s, 0, 0, 0, 0, .5f);
+
+        s = String.valueOf(java.lang.Character.toChars(KeyboardInput.currentKey));
+        fontRender.render(s, 0, 0, 0, 0, .5f);
+
+        /* Debug for text render
         s = "abcdefghijklmnopqrztuvwxyz";
         fontRender.render(s, 0, 0, 0, 0, 1);
         s = "ABCDEFGHIJKLMNOPQRZTUVWZYZ";
@@ -474,6 +477,7 @@ public class GameDisplay implements Runnable
         fontRender.render(s, 0, -3.5f, 0, 0, 0.5f);
         s = "0123456789[]{};:'\",./?-+=_*";
         fontRender.render(s, 0, -4, 0, 0, 0.5f);
+        */
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
