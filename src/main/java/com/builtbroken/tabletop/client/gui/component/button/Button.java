@@ -65,9 +65,9 @@ public class Button extends Component
     @Override
     public float getWidth()
     {
-        if (logic != null && logic.getWidth() > 0)
+        if (logic != null && logic.getWidth(display()) > 0)
         {
-            return logic.getWidth();
+            return logic.getWidth(display());
         }
         return super.getWidth();
     }
@@ -75,9 +75,9 @@ public class Button extends Component
     @Override
     public float getHeight()
     {
-        if (logic != null && logic.getHeight() > 0)
+        if (logic != null && logic.getHeight(display()) > 0)
         {
-            return logic.getHeight();
+            return logic.getHeight(display());
         }
         return super.getHeight();
     }

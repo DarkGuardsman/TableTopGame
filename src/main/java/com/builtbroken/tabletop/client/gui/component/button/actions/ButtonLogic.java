@@ -52,12 +52,12 @@ public class ButtonLogic
         return true;
     }
 
-    public float getWidth()
+    public float getWidth(GameDisplay display)
     {
         return -1;
     }
 
-    public float getHeight()
+    public float getHeight(GameDisplay display)
     {
         return -1;
     }

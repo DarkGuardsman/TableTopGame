@@ -17,11 +17,32 @@ public class ButtonLogicItem extends ButtonLogic
         this.itemIndex = itemIndex;
     }
 
+    @Override
     protected void leftClick(GameDisplay display, Button button, float mouseX, float mouseY)
     {
         if (display.selectedEntity instanceof Character && ((Character) display.selectedEntity).actionableItems.size() > itemIndex)
         {
             ((Character) display.selectedEntity).activeItem = ((Character) display.selectedEntity).actionableItems.get(itemIndex);
         }
+    }
+
+    @Override
+    public float getWidth(GameDisplay display)
+    {
+        if (((Character) display.selectedEntity).actionableItems.size() > itemIndex)
+        {
+            return ((Character) display.selectedEntity).actionableItems.get(itemIndex).width;
+        }
+        return -1;
+    }
+
+    @Override
+    public float getHeight(GameDisplay display)
+    {
+        if (((Character) display.selectedEntity).actionableItems.size() > itemIndex)
+        {
+            return ((Character) display.selectedEntity).actionableItems.get(itemIndex).height;
+        }
+        return -1;
     }
 }

@@ -17,11 +17,32 @@ public class ButtonLogicWeapon extends ButtonLogic
         this.itemIndex = itemIndex;
     }
 
+    @Override
     protected void leftClick(GameDisplay display, Button button, float mouseX, float mouseY)
     {
         if (display.selectedEntity instanceof Character && ((Character) display.selectedEntity).usableWeapons.size() > itemIndex)
         {
             ((Character) display.selectedEntity).activeWeapon = ((Character) display.selectedEntity).usableWeapons.get(itemIndex);
         }
+    }
+
+    @Override
+    public float getWidth(GameDisplay display)
+    {
+        if (((Character) display.selectedEntity).usableWeapons.size() > itemIndex)
+        {
+            return ((Character) display.selectedEntity).usableWeapons.get(itemIndex).width;
+        }
+        return -1;
+    }
+
+    @Override
+    public float getHeight(GameDisplay display)
+    {
+        if (((Character) display.selectedEntity).usableWeapons.size() > itemIndex)
+        {
+            return ((Character) display.selectedEntity).usableWeapons.get(itemIndex).height;
+        }
+        return -1;
     }
 }
