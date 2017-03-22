@@ -14,7 +14,6 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class Mesh
 {
-
     private static final byte[] DEFAULT_INDICES = new byte[]{
             0, 1, 2,
             2, 3, 0

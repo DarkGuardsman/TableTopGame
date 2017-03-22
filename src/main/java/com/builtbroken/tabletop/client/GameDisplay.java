@@ -423,11 +423,13 @@ public class GameDisplay implements Runnable
 
         doRender(mouseLocationX, mouseLocationY);
 
+        /*
         int error = glGetError();
         if (error != GL_NO_ERROR)
         {
             System.out.println("GLError: " + error);
         }
+        */
 
         glfwSwapBuffers(windowID);
     }
