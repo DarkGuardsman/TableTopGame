@@ -47,4 +47,15 @@ public class TileRender
             rect.render(x, y, z, rot, scale);
         }
     }
+
+    public static void dispose()
+    {
+        for(RenderRect renderRect : renders)
+        {
+            if(renderRect != null)
+            {
+                renderRect.dispose();
+            }
+        }
+    }
 }

@@ -21,15 +21,6 @@ public class CharRender
     public static RenderRect body;
     public static RenderRect head;
 
-    public static void load()
-    {
-        sheet = Texture.get(GameDisplay.TEXTURE_PATH + "entity/body/body.png");
-
-        float uvScale = 64f / sheet.width;
-        body = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER, Mesh.generateUV(0, 0, uvScale, uvScale)));
-        head = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER + 0.05f, Mesh.generateUV(uvScale, 0, uvScale, uvScale)));
-    }
-
     public static void render(Entity entity, float x, float y, float scale)
     {
         render(entity, x, y, GameDisplay.TILE_LAYER, scale);
@@ -44,5 +35,29 @@ public class CharRender
     {
         body.render(x, y, z, rot, scale);
         head.render(x, y, z, rot, scale);
+    }
+
+    public static void load()
+    {
+        sheet = Texture.get(GameDisplay.TEXTURE_PATH + "entity/body/body.png");
+
+        float uvScale = 64f / sheet.width;
+        body = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER, Mesh.generateUV(0, 0, uvScale, uvScale)));
+        head = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER + 0.05f, Mesh.generateUV(uvScale, 0, uvScale, uvScale)));
+    }
+
+    public static void dispose()
+    {
+        body.dispose();
+        head.dispose();
+
+        for (RenderRect renderRect : renders.values())
+        {
+            if (renderRect != null)
+            {
+                renderRect.dispose();
+            }
+        }
+        renders.clear();
     }
 }

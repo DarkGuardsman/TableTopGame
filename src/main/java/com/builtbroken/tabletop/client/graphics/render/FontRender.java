@@ -321,6 +321,18 @@ public class FontRender
         return size;
     }
 
+    public void dispose()
+    {
+        sheet.dispose();
+        for (CharFontData data : fontData)
+        {
+            if (data != null)
+            {
+                data.mesh.dispose();
+            }
+        }
+    }
+
     //Data object
     protected final static class CharFontData
     {

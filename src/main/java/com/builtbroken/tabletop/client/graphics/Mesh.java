@@ -192,7 +192,7 @@ public class Mesh
         glBindVertexArray(0);
     }
 
-    public void delete()
+    public void dispose()
     {
         //TODO recycle data
         glDeleteVertexArrays(vao);
@@ -252,7 +252,7 @@ public class Mesh
         if (Math.abs(scale_factor - scale) > 0.001)
         {
             scale_factor = scale;
-            delete();
+            dispose();
             generate();
         }
         bind();

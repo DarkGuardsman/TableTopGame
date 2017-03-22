@@ -8,6 +8,7 @@ import com.builtbroken.tabletop.client.graphics.render.CharRender;
 import com.builtbroken.tabletop.client.graphics.render.FontRender;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.graphics.render.TileRender;
+import com.builtbroken.tabletop.client.graphics.textures.Texture;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
@@ -316,8 +317,25 @@ public class GameDisplay implements Runnable
             MouseInput.prev_mouseY = MouseInput.mouseY;
         }
 
+        //Clean up
+        dispose();
         glfwDestroyWindow(windowID);
         glfwTerminate();
+    }
+
+
+    /**
+     * Clean up everything stored on the graphics card
+     */
+    protected void dispose()
+    {
+        Texture.disposeTextures();
+        TileRender.dispose();
+        CharRender.dispose();
+        fontRender.dispose();
+        background_render.dispose();
+        target_render.dispose();
+        box_render.dispose();
     }
 
     protected void update(double delta, float mouseLocationX, float mouseLocationY)

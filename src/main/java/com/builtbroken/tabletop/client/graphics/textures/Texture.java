@@ -34,6 +34,18 @@ public class Texture
         }
     }
 
+    public static void disposeTextures()
+    {
+        for (Texture texture : textures.values())
+        {
+            if (texture != null)
+            {
+                texture.dispose();
+            }
+        }
+        textures.clear();
+    }
+
     protected Texture(String path)
     {
         this(path, true);
@@ -93,6 +105,10 @@ public class Texture
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    public void dispose()
+    {
+        glDeleteTextures(texture);
+    }
 
     @Override
     public String toString()

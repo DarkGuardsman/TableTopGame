@@ -66,7 +66,7 @@ public class RenderRect
         {
             if (this.mesh != null)
             {
-                this.mesh.delete();
+                this.mesh.dispose();
             }
             this.width = width;
             this.height = height;
@@ -129,5 +129,11 @@ public class RenderRect
     public String toString()
     {
         return "RenderRect[" + texture + "]";
+    }
+
+    public void dispose()
+    {
+        mesh.dispose();
+        //Texture is cleared elsewhere
     }
 }
