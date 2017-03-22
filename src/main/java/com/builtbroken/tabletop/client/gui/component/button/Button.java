@@ -1,8 +1,8 @@
 package com.builtbroken.tabletop.client.gui.component.button;
 
-import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.gui.component.Component;
+import com.builtbroken.tabletop.client.gui.component.button.actions.ButtonLogic;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -10,7 +10,8 @@ import com.builtbroken.tabletop.client.gui.component.Component;
  */
 public class Button extends Component
 {
-    protected ButtonClickAction event;
+    /** Logic object for the button */
+    public ButtonLogic logic;
 
     public Button(String name, RenderRect background, float width, float height)
     {
@@ -28,18 +29,56 @@ public class Button extends Component
     }
 
     @Override
-    public void onClick(GameDisplay display, float mouseX, float mouseY, boolean left)
+    public void onClick(float mouseX, float mouseY, boolean left)
     {
-        if(event != null)
+        if (logic != null && logic.isEnabled(display()))
         {
-
+            logic.onClick(display(), this, mouseX, mouseY, left);
         }
         System.out.println("Click " + left + "  " + this);
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return super.isVisible() && (logic == null || logic.shouldRender(display()));
     }
 
     @Override
     public String toString()
     {
         return "Button[" + name + "  " + x() + "x  " + y() + "y]";
+    }
+
+    public Button setLogic(ButtonLogic logic)
+    {
+        this.logic = logic;
+        return this;
+    }
+
+    @Override
+    public void onResize()
+    {
+        updatePosition();
+    }
+
+    @Override
+    public float getWidth()
+    {
+        if (logic != null && logic.getWidth() > 0)
+        {
+            return logic.getWidth();
+        }
+        return super.getWidth();
+    }
+
+    @Override
+    public float getHeight()
+    {
+        if (logic != null && logic.getHeight() > 0)
+        {
+            return logic.getHeight();
+        }
+        return super.getHeight();
     }
 }

@@ -403,4 +403,9 @@ public class Entity extends GameObject
     {
         return "Entity[" + uniqueID + "]@" + hashCode();
     }
+
+    public boolean isAlive()
+    {
+        return health > 0;
+    }
 }

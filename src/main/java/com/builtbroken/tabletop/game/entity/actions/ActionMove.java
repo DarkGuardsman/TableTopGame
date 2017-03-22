@@ -17,14 +17,34 @@ public class ActionMove extends Action
     }
 
     @Override
-    public void doAction(Entity entity, World world, int x, int y, int floor)
+    public boolean doAction(Entity entity, World world, int x, int y, int floor, boolean left)
     {
-        entity.setPosition(x, y, floor);
+        if (!left)
+        {
+            entity.setPosition(x, y, floor);
+            //TODO consume movement points
+            //TODO check if can move to point
+            //TODO pathfind, etc
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public boolean canDoAction(Entity entity, World world, int x, int y, int floor)
+    public boolean canDoAction(Entity entity, World world, int x, int y, int floor, boolean left)
     {
-        return entity.canMove() && world.getEntity(x, y, floor) == null;
+        return !left && entity.canMove() && world.getEntity(x, y, floor) == null;
+    }
+
+    @Override
+    public boolean shouldFreeMouse(Entity entity, boolean leftClick, boolean completed)
+    {
+        return leftClick || !entity.canMove(); //do not free so we can continually move
+    }
+
+    @Override
+    public boolean doesUseMouse(boolean leftClick)
+    {
+        return !leftClick;
     }
 }

@@ -1,6 +1,5 @@
 package com.builtbroken.tabletop.client.gui.component.container;
 
-import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.Component;
 
 /**
@@ -17,6 +16,8 @@ public class ComponentGrid extends ComponentContainer
     public float heightSpacing = 0;
 
     public int rows, cols;
+    public int currentCols;
+    public int currentRows;
 
     public ComponentGrid(String name, int rows, int cols)
     {
@@ -27,9 +28,9 @@ public class ComponentGrid extends ComponentContainer
     }
 
     @Override
-    public void onResize(GameDisplay display)
+    public void onResize()
     {
-        super.onResize(display);
+        super.onResize();
         calculateSize();
         positionComponents();
     }
@@ -41,22 +42,22 @@ public class ComponentGrid extends ComponentContainer
 
     protected void positionComponents(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom)
     {
-        if(fillTop)
+        if (fillTop)
         {
             //Left to right, top to bottom
             //1 2 3 4 5
             //6 7 8 9 10
             float x = spacing + paddingLeft;
             float y = getHeight();
-            int rowCount = 0;
+            int count = 0;
             for (Component component : componentList)
             {
                 component.setPosition(x, y - heightSpacing - spacing);
                 x += widthSpacing + spacing;
-                rowCount++;
-                if (rowCount == rows)
+                count++;
+                if (count == currentCols)
                 {
-                    rowCount = 0;
+                    count = 0;
                     y -= heightSpacing + spacing;
                     x = spacing;
                 }
@@ -69,15 +70,15 @@ public class ComponentGrid extends ComponentContainer
             //1 2 3 4 5
             float x = spacing + paddingLeft;
             float y = spacing;
-            int rowCount = 0;
+            int count = 0;
             for (Component component : componentList)
             {
                 component.setPosition(x, y);
                 x += widthSpacing + spacing;
-                rowCount++;
-                if (rowCount == rows)
+                count++;
+                if (count == currentCols)
                 {
-                    rowCount = 0;
+                    count = 0;
                     y += heightSpacing + spacing;
                     x = spacing;
                 }
@@ -89,7 +90,7 @@ public class ComponentGrid extends ComponentContainer
     {
         for (Component component : componentList)
         {
-            if (component.getWidth() > heightSpacing)
+            if (component.getWidth() > widthSpacing)
             {
                 widthSpacing = component.getWidth();
             }
@@ -98,8 +99,10 @@ public class ComponentGrid extends ComponentContainer
                 heightSpacing = component.getHeight();
             }
         }
-        setWidth(widthSpacing * rows + spacing * rows + spacing);
-        setHeight(heightSpacing * cols + spacing * cols + spacing);
+        currentCols = Math.min(Math.max(componentList.size(), 1), cols);
+        currentRows = Math.min(1 + ((componentList.size() - 1) / currentCols), rows);
+        setHeight(widthSpacing * currentRows + spacing * currentRows + spacing);
+        setWidth(heightSpacing * currentCols + spacing * currentCols + spacing);
     }
 
     @Override
@@ -111,9 +114,14 @@ public class ComponentGrid extends ComponentContainer
         return component;
     }
 
+    public void clear()
+    {
+        componentList.clear();
+    }
+
     @Override
     public String toString()
     {
-        return "Component[" + name + "  " + x() + "x  " + y() + "y " + rows + "x" +  cols + "]@" + hashCode();
+        return "Component[" + name + "  " + x() + "x  " + y() + "y " + rows + "x" + cols + "]@" + hashCode();
     }
 }

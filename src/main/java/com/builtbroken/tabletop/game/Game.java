@@ -9,6 +9,7 @@ import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.game.world.World;
 
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -88,9 +89,20 @@ public class Game implements Runnable
     public void update(double delta)
     {
         //Update entities
-        for (Entity entity : getWorld().getEntities())
+        Iterator<Entity> it = getWorld().getEntities().iterator();
+        while (it.hasNext())
         {
-            entity.update(delta);
+            Entity entity = it.next();
+            //Remove entity if dead
+            if (!entity.isAlive()) //TODO add check if valid and inside world still
+            {
+                it.remove();
+            }
+            else
+            {
+
+                entity.update(delta);
+            }
         }
     }
 

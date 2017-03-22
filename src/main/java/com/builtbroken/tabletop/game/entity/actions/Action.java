@@ -61,9 +61,9 @@ public class Action
      * @param y      - location to fire action
      * @param floor  - location to fire action
      */
-    public void doAction(Entity entity, World world, int x, int y, int floor)
+    public boolean doAction(Entity entity, World world, int x, int y, int floor, boolean leftClick)
     {
-
+        return true;
     }
 
     /**
@@ -75,8 +75,30 @@ public class Action
      * @param y      - location to fire action
      * @param floor  - location to fire action
      */
-    public boolean canDoAction(Entity entity, World world, int x, int y, int floor)
+    public boolean canDoAction(Entity entity, World world, int x, int y, int floor, boolean leftClick)
     {
         return false;
+    }
+
+    /**
+     * Should the mouse be freed after clicking
+     *
+     * @param leftClick
+     * @return
+     */
+    public boolean shouldFreeMouse(Entity entity, boolean leftClick, boolean completed)
+    {
+        return true;
+    }
+
+    /**
+     * Does this action use the mouse click
+     *
+     * @param leftClick
+     * @return
+     */
+    public boolean doesUseMouse(boolean leftClick)
+    {
+        return true;
     }
 }

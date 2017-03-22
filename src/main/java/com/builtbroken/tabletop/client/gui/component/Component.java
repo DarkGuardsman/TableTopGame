@@ -3,6 +3,8 @@ package com.builtbroken.tabletop.client.gui.component;
 import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
+import com.builtbroken.tabletop.client.gui.Gui;
+import com.builtbroken.tabletop.client.gui.component.container.ComponentContainer;
 
 /**
  * Section, container, or part of a GUI
@@ -42,6 +44,9 @@ public class Component
 
     //Logic for adjusting position on change or resize of display
     private PositionLogic positionLogic = PositionLogic.NOTHING;
+
+    public ComponentContainer parent;
+    public Gui gui;
 
 
     public Component(String name)
@@ -108,6 +113,10 @@ public class Component
     {
         this.setWidth(width);
         this.setHeight(height);
+        if (parent != null)
+        {
+            parent.onResize(this);
+        }
     }
 
     /**
@@ -127,16 +136,26 @@ public class Component
 
     /**
      * Called each update tick by the display
-     *
-     * @param display
      */
-    public void update(GameDisplay display)
+    public void update()
     {
         if (hasChanged)
         {
             hasChanged = false;
-            updatePosition(display);
+            onChanged();
         }
+    }
+
+    /**
+     * Called when something about the
+     * component has changed.
+     * <p>
+     * Use this to recalculate position
+     * and size of the component
+     */
+    public void onChanged()
+    {
+        updatePosition();
     }
 
     /**
@@ -176,20 +195,16 @@ public class Component
 
     /**
      * Called when the game display has resized
-     *
-     * @param display
      */
-    public void onResize(GameDisplay display)
+    public void onResize()
     {
-        updatePosition(display);
+        onChanged();
     }
 
     /**
      * Called to update the position of the component on the display
-     *
-     * @param display
      */
-    public void updatePosition(GameDisplay display)
+    public void updatePosition()
     {
         //it is assumed the starting point of a component is the bottom left
         if (getPositionLogic() != PositionLogic.NOTHING)
@@ -197,26 +212,26 @@ public class Component
             //Set left or right
             if (getPositionLogic().left())
             {
-                x_location = display.cameraBoundLeft;
+                x_location = display().cameraBoundLeft;
             }
             else if (getPositionLogic().right())
             {
-                x_location = display.cameraBoundRight - getWidth();
+                x_location = display().cameraBoundRight - getWidth();
             }
 
             //Set top or bottom
             if (getPositionLogic().top())
             {
-                y_location = display.cameraBoundTop - getHeight();
+                y_location = display().cameraBoundTop - getHeight();
             }
             else if (getPositionLogic().bottom())
             {
-                y_location = display.cameraBoundBottom;
+                y_location = display().cameraBoundBottom;
             }
         }
     }
 
-    public void onClick(GameDisplay display, float mouseX, float mouseY, boolean left)
+    public void onClick(float mouseX, float mouseY, boolean left)
     {
         System.out.println("Click " + left + "  " + this);
     }
@@ -278,6 +293,24 @@ public class Component
     public void setMouseOver(boolean mouseOver)
     {
         this.isMouseOver = mouseOver;
+    }
+
+    public Gui gui()
+    {
+        if (gui != null)
+        {
+            return gui;
+        }
+        if (parent != null)
+        {
+            return parent.gui();
+        }
+        return null;
+    }
+
+    public GameDisplay display()
+    {
+        return gui().display;
     }
 
     @Override

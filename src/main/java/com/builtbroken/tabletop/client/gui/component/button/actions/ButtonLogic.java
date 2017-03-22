@@ -1,6 +1,7 @@
-package com.builtbroken.tabletop.client.gui.component.button;
+package com.builtbroken.tabletop.client.gui.component.button.actions;
 
 import com.builtbroken.tabletop.client.GameDisplay;
+import com.builtbroken.tabletop.client.gui.component.button.Button;
 
 /**
  * Object for handling actions for a button indirectly from the button object
@@ -8,7 +9,7 @@ import com.builtbroken.tabletop.client.GameDisplay;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 3/18/2017.
  */
-public class ButtonClickAction
+public class ButtonLogic
 {
     /**
      * Called when a button has been clicked
@@ -39,5 +40,25 @@ public class ButtonClickAction
     protected void rightClick(GameDisplay display, Button button, float mouseX, float mouseY)
     {
 
+    }
+
+    public boolean isEnabled(GameDisplay display)
+    {
+        return true;
+    }
+
+    public boolean shouldRender(GameDisplay display)
+    {
+        return true;
+    }
+
+    public float getWidth()
+    {
+        return -1;
+    }
+
+    public float getHeight()
+    {
+        return -1;
     }
 }

@@ -1,8 +1,6 @@
 package com.builtbroken.tabletop.client;
 
 
-import com.builtbroken.jlib.math.dice.Dice;
-import com.builtbroken.tabletop.client.controls.ControlMode;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
@@ -15,14 +13,11 @@ import com.builtbroken.tabletop.client.gui.game.GuiGame;
 import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
-import com.builtbroken.tabletop.game.entity.damage.Damage;
-import com.builtbroken.tabletop.game.entity.damage.DamageType;
+import com.builtbroken.tabletop.game.entity.actions.Action;
 import com.builtbroken.tabletop.game.entity.living.Character;
-import com.builtbroken.tabletop.game.items.weapons.Weapon;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Matrix4f;
-import com.builtbroken.tabletop.util.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -70,9 +65,12 @@ public class GameDisplay implements Runnable
     public static final String TEXTURE_PATH = RESOURCE_PATH + "textures/";
     public static final String GUI_PATH = TEXTURE_PATH + "gui/";
 
-    //Game logic data
-    protected Game game;
-    protected Entity selectedEntity;
+    /** Current game controlling the display */
+    public final Game game;
+    /** Current selected entity */
+    public Entity selectedEntity;
+    /** Current action selected for the entity */
+    public String currentSelectedEntityAction;
 
     //GUIS
     protected HashMap<String, Gui> guiMap = new HashMap();
@@ -107,7 +105,14 @@ public class GameDisplay implements Runnable
     protected RenderRect box_render;
     protected FontRender fontRender;
 
-    protected Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    /** Location of the camera on the map X */
+    protected float cameraPosX = 0;
+    /** Location of the camera on the map X */
+    protected float cameraPosY = 0;
+    /** The floor the camera is point at */
+    protected int cameraPosZ = 0;
+
+    /** Projection matrix of the camera */
     protected Matrix4f pr_matrix;
 
     //Controls
@@ -115,8 +120,7 @@ public class GameDisplay implements Runnable
     protected boolean clickLeft = false;
     protected boolean clickRight = false;
 
-    /** Current mod the mouse is in */
-    protected ControlMode controlMode = ControlMode.SELECTION;
+
     /** Current GUI part that the mouse is over and the user is manipulating */
     protected Component currentGuiComponetInUse;
 
@@ -247,7 +251,7 @@ public class GameDisplay implements Runnable
         {
             if (gui != null)
             {
-                gui.onResize(this);
+                gui.onResize();
             }
         }
     }
@@ -329,7 +333,7 @@ public class GameDisplay implements Runnable
         {
             if (gui != null)
             {
-                Component component = gui.update(this, mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
+                Component component = gui.update(mouseLocationX * screenSizeX, mouseLocationY * screenSizeY);
                 if (component != null)
                 {
                     currentGuiComponetInUse = component;
@@ -369,19 +373,19 @@ public class GameDisplay implements Runnable
         //Movement camera controls
         if (KeyboardInput.left())
         {
-            cameraPosition.x -= .1;
+            cameraPosX -= .1;
         }
         else if (KeyboardInput.right())
         {
-            cameraPosition.x += .1;
+            cameraPosX += .1;
         }
         else if (KeyboardInput.forward())
         {
-            cameraPosition.y += .1;
+            cameraPosY += .1;
         }
         else if (KeyboardInput.back())
         {
-            cameraPosition.y -= .1;
+            cameraPosY -= .1;
         }
 
         //Key handlers
@@ -407,8 +411,8 @@ public class GameDisplay implements Runnable
             double deltaY = -((MouseInput.prev_mouseY - MouseInput.mouseY) / height) * screenSizeY;
             if (deltaX != 0 || deltaY != 0)
             {
-                this.cameraPosition.x += deltaX;
-                this.cameraPosition.y += deltaY;
+                this.cameraPosX += deltaX;
+                this.cameraPosY += deltaY;
             }
         }
     }
@@ -448,6 +452,12 @@ public class GameDisplay implements Runnable
         //Render text
         String s = "FPS: " + prev_frames + "  UPS: " + prev_updates;
         fontRender.render(s, -1, cameraBoundTop - 0.5f, 0, 0, .5f);
+
+        s = "Entity: " + (selectedEntity != null ? selectedEntity.getDisplayName() : "none");
+        fontRender.render(s, cameraBoundLeft + 1.2f, cameraBoundTop - 0.5f, 0, 0, .5f);
+
+        s = "Action: " + (currentSelectedEntityAction != null ? currentSelectedEntityAction : "none");
+        fontRender.render(s, cameraBoundLeft + 1.2f, cameraBoundTop - 1.1f, 0, 0, .5f);
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
@@ -460,8 +470,8 @@ public class GameDisplay implements Runnable
         int tiles_y = (int) Math.ceil(screenSizeY / tileSize) + 2;
 
         //Offset tile position based on camera
-        int center_x = (int) (cameraPosition.x);
-        int center_y = (int) (cameraPosition.y);
+        int center_x = (int) (cameraPosX);
+        int center_y = (int) (cameraPosY);
 
         //Calculate the offset to make tiles render from the center
         int renderOffsetX = (tiles_x - 1) / 2;
@@ -474,16 +484,16 @@ public class GameDisplay implements Runnable
         int tx = (int) Math.floor(center_x + mx);
         int ty = (int) Math.floor(center_y + my);
 
-        Tile tileUnderMouse = game.getWorld().getTile(tx, ty, 0);
+        Tile tileUnderMouse = game.getWorld().getTile(tx, ty, cameraPosZ);
 
         //Render tiles
-        for (int x = -renderOffsetX; x < renderOffsetX; x++)   //TODO add floor var
+        for (int x = -renderOffsetX; x < renderOffsetX; x++)
         {
             for (int y = -renderOffsetY; y < renderOffsetY; y++)
             {
                 int tile_x = x + center_x;
                 int tile_y = y + center_y;
-                Tile tile = game.getWorld().getTile(tile_x, tile_y, 0);
+                Tile tile = game.getWorld().getTile(tile_x, tile_y, cameraPosZ);
                 if (tile != Tiles.AIR)
                 {
                     TileRenders.render(tile, x * tileSize, y * tileSize, zoom);
@@ -495,7 +505,7 @@ public class GameDisplay implements Runnable
         for (Entity entity : game.getWorld().getEntities())
         {
             //Ensure the entity is on the floor we are rendering
-            if (entity.zi() == 0) //TODO replace with floor var
+            if (entity.zi() == cameraPosZ)
             {
                 float tile_x = (entity.xf() - center_x) * tileSize;
                 float tile_y = (entity.yf() - center_y) * tileSize;
@@ -505,7 +515,7 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        if(entity instanceof Character && ((Character) entity).controller() == game.player)
+                        if (entity instanceof Character && ((Character) entity).controller() == game.player)
                         {
                             character_render.render(tile_x, tile_y, 0, 0, zoom);
                         }
@@ -528,7 +538,7 @@ public class GameDisplay implements Runnable
 
         //System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
 
-        if (controlMode == ControlMode.ATTACK)
+        if (currentGuiComponetInUse != null)
         {
             target_render.render(x - center_x * tileSize, y - center_y * tileSize, 0, 0, zoom);
         }
@@ -540,65 +550,79 @@ public class GameDisplay implements Runnable
         if (!MouseInput.leftClick() && clickLeft)
         {
             clickLeft = false;
-            doLeftClickAction(tx, ty, 0, mouseLocationX, mouseLocationY);
+            doLeftClickAction(tx, ty, cameraPosZ, mouseLocationX, mouseLocationY);
         }
 
         if (!MouseInput.rightClick() && clickRight)
         {
             clickRight = false;
-            doRightClickAction(tx, ty, 0, mouseLocationX, mouseLocationY);
+            doRightClickAction(tx, ty, cameraPosZ, mouseLocationX, mouseLocationY);
         }
     }
 
     protected void doLeftClickAction(int tileX, int tileY, int floor, float mouseLocationX, float mouseLocationY)
     {
+        boolean eventConsumed = false;
         if (currentGuiComponetInUse != null)
         {
-            currentGuiComponetInUse.onClick(this, mouseLocationX, mouseLocationY, true);
+            currentGuiComponetInUse.onClick(mouseLocationX, mouseLocationY, true);
+            eventConsumed = true;
         }
-        else if (controlMode == ControlMode.ATTACK)
+        else if (currentSelectedEntityAction != null && selectedEntity != null)
         {
-            controlMode = ControlMode.SELECTION;
-            if (selectedEntity != null)
+            Action action = Action.get(currentSelectedEntityAction);
+            if (action.doesUseMouse(true))
             {
-                Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
-                if (entity != null)
+                eventConsumed = true;
+                boolean completed = false;
+                if (action.canDoAction(selectedEntity, game.getWorld(), tileX, tileY, floor, true))
                 {
-                    Weapon weapon = new Weapon("gun");
-                    weapon.damage = new Damage(new DamageType("laser"), new Dice(6), 2);
-                    selectedEntity.attack(entity, weapon);
+                    completed = action.doAction(selectedEntity, game.getWorld(), tileX, tileY, floor, true);
+                }
 
-                    if (entity.getHealth() <= 0)
-                    {
-                        game.getWorld().getEntities().remove(entity);
-                    }
+                if (action.shouldFreeMouse(selectedEntity, true, completed))
+                {
+                    currentSelectedEntityAction = null;
                 }
             }
         }
-        else if (controlMode == ControlMode.SELECTION)
+
+        if (!eventConsumed)
         {
+            currentSelectedEntityAction = null;
             selectedEntity = game.getWorld().getEntity(tileX, tileY, floor);
+            for (Gui gui : guiMap.values())
+            {
+                if (gui != null)
+                {
+                    gui.onEntitySelectionChange(this, selectedEntity);
+                }
+            }
         }
     }
 
     protected void doRightClickAction(int tileX, int tileY, int floor, float mouseLocationX, float mouseLocationY)
     {
+        boolean eventConsumed = false;
         if (currentGuiComponetInUse != null)
         {
-            currentGuiComponetInUse.onClick(this, mouseLocationX, mouseLocationY, false);
+            currentGuiComponetInUse.onClick(mouseLocationX, mouseLocationY, false);
+            eventConsumed = true;
         }
-        else if (controlMode == ControlMode.ATTACK)
+        else if (currentSelectedEntityAction != null)
         {
-            controlMode = ControlMode.SELECTION;
-        }
-        else if (controlMode == ControlMode.MOVE)
-        {
-            if (selectedEntity != null)
+            eventConsumed = true;
+            Action action = Action.get(currentSelectedEntityAction);
+            if (action.doesUseMouse(false))
             {
-                Entity entity = game.getWorld().getEntity(tileX, tileY, floor);
-                if (entity == null)
+                boolean completed = false;
+                if (action.canDoAction(selectedEntity, game.getWorld(), tileX, tileY, floor, false))
                 {
-                    selectedEntity.setPosition(tileX, tileY, floor);
+                    completed = action.doAction(selectedEntity, game.getWorld(), tileX, tileY, floor, false);
+                }
+                if (action.shouldFreeMouse(selectedEntity, false, completed))
+                {
+                    currentSelectedEntityAction = null;
                 }
             }
         }

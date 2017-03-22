@@ -1,6 +1,5 @@
 package com.builtbroken.tabletop.client.gui.component.container;
 
-import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.Component;
 
 import java.util.ArrayList;
@@ -40,12 +39,12 @@ public class ComponentContainer extends Component
     }
 
     @Override
-    public void updatePosition(GameDisplay display)
+    public void updatePosition()
     {
-        super.updatePosition(display);
+        super.updatePosition();
         for (Component component : componentList)
         {
-            component.updatePosition(display);
+            component.updatePosition();
         }
     }
 
@@ -80,11 +79,18 @@ public class ComponentContainer extends Component
         return null;
     }
 
+
+    public void onResize(Component component)
+    {
+
+    }
+
     public <C extends Component> C add(C component)
     {
         if (!componentList.contains(component))
         {
             componentList.add(component);
+            component.parent = this;
         }
         return component;
     }

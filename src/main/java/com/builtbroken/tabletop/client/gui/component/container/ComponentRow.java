@@ -1,6 +1,5 @@
 package com.builtbroken.tabletop.client.gui.component.container;
 
-import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.PositionLogic;
 
@@ -26,9 +25,9 @@ public class ComponentRow extends ComponentContainer
     }
 
     @Override
-    public void onResize(GameDisplay display)
+    public void onResize()
     {
-        super.onResize(display);
+        super.onResize();
         calculateSize();
         positionComponents();
     }

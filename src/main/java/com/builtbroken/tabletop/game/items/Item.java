@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.game.items;
 
 import com.builtbroken.tabletop.game.GameObject;
+import com.builtbroken.tabletop.game.entity.Entity;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -18,5 +19,16 @@ public class Item extends GameObject
     public Item(String uniqueID)
     {
         super("item." + uniqueID);
+    }
+
+    /**
+     * Does the item have an action
+     * that an entity can use
+     *
+     * @return
+     */
+    public boolean hasAction(Entity entity)
+    {
+        return false;
     }
 }

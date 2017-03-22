@@ -5,9 +5,13 @@ import com.builtbroken.tabletop.game.entity.actions.ActionMove;
 import com.builtbroken.tabletop.game.entity.controller.Controller;
 import com.builtbroken.tabletop.game.entity.inventory.Inventory;
 import com.builtbroken.tabletop.game.entity.inventory.InventoryArmor;
+import com.builtbroken.tabletop.game.items.Item;
 import com.builtbroken.tabletop.game.items.ItemState;
+import com.builtbroken.tabletop.game.items.weapons.Weapon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -22,6 +26,13 @@ public class Character extends Entity
     protected InventoryArmor armor;
     /** Storage inventory for the character */
     protected Inventory inventory;
+    /** Weapons that can be used */
+    public List<Weapon> usableWeapons = new ArrayList();
+    /** Items that can be used */
+    public List<Item> actionableItems = new ArrayList();
+
+    public Item activeItem;
+    public Item activeWeapon;
 
     /** Display name for the entity */
     protected String displayName;

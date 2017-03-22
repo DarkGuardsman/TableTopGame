@@ -4,6 +4,7 @@ import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentContainer;
+import com.builtbroken.tabletop.game.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +25,31 @@ public class Gui
     /** Can the user use the GUI */
     public boolean isActivate = true;
 
+    public final GameDisplay display;
+
+    public Gui(GameDisplay display)
+    {
+        this.display = display;
+    }
+
     /**
      * Called to update the display
      *
-     * @param display
      * @return component the mouse is currently over
      */
-    public Component update(GameDisplay display, float mouseX, float mouseY)
+    public Component update(float mouseX, float mouseY)
     {
+        //Called to update GUI itself
+        doUpdate(mouseX, mouseY);
+
         //Update all components
         for (Component component : componentList)
         {
-            component.update(display);
+            component.update();
             component.setMouseOver(false);
         }
+
+        //Get current component mouse is over
         if (MouseInput.inWindow && isVisible && isActivate)
         {
             //Get current component that the mouse is over
@@ -49,6 +61,22 @@ public class Gui
             }
         }
         return null;
+    }
+
+    /**
+     * Called to update the GUI logic
+     *
+     * @param mouseX
+     * @param mouseY
+     */
+    protected void doUpdate(float mouseX, float mouseY)
+    {
+
+    }
+
+    public void onEntitySelectionChange(GameDisplay display, Entity entity)
+    {
+
     }
 
     /**
@@ -70,14 +98,12 @@ public class Gui
 
     /**
      * Called when the game display has resized
-     *
-     * @param display
      */
-    public void onResize(GameDisplay display)
+    public void onResize()
     {
         for (Component component : componentList)
         {
-            component.onResize(display);
+            component.onResize();
         }
     }
 
@@ -128,6 +154,7 @@ public class Gui
     {
         if (!componentList.contains(component))
         {
+            component.gui = this;
             componentList.add(component);
         }
     }
