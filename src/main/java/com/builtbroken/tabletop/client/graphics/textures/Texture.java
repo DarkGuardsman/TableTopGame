@@ -7,25 +7,42 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class Texture
 {
+    public static HashMap<String, Texture> textures = new HashMap();
+
     public int width, height;
     protected int texture;
 
     protected final String path;
 
-    public Texture(String path)
+    public static Texture get(String path)
+    {
+        if (textures.containsKey(path))
+        {
+            return textures.get(path);
+        }
+        else
+        {
+            Texture texture = new Texture(path);
+            textures.put(path, texture);
+            return texture;
+        }
+    }
+
+    protected Texture(String path)
     {
         this(path, true);
     }
 
-    public Texture(String path, boolean load)
+    protected Texture(String path, boolean load)
     {
         this.path = path;
-        if(load)
+        if (load)
         {
             load();
         }

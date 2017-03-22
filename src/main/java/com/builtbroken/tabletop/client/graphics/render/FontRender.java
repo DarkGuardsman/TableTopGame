@@ -48,7 +48,7 @@ public class FontRender
 
     public FontRender(String dataFile, float size, float layer)
     {
-        background = new RenderRect("resources/textures/gui/font.back.png", Shader.CHAR, 1, 1, layer - 0.05f);
+        background = new RenderRect("resources/textures/gui/back.png", Shader.CHAR, size, size, layer - 0.05f);
         this.layer = layer;
         this.size = size;
         int line = 0;
@@ -225,8 +225,12 @@ public class FontRender
 
         if (background)
         {
-            this.background.setSize(size * numChars, size);
-            this.background.render(x, y, z, rot, scale); //TODO something is off about position
+            this.background.bind();
+            for (int i = 0; i < numChars; i++)
+            {
+                this.background.draw(x + size * scale * i, y, z, rot, scale); //TODO something is off about position
+            }
+            this.background.unbind();
         }
 
         //Setup

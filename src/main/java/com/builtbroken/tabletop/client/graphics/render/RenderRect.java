@@ -1,8 +1,8 @@
 package com.builtbroken.tabletop.client.graphics.render;
 
+import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.graphics.textures.Texture;
-import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 
@@ -23,7 +23,7 @@ public class RenderRect
     public RenderRect(String texture, Shader shader)
     {
         this.shader = shader;
-        this.texture = new Texture(texture);
+        this.texture = Texture.get(texture);
     }
 
     public RenderRect(String texture, Shader shader, float width, float height, float layer)
@@ -45,7 +45,7 @@ public class RenderRect
 
     public void setSize(float width, float height, float layer)
     {
-        if(allowResize || mesh == null)
+        if (allowResize || mesh == null)
         {
             if (this.mesh != null)
             {
@@ -65,9 +65,19 @@ public class RenderRect
 
     public void render(float x, float y, float z, float rot, float scale)
     {
-        //Setup
+        bind();
+        draw(x, y, z, rot, scale);
+        unbind();
+    }
+
+    public void bind()
+    {
         texture.bind();
         shader.enable();
+    }
+
+    public void draw(float x, float y, float z, float rot, float scale)
+    {
         if (shader == Shader.CHAR)
         {
             if (cache == null)
@@ -88,6 +98,10 @@ public class RenderRect
 
         //Render
         mesh.render(scale);
+    }
+
+    public void unbind()
+    {
 
         //Clean up
         shader.disable();
