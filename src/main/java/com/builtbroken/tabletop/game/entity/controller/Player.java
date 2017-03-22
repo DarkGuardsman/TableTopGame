@@ -6,6 +6,11 @@ package com.builtbroken.tabletop.game.entity.controller;
  */
 public class Player extends Controller
 {
+    public Player(String id, String displayName)
+    {
+        super("player." + id, displayName);
+    }
+
     @Override
     public void update(double delta)
     {

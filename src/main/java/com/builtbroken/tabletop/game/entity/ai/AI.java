@@ -8,4 +8,8 @@ import com.builtbroken.tabletop.game.entity.controller.Controller;
  */
 public class AI extends Controller
 {
+    public AI(String id, String displayName)
+    {
+        super("ai." + id, displayName);
+    }
 }

@@ -19,6 +19,15 @@ public class Controller
 
     public Character entity;
 
+    public final String id;
+    public final String displayName;
+
+    public Controller(String id, String displayName)
+    {
+        this.id = id;
+        this.displayName = displayName;
+    }
+
     public void update(double delta)
     {
 

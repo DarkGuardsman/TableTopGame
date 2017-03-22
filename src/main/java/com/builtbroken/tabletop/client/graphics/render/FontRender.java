@@ -20,7 +20,6 @@ public class FontRender
 
     private Matrix4f cache;
 
-    private Mesh[] meshs;
     private RenderRect background;
 
     private float size;
@@ -129,7 +128,7 @@ public class FontRender
                     byte c = Byte.parseByte(num);
 
                     CharFontData data;
-                    if (c > 0)
+                    if (c >= 0)
                     {
                         if (fontData[c] != null)
                         {
@@ -183,29 +182,38 @@ public class FontRender
 
     protected void generate()
     {
-        meshs = new Mesh[256];
-
         int index = 0;
         line:
         for (int y = 0; y < sheet.cols; y++)
         {
             for (int x = 0; x < sheet.rows; x++)
             {
+                int width = getWidth((byte) index);
+                float widthScaled = width / (float) sheet.width;
+
                 float vx = (float) x / (float) sheet.rows;
                 float vy = (float) (y + 1) / (float) sheet.cols;
 
                 float vx1 = (float) x / (float) sheet.rows;
                 float vy1 = (float) y / (float) sheet.cols;
 
-                float vx2 = (float) (x + 1) / (float) sheet.rows;
+                float vx2 = (x / (float) sheet.rows) + widthScaled;
                 float vy2 = (float) y / (float) sheet.cols;
 
-                float vx3 = (float) (x + 1) / (float) sheet.rows;
+                float vx3 = (x / (float) sheet.rows) + widthScaled;
                 float vy3 = (float) (y + 1) / (float) sheet.cols;
 
                 float[] textureCoords = new float[]{vx, vy, vx1, vy1, vx2, vy2, vx3, vy3};
-                meshs[index++] = Mesh.createMeshForSize(this.size, this.size, layer, textureCoords);
-                if (index >= 255)
+
+                float meshWidth = (width / (float) cellWidth) * this.size;
+                if (fontData[index] != null)
+                {
+                    fontData[index].size = meshWidth;
+                    fontData[index].mesh = Mesh.createMeshForSize(meshWidth, this.size, layer, textureCoords);
+                }
+
+                //Increment and check for max
+                if (index++ >= 255)
                 {
                     break line;
                 }
@@ -223,38 +231,94 @@ public class FontRender
         byte[] chars = text.getBytes(Charset.forName("ISO-8859-1"));
         int numChars = chars.length;
 
+        //Render background
+        float xf = 0;
         if (background)
         {
             this.background.bind();
             for (int i = 0; i < numChars; i++)
             {
-                this.background.draw(x + size * scale * i, y, z, rot, scale); //TODO something is off about position
+                byte c = chars[i];
+                this.background.draw(x + xf, y, z, rot, scale);
+                float width = getSizeX(c);
+                xf += width * scale;
             }
             this.background.unbind();
         }
 
-        //Setup
+        //Render chars
+        bind();
+        xf = 0;
+        for (int i = 0; i < numChars; i++)
+        {
+            byte c = chars[i];
+            renderChar(c, x + xf, y, z, rot, scale);
+            float width = getSizeX(c);
+            xf += width * scale;
+        }
+        unbind();
+    }
+
+    private void bind()
+    {
         sheet.bind();
         Shader.CHAR.enable();
+    }
 
+    private void renderChar(byte c, float x, float y, float z, float rot, float scale)
+    {
+        //Get character data
+        CharFontData data = fontData[c];
+        if (data == null)
+        {
+            data = fontData['*'];
+        }
+
+        //Set position
         if (cache == null)
         {
             cache = new Matrix4f();
         }
+        Shader.CHAR.setUniformMat4f("ml_matrix", cache.resetToIdentity().translate(x, y, z));
 
-        for (int i = 0; i < numChars; i++)
-        {
-            byte c = chars[i];
-            Mesh mesh = meshs[c];
-            Shader.CHAR.setUniformMat4f("ml_matrix", cache.resetToIdentity().translate(x + size * scale * i, y, z));
+        //Render mesh
+        data.mesh.render(scale);
+    }
 
-            //Render
-            mesh.render(scale);
-        }
-
-        //Clean up
+    private void unbind()
+    {
         Shader.CHAR.disable();
         sheet.unbind();
+    }
+
+    public int getWidth(byte c)
+    {
+        if (c >= 0 && c < fontData.length)
+        {
+            CharFontData data = fontData[c];
+            if (data != null && data.width >= 0)
+            {
+                return data.width;
+            }
+            else if (fontWidthDefault >= 0)
+            {
+                return fontWidthDefault;
+            }
+        }
+        return cellWidth;
+    }
+
+    public float getSizeX(byte c)
+    {
+        if (c >= 0 && c < fontData.length)
+        {
+            CharFontData data = fontData[c];
+            if (data != null && data.width >= 0)
+            {
+                return data.size;
+            }
+        }
+        return size;
     }
 
     //Data object
@@ -265,6 +329,10 @@ public class FontRender
         public int widthOffset;
         public int widthXOffset;
         public int widthYOffset;
+
+        public float size;
+
+        public Mesh mesh;
 
         @Override
         public String toString()

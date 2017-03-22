@@ -3,6 +3,7 @@ package com.builtbroken.tabletop.game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.entity.actions.Action;
 import com.builtbroken.tabletop.game.entity.actions.ActionMove;
+import com.builtbroken.tabletop.game.entity.ai.AI;
 import com.builtbroken.tabletop.game.entity.controller.Player;
 import com.builtbroken.tabletop.game.entity.living.Character;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
@@ -35,7 +36,7 @@ public class Game implements Runnable
     public Game()
     {
         world = new World(this);
-        player = new Player();
+        player = new Player("1", "player 1");
     }
 
     public void start()
@@ -125,6 +126,7 @@ public class Game implements Runnable
         getWorld().getEntities().add(new Character("paul").setController(player).setPosition(0, 2, 0));
         getWorld().getEntities().add(new Character("tim").setController(player).setPosition(0, -2, 0));
 
+        AI ai = new AI("1", "enemy ai");
         for (int i = 0; i < 20; i++)
         {
             for (int j = 0; j < 5; j++)
@@ -133,7 +135,22 @@ public class Game implements Runnable
                 int y = random.nextInt(20) - random.nextInt(20);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    getWorld().getEntities().add(new Character("tim").setPosition(x, y, 0));
+                    getWorld().getEntities().add(new Character("enemy" + i).setController(ai).setPosition(x, y, 0));
+                    break;
+                }
+            }
+        }
+
+        ai = new AI("2", "neutral ai");
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                int x = random.nextInt(50) - random.nextInt(50);
+                int y = random.nextInt(50) - random.nextInt(50);
+                if (getWorld().getEntity(x, y, 0) == null)
+                {
+                    getWorld().getEntities().add(new Character("neutral" + i).setController(ai).setPosition(x, y, 0));
                     break;
                 }
             }

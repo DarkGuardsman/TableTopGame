@@ -11,10 +11,13 @@ public class KeyboardInput extends GLFWKeyCallback
 {
     public static boolean[] keys = new boolean[65536];
 
+    public static int currentKey;
+
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods)
     {
         keys[key] = action != GLFW.GLFW_RELEASE;
+        currentKey = key;
     }
 
     public static boolean isKeyDown(int key)

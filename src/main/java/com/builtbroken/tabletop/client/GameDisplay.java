@@ -101,6 +101,8 @@ public class GameDisplay implements Runnable
     protected RenderRect background_render;
     protected RenderRect character_render;
     protected RenderRect character_render2;
+    protected RenderRect character_render3;
+    protected RenderRect character_render4;
     protected RenderRect target_render;
     protected RenderRect box_render;
     public FontRender fontRender;
@@ -193,8 +195,10 @@ public class GameDisplay implements Runnable
 
         //Init render code
         background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
-        character_render = new RenderRect(TEXTURE_PATH + "char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
-        character_render2 = new RenderRect(TEXTURE_PATH + "char2.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
+        character_render = new RenderRect(TEXTURE_PATH + "entity/char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
+        character_render2 = new RenderRect(TEXTURE_PATH + "entity/char2.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
+        character_render3 = new RenderRect(TEXTURE_PATH + "entity/char3.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
+        character_render4 = new RenderRect(TEXTURE_PATH + "entity/char4.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
         target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
@@ -461,8 +465,21 @@ public class GameDisplay implements Runnable
         s = "Action: " + (currentSelectedEntityAction != null ? currentSelectedEntityAction : "none");
         fontRender.render(s, cameraBoundLeft + 1.2f, cameraBoundTop - 1.1f, 0, 0, .5f);
 
-        s = "A";
-        fontRender.render(s, 0, 0, 0, 0, .5f);
+        //s = String.valueOf(java.lang.Character.toChars(KeyboardInput.currentKey));
+        //fontRender.render(s, 0, 0, 0, 0, .5f);
+        s = "abcdefghijklmnopqrztuvwxyz";
+        fontRender.render(s, 0, 0, 0, 0, 1);
+        s = "ABCDEFGHIJKLMNOPQRZTUVWZYZ";
+        fontRender.render(s, 0, -1, 0, 0, 1);
+        s = "0123456789[]{};:'\",./?-+=_*";
+        fontRender.render(s, 0, -2, 0, 0, 1);
+
+        s = "abcdefghijklmnopqrztuvwxyz";
+        fontRender.render(s, 0, -3, 0, 0, 0.5f);
+        s = "ABCDEFGHIJKLMNOPQRZTUVWZYZ";
+        fontRender.render(s, 0, -3.5f, 0, 0, 0.5f);
+        s = "0123456789[]{};:'\",./?-+=_*";
+        fontRender.render(s, 0, -4, 0, 0, 0.5f);
     }
 
     protected void renderMap(float mouseLocationX, float mouseLocationY)
@@ -475,21 +492,23 @@ public class GameDisplay implements Runnable
         int tiles_y = (int) Math.ceil(screenSizeY / tileSize) + 2;
 
         //Offset tile position based on camera
-        int center_x = (int) (cameraPosX);
-        int center_y = (int) (cameraPosY);
+        int center_x = (int) (cameraPosX - (zoom / 2f));
+        int center_y = (int) (cameraPosY - (zoom / 2f));
 
         //Calculate the offset to make tiles render from the center
         int renderOffsetX = (tiles_x - 1) / 2;
         int renderOffsetY = (tiles_y - 1) / 2;
 
+        //Get the position of the mouse based on screen size and tile scale
+        float mouseScreenPosXScaled = mouseLocationX * screenSizeX / tileSize;
+        float mouseScreenPosYScaled = mouseLocationY * screenSizeY / tileSize;
 
-        float mx = mouseLocationX * screenSizeX / tileSize;
-        float my = mouseLocationY * screenSizeY / tileSize;
+        //Get the position of the mouse relative to the map
+        int mouseMapPosX = (int) Math.floor(center_x + mouseScreenPosXScaled);
+        int mouseMapPosY = (int) Math.floor(center_y + mouseScreenPosYScaled);
 
-        int tx = (int) Math.floor(center_x + mx);
-        int ty = (int) Math.floor(center_y + my);
-
-        Tile tileUnderMouse = game.getWorld().getTile(tx, ty, cameraPosZ);
+        //Get the tile the mouse is currently over
+        Tile tileUnderMouse = game.getWorld().getTile(mouseMapPosX, mouseMapPosY, cameraPosZ);
 
         //Render tiles
         for (int x = -renderOffsetX; x < renderOffsetX; x++)
@@ -520,26 +539,38 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        if (entity instanceof Character && ((Character) entity).controller() == game.player)
+                        if (entity instanceof Character)
                         {
-                            character_render.render(tile_x, tile_y, 0, 0, zoom);
+                            if (((Character) entity).controller() == game.player)
+                            {
+                                character_render.render(tile_x, tile_y, 0, 0, zoom);
+                            }
+                            else if (((Character) entity).controller().id.equals("ai.1"))
+                            {
+                                character_render2.render(tile_x, tile_y, 0, 0, zoom);
+                            }
+                            else
+                            {
+                                character_render3.render(tile_x, tile_y, 0, 0, zoom);
+                            }
                         }
                         else
                         {
-                            character_render2.render(tile_x, tile_y, 0, 0, zoom);
+                            character_render4.render(tile_x, tile_y, 0, 0, zoom);
                         }
-                        if (tx == (int) tile_x && ty == (int) tile_y)
+
+                        if (mouseMapPosX == entity.xi() && mouseMapPosY == entity.yi())
                         {
                             String s = entity.getDisplayName();
-                            fontRender.render(s, tile_x, tile_y, 0, 0, .5f);
+                            fontRender.render(s, mouseLocationX * screenSizeX, mouseLocationY * screenSizeY, 0, 0, .5f * zoom);
                         }
                     }
                 }
             }
         }
 
-        float x = tx * tileSize;
-        float y = ty * tileSize;
+        float x = mouseMapPosX * tileSize;
+        float y = mouseMapPosY * tileSize;
 
         //System.out.println(x + "  " + y + "  " + zoom + " " + tx + " " + ty + " " + tile);
 
@@ -555,13 +586,13 @@ public class GameDisplay implements Runnable
         if (!MouseInput.leftClick() && clickLeft)
         {
             clickLeft = false;
-            doLeftClickAction(tx, ty, cameraPosZ, mouseLocationX, mouseLocationY);
+            doLeftClickAction(mouseMapPosX, mouseMapPosY, cameraPosZ, mouseLocationX, mouseLocationY);
         }
 
         if (!MouseInput.rightClick() && clickRight)
         {
             clickRight = false;
-            doRightClickAction(tx, ty, cameraPosZ, mouseLocationX, mouseLocationY);
+            doRightClickAction(mouseMapPosX, mouseMapPosY, cameraPosZ, mouseLocationX, mouseLocationY);
         }
     }
 
