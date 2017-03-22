@@ -20,10 +20,15 @@ public class RenderRect
     private boolean allowResize = true;
 
 
-    public RenderRect(String texture, Shader shader)
+    public RenderRect(Texture texture, Shader shader)
     {
         this.shader = shader;
-        this.texture = Texture.get(texture);
+        this.texture = texture;
+    }
+
+    public RenderRect(String texture, Shader shader)
+    {
+        this(Texture.get(texture), shader);
     }
 
     public RenderRect(String texture, Shader shader, float width, float height, float layer)
@@ -32,7 +37,19 @@ public class RenderRect
         setSize(width, height, layer);
     }
 
+    public RenderRect(Texture texture, Shader shader, float width, float height, float layer)
+    {
+        this(texture, shader);
+        setSize(width, height, layer);
+    }
+
     public RenderRect(String texture, Shader shader, Mesh mesh)
+    {
+        this(texture, shader);
+        this.mesh = mesh;
+    }
+
+    public RenderRect(Texture texture, Shader shader, Mesh mesh)
     {
         this(texture, shader);
         this.mesh = mesh;

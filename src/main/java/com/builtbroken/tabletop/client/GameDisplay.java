@@ -4,17 +4,17 @@ package com.builtbroken.tabletop.client;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.graphics.render.CharRender;
 import com.builtbroken.tabletop.client.graphics.render.FontRender;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
+import com.builtbroken.tabletop.client.graphics.render.TileRender;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
 import com.builtbroken.tabletop.client.gui.game.GuiGame;
-import com.builtbroken.tabletop.client.tile.TileRenders;
 import com.builtbroken.tabletop.game.Game;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.entity.actions.Action;
-import com.builtbroken.tabletop.game.entity.living.Character;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.util.Matrix4f;
@@ -99,10 +99,6 @@ public class GameDisplay implements Runnable
 
     //Renders
     protected RenderRect background_render;
-    protected RenderRect character_render;
-    protected RenderRect character_render2;
-    protected RenderRect character_render3;
-    protected RenderRect character_render4;
     protected RenderRect target_render;
     protected RenderRect box_render;
     public FontRender fontRender;
@@ -195,21 +191,19 @@ public class GameDisplay implements Runnable
 
         //Init render code
         background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
-        character_render = new RenderRect(TEXTURE_PATH + "entity/char.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
-        character_render2 = new RenderRect(TEXTURE_PATH + "entity/char2.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
-        character_render3 = new RenderRect(TEXTURE_PATH + "entity/char3.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
-        character_render4 = new RenderRect(TEXTURE_PATH + "entity/char4.png", Shader.CHAR, 1, 1, ENTITY_LAYER);
         target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
+
+        CharRender.load();
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.leftArrow = new RenderRect(GUI_PATH + "button.left.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
         ButtonScrollRow.rightArrow = new RenderRect(GUI_PATH + "button.right.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
 
-        TileRenders.load();
+        TileRender.load();
 
         loadGUIs();
     }
@@ -520,7 +514,7 @@ public class GameDisplay implements Runnable
                 Tile tile = game.getWorld().getTile(tile_x, tile_y, cameraPosZ);
                 if (tile != Tiles.AIR)
                 {
-                    TileRenders.render(tile, x * tileSize, y * tileSize, zoom);
+                    TileRender.render(tile, x * tileSize, y * tileSize, zoom);
                 }
             }
         }
@@ -539,25 +533,7 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        if (entity instanceof Character)
-                        {
-                            if (((Character) entity).controller() == game.player)
-                            {
-                                character_render.render(tile_x, tile_y, 0, 0, zoom);
-                            }
-                            else if (((Character) entity).controller().id.equals("ai.1"))
-                            {
-                                character_render2.render(tile_x, tile_y, 0, 0, zoom);
-                            }
-                            else
-                            {
-                                character_render3.render(tile_x, tile_y, 0, 0, zoom);
-                            }
-                        }
-                        else
-                        {
-                            character_render4.render(tile_x, tile_y, 0, 0, zoom);
-                        }
+                        CharRender.render(entity, tile_x, tile_y, 0, 0, zoom);
 
                         if (mouseMapPosX == entity.xi() && mouseMapPosY == entity.yi())
                         {

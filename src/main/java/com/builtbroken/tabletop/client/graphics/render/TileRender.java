@@ -1,8 +1,7 @@
-package com.builtbroken.tabletop.client.tile;
+package com.builtbroken.tabletop.client.graphics.render;
 
 import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.game.tile.Tile;
 import com.builtbroken.tabletop.game.tile.Tiles;
 
@@ -10,7 +9,7 @@ import com.builtbroken.tabletop.game.tile.Tiles;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 3/15/2017.
  */
-public class TileRenders
+public class TileRender
 {
     public static RenderRect[] renders;
 

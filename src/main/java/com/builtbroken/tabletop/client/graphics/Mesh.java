@@ -57,6 +57,23 @@ public class Mesh
     }
 
     /**
+     * Creates a mesh of the size
+     *
+     * @param size  - size
+     * @param layer - depth
+     * @return mesh
+     */
+    public static Mesh createMeshForSize(float size, float layer, float[] uv)
+    {
+        return new Mesh(new float[]{
+                -size / 2.0f, -size / 2.0f, layer,
+                -size / 2.0f, size / 2.0f, layer,
+                size / 2.0f, size / 2.0f, layer,
+                size / 2.0f, -size / 2.0f, layer
+        }, DEFAULT_INDICES, uv);
+    }
+
+    /**
      * Creats a mesh for the given size data
      *
      * @param width  - x
@@ -82,6 +99,32 @@ public class Mesh
                 width, height, layer,
                 width, 0.0f, layer
         }, DEFAULT_INDICES, UVs);
+    }
+
+    /**
+     * Generates UVs for a texture sheet
+     *
+     * @param x - start on the sheet between 0 - 1
+     * @param y - start on the sheet between 0 - 1
+     * @param u - with of texture on sheet between 0 - 1
+     * @param v - with of texture on sheet between 0 - 1
+     * @return texture coords for a single rectangle
+     */
+    public static float[] generateUV(float x, float y, float u, float v)
+    {
+        float vx = x;
+        float vy = y + v;
+
+        float vx1 = x;
+        float vy1 = y;
+
+        float vx2 = x + v;
+        float vy2 = y;
+
+        float vx3 = x + u;
+        float vy3 = y + v;
+
+        return new float[]{vx, vy, vx1, vy1, vx2, vy2, vx3, vy3};
     }
 
     /**
