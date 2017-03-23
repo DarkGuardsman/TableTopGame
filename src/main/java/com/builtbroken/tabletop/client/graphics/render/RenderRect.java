@@ -3,6 +3,7 @@ package com.builtbroken.tabletop.client.graphics.render;
 import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.graphics.textures.Texture;
+import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
 
@@ -28,7 +29,7 @@ public class RenderRect
 
     public RenderRect(String texture, Shader shader)
     {
-        this(Texture.get(texture), shader);
+        this(TextureLoader.get(texture), shader);
     }
 
     public RenderRect(String texture, Shader shader, float width, float height, float layer)

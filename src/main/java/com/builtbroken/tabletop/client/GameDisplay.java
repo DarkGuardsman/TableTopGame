@@ -4,11 +4,9 @@ package com.builtbroken.tabletop.client;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.render.CharRender;
-import com.builtbroken.tabletop.client.graphics.render.FontRender;
-import com.builtbroken.tabletop.client.graphics.render.RenderRect;
-import com.builtbroken.tabletop.client.graphics.render.TileRender;
-import com.builtbroken.tabletop.client.graphics.textures.Texture;
+import com.builtbroken.tabletop.client.graphics.render.*;
+import com.builtbroken.tabletop.client.graphics.textures.ITexture;
+import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
 import com.builtbroken.tabletop.client.gui.component.button.ButtonScrollRow;
@@ -102,7 +100,9 @@ public class GameDisplay implements Runnable
     protected RenderRect background_render;
     protected RenderRect target_render;
     protected RenderRect box_render;
+
     public FontRender fontRender;
+    protected ITexture testTexture;
 
     /** Location of the camera on the map X */
     protected float cameraPosX = 0;
@@ -196,6 +196,7 @@ public class GameDisplay implements Runnable
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
+        testTexture = TextureLoader.getTexture(TEXTURE_PATH + "target.png", 0, 0, 1, 1);
 
         CharRender.load();
 
@@ -329,7 +330,7 @@ public class GameDisplay implements Runnable
      */
     protected void dispose()
     {
-        Texture.disposeTextures();
+        TextureLoader.disposeTextures();
         TileRender.dispose();
         CharRender.dispose();
         fontRender.dispose();

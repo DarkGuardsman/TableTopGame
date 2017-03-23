@@ -4,6 +4,7 @@ import com.builtbroken.tabletop.client.GameDisplay;
 import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
 import com.builtbroken.tabletop.client.graphics.textures.Texture;
+import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.game.entity.Entity;
 import com.builtbroken.tabletop.game.items.armor.Armor;
 
@@ -39,7 +40,7 @@ public class CharRender
 
     public static void load()
     {
-        sheet = Texture.get(GameDisplay.TEXTURE_PATH + "entity/body/body.png");
+        sheet = TextureLoader.get(GameDisplay.TEXTURE_PATH + "entity/body/body.png");
 
         float uvScale = 64f / sheet.width;
         body = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER, Mesh.generateUV(0, 0, uvScale, uvScale)));

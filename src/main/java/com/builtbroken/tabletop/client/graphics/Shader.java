@@ -13,7 +13,7 @@ public class Shader
     public static final int VERTEX_ATTRIB = 0;
     public static final int TCOORD_ATTRIB = 1;
 
-    public static Shader CHAR, BACKGROUND;
+    public static Shader CHAR, BACKGROUND, SHADER;
 
     private boolean enabled = false;
 
@@ -29,6 +29,7 @@ public class Shader
     {
         CHAR = new Shader("resources/shaders/char.vert", "resources/shaders/char.frag");
         BACKGROUND = new Shader("resources/shaders/bg.vert", "resources/shaders/bg.frag");
+        SHADER = new Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     }
 
     public int getUniform(String name)

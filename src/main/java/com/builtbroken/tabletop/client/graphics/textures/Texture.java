@@ -7,44 +7,15 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class Texture
 {
-    public static HashMap<String, Texture> textures = new HashMap();
-
     public int width, height;
     protected int texture;
 
     protected final String path;
-
-    public static Texture get(String path)
-    {
-        if (textures.containsKey(path))
-        {
-            return textures.get(path);
-        }
-        else
-        {
-            Texture texture = new Texture(path);
-            textures.put(path, texture);
-            return texture;
-        }
-    }
-
-    public static void disposeTextures()
-    {
-        for (Texture texture : textures.values())
-        {
-            if (texture != null)
-            {
-                texture.dispose();
-            }
-        }
-        textures.clear();
-    }
 
     protected Texture(String path)
     {
@@ -108,6 +79,17 @@ public class Texture
     public void dispose()
     {
         glDeleteTextures(texture);
+    }
+
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
     }
 
     @Override

@@ -4,7 +4,7 @@ package com.builtbroken.tabletop.client.graphics.textures;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 3/19/2017.
  */
-public class TextureSheet extends Texture
+public class TextureSheetData extends Texture
 {
     public final int expectedWidth;
     public final int expectedHeight;
@@ -17,7 +17,7 @@ public class TextureSheet extends Texture
     public int rows;
     public int cols;
 
-    public TextureSheet(String path, int width, int height, int sizeX, int sizeY)
+    public TextureSheetData(String path, int width, int height, int sizeX, int sizeY)
     {
         super(path, false);
         this.expectedWidth = width;

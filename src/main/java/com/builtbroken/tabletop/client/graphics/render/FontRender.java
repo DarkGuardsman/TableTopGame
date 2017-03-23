@@ -2,7 +2,7 @@ package com.builtbroken.tabletop.client.graphics.render;
 
 import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.textures.TextureSheet;
+import com.builtbroken.tabletop.client.graphics.textures.TextureSheetData;
 import com.builtbroken.tabletop.util.Matrix4f;
 
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
  */
 public class FontRender
 {
-    TextureSheet sheet;
+    TextureSheetData sheet;
 
     private Matrix4f cache;
 
@@ -176,7 +176,7 @@ public class FontRender
         }
 
 
-        sheet = new TextureSheet(dataFile.substring(0, dataFile.lastIndexOf("/") + 1) + (textureFile != null ? textureFile : fontName + ".png"), imageWidth, imageHeight, cellWidth, cellHeight);
+        sheet = new TextureSheetData(dataFile.substring(0, dataFile.lastIndexOf("/") + 1) + (textureFile != null ? textureFile : fontName + ".png"), imageWidth, imageHeight, cellWidth, cellHeight);
         generate();
     }
 
