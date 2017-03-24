@@ -30,14 +30,14 @@ public class Shader
     {
         CHAR = new Shader("resources/shaders/char.vert", "resources/shaders/char.frag");
         BACKGROUND = new Shader("resources/shaders/bg.vert", "resources/shaders/bg.frag");
-        SHADER = new Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+        //SHADER = new Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     }
 
     public static void disposeAll()
     {
         CHAR.dispose();
         BACKGROUND.dispose();
-        SHADER.dispose();
+        //SHADER.dispose();
     }
 
     private void dispose()

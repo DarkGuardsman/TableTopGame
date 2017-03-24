@@ -24,7 +24,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLUtil;
 
 import java.util.HashMap;
 
@@ -165,11 +164,9 @@ public class GameDisplay implements Runnable
         glfwMakeContextCurrent(windowID);
         glfwShowWindow(windowID);
         GL.createCapabilities();
-        GLUtil.setupDebugMessageCallback();
 
         ///Debug gl version
         System.out.println("OpenGL: " + glGetString(GL_VERSION));
-
 
         glEnable(GL_DEPTH_TEST);
         glActiveTexture(GL_TEXTURE1);
@@ -180,7 +177,7 @@ public class GameDisplay implements Runnable
         Shader.loadAll();
         Shader.BACKGROUND.setUniform1i("tex", 1);
         Shader.CHAR.setUniform1i("tex", 1);
-        Shader.SHADER.setUniform1i("tex", 1);
+        //Shader.SHADER.setUniform1i("tex", 1);
 
         //Register event for resize
         glfwSetWindowSizeCallback(windowID, new GLFWWindowSizeCallback()
@@ -204,18 +201,19 @@ public class GameDisplay implements Runnable
 
         //renderer = new Renderer(1000);
         CharRender.load();
+        TileRender.load();
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
         ButtonScrollRow.leftArrow = new RenderRect(GUI_PATH + "button.left.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
         ButtonScrollRow.rightArrow = new RenderRect(GUI_PATH + "button.right.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
 
-        TileRender.load();
-
         loadGUIs();
 
         //Init display data
         resizeDisplay();
+
+        //GLUtil.setupDebugMessageCallback();
     }
 
     protected void loadGUIs()
@@ -253,7 +251,7 @@ public class GameDisplay implements Runnable
         //Load projection matrix into shader
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
-        Shader.SHADER.setUniformMat4f("pr_matrix", pr_matrix);
+        //Shader.SHADER.setUniformMat4f("pr_matrix", pr_matrix);
 
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
