@@ -4,10 +4,7 @@ package com.builtbroken.tabletop.client;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.render.CharRender;
-import com.builtbroken.tabletop.client.graphics.render.FontRender;
-import com.builtbroken.tabletop.client.graphics.render.RenderRect;
-import com.builtbroken.tabletop.client.graphics.render.TileRender;
+import com.builtbroken.tabletop.client.graphics.render.*;
 import com.builtbroken.tabletop.client.graphics.renderer.Renderer;
 import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.client.gui.Gui;
@@ -175,7 +172,7 @@ public class GameDisplay implements Runnable
 
         //Load shader programs
         Shader.loadAll();
-        Shader.CHAR.setUniform1i("tex", 1);
+        Shader.GLOBAL_SHADER.setUniform1i("tex", 1);
         //Shader.SHADER.setUniform1i("tex", 1);
 
         //Register event for resize
@@ -192,20 +189,21 @@ public class GameDisplay implements Runnable
 
 
         //Init render code
-        background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.CHAR, 20, 20, -0.98f);
-        target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
-        box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
+        background_render = new RenderRect(TEXTURE_PATH + "background.png", Shader.GLOBAL_SHADER, 20, 20, -0.98f);
+        target_render = new RenderRect(TEXTURE_PATH + "target.png", Shader.GLOBAL_SHADER, 1, 1, SELECTION_LAYER);
+        box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.GLOBAL_SHADER, 1, 1, SELECTION_LAYER);
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
 
         //renderer = new Renderer(1000);
         CharRender.load();
         TileRender.load();
+        ItemRender.load();
 
-        ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
-        ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
-        ButtonScrollRow.leftArrow = new RenderRect(GUI_PATH + "button.left.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
-        ButtonScrollRow.rightArrow = new RenderRect(GUI_PATH + "button.right.png", Shader.CHAR, 0.2f, 1, GAME_GUI_LAYER);
+        ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.GLOBAL_SHADER, 1, 0.2f, GAME_GUI_LAYER);
+        ButtonScrollRow.upArrow = new RenderRect(GUI_PATH + "button.up.png", Shader.GLOBAL_SHADER, 1, 0.2f, GAME_GUI_LAYER);
+        ButtonScrollRow.leftArrow = new RenderRect(GUI_PATH + "button.left.png", Shader.GLOBAL_SHADER, 0.2f, 1, GAME_GUI_LAYER);
+        ButtonScrollRow.rightArrow = new RenderRect(GUI_PATH + "button.right.png", Shader.GLOBAL_SHADER, 0.2f, 1, GAME_GUI_LAYER);
 
         loadGUIs();
 
@@ -248,8 +246,8 @@ public class GameDisplay implements Runnable
         pr_matrix = Matrix4f.orthographic(cameraBoundLeft, cameraBoundRight, cameraBoundBottom, cameraBoundTop, -1.0f, 1.0f);
 
         //Load projection matrix into shader
-        Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
         //Shader.SHADER.setUniformMat4f("pr_matrix", pr_matrix);
+        Shader.GLOBAL_SHADER.setUniformMat4f("pr_matrix", pr_matrix);
 
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -343,6 +341,7 @@ public class GameDisplay implements Runnable
         TextureLoader.disposeTextures();
         TileRender.dispose();
         CharRender.dispose();
+        ItemRender.dispose();
         fontRender.dispose();
         background_render.dispose();
         target_render.dispose();

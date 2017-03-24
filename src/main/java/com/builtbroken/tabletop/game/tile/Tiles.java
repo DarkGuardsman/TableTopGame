@@ -40,12 +40,12 @@ public class Tiles
         return tile;
     }
 
-    public static Tile getFromID(int tile)
+    public static Tile getFromID(int id)
     {
-        if (tile > 0 && tile < TILES.length)
+        if (id > 0 && id < TILES.length)
         {
-            return TILES[tile];
+            return TILES[id] != null ? TILES[id] : AIR;
         }
-        return Tiles.AIR;
+        return AIR;
     }
 }

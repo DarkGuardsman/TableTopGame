@@ -1,6 +1,9 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.client.GameDisplay;
+import com.builtbroken.tabletop.client.graphics.render.ItemRender;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
+import com.builtbroken.tabletop.game.items.Item;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -18,18 +21,26 @@ public class ButtonLogicItem extends ButtonLogic
     @Override
     protected void leftClick(float mouseX, float mouseY)
     {
-        if (button.display().selectedEntity instanceof Character && ((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            ((Character) button.display().selectedEntity).activeItem = ((Character) button.display().selectedEntity).actionableItems.get(itemIndex);
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.actionableItems.size() > itemIndex)
+            {
+                living.activeItem = living.actionableItems.get(itemIndex);
+            }
         }
     }
 
     @Override
     public float getWidth()
     {
-        if (((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            return ((Character) button.display().selectedEntity).actionableItems.get(itemIndex).width;
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.actionableItems.size() > itemIndex)
+            {
+                return living.actionableItems.get(itemIndex).width;
+            }
         }
         return -1;
     }
@@ -37,10 +48,28 @@ public class ButtonLogicItem extends ButtonLogic
     @Override
     public float getHeight()
     {
-        if (((Character) button.display().selectedEntity).actionableItems.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            return ((Character) button.display().selectedEntity).actionableItems.get(itemIndex).height;
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.actionableItems.size() > itemIndex)
+            {
+                return living.actionableItems.get(itemIndex).height;
+            }
         }
         return -1;
+    }
+
+    @Override
+    public void render(float mouseX, float mouseY, float x, float y, float z)
+    {
+        if (hadSelectedEntityLiving())
+        {
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.actionableItems.size() > itemIndex)
+            {
+                Item item = living.actionableItems.get(itemIndex);
+                ItemRender.render(item, x, y, GameDisplay.GAME_GUI_LAYER + 0.1f, 1);
+            }
+        }
     }
 }

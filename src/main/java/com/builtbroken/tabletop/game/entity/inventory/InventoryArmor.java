@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.game.entity.inventory;
 
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 import com.builtbroken.tabletop.game.items.ItemState;
 import com.builtbroken.tabletop.game.items.armor.Armor;
 
@@ -24,11 +24,11 @@ public class InventoryArmor
     /** Individual armor */
     private ItemState boots;
 
-    protected Character character;
+    protected EntityLiving entityLiving;
 
-    public InventoryArmor(Character character)
+    public InventoryArmor(EntityLiving entityLiving)
     {
-        this.character = character;
+        this.entityLiving = entityLiving;
     }
 
     /**
@@ -107,42 +107,42 @@ public class InventoryArmor
     public boolean deequip(Armor.ArmorSlot slot)
     {
         //TODO if inventory is null throw out into world
-        if (character != null)
+        if (entityLiving != null)
         {
             switch (slot)
             {
                 case SUIT:
-                    if (character.getInventory() == null || character.getInventory().insertItem(suit))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(suit))
                     {
                         this.suit = null;
                         return true;
                     }
                 case HEAD:
-                    if (character.getInventory() == null || character.getInventory().insertItem(head))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(head))
                     {
                         this.head = null;
                         return true;
                     }
                 case CHEST:
-                    if (character.getInventory() == null || character.getInventory().insertItem(chest))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(chest))
                     {
                         this.chest = null;
                         return true;
                     }
                 case LEGS:
-                    if (character.getInventory() == null || character.getInventory().insertItem(legs))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(legs))
                     {
                         this.legs = null;
                         return true;
                     }
                 case GLOVES:
-                    if (character.getInventory() == null || character.getInventory().insertItem(gloves))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(gloves))
                     {
                         this.gloves = null;
                         return true;
                     }
                 case BOOTS:
-                    if (character.getInventory() == null || character.getInventory().insertItem(boots))
+                    if (entityLiving.getInventory() == null || entityLiving.getInventory().insertItem(boots))
                     {
                         this.boots = null;
                         return true;

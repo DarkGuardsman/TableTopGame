@@ -13,7 +13,7 @@ import com.builtbroken.tabletop.client.gui.component.button.actions.ButtonLogicI
 import com.builtbroken.tabletop.client.gui.component.button.actions.ButtonLogicWeapon;
 import com.builtbroken.tabletop.client.gui.component.container.ComponentGrid;
 import com.builtbroken.tabletop.game.entity.Entity;
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -37,10 +37,10 @@ public class GuiGame extends Gui
     public GuiGame(GameDisplay display)
     {
         super(display);
-        this.itemButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER);
+        this.itemButtonBackground = new RenderRect("resources/textures/gui/button.icon.png", Shader.GLOBAL_SHADER, 1, 1, GameDisplay.GAME_GUI_LAYER);
         this.weaponButtonBackground = this.itemButtonBackground;
-        this.enemyButtonBackground = new RenderRect("resources/textures/icons/enemy/icon.enemy.1.png", Shader.CHAR, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
-        this.abilityButtonBackground = new RenderRect("resources/textures/icons/abilities/icon.png", Shader.CHAR, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
+        this.enemyButtonBackground = new RenderRect("resources/textures/icons/enemy/icon.enemy.1.png", Shader.GLOBAL_SHADER, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
+        this.abilityButtonBackground = new RenderRect("resources/textures/icons/abilities/icon.png", Shader.GLOBAL_SHADER, 0.5f, 0.5f, GameDisplay.GAME_GUI_LAYER);
         //icon.ability
         init();
     }
@@ -73,7 +73,7 @@ public class GuiGame extends Gui
 
         abilityRow = new ComponentGrid("abilityGrid", 3, 9);
         abilityRow.centerX = true;
-        abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.CHAR, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
+        abilityRow.background = new RenderRect("resources/textures/gui/button.icon.png", Shader.GLOBAL_SHADER, 1, 1, GameDisplay.GAME_GUI_LAYER - 0.1f);
         //abilityRow.setVisible(false);
         abilityRow.setPositionLogic(PositionLogic.BOTTOM);
 
@@ -102,18 +102,18 @@ public class GuiGame extends Gui
     public void onEntitySelectionChange(GameDisplay display, Entity entity)
     {
         abilityRow.clear();
-        if (entity instanceof Character)
+        if (entity instanceof EntityLiving)
         {
-            Character character = (Character) entity;
-            weaponRow.setButtons(Math.max(1, character.usableWeapons.size()));
-            for (int i = 0; i < character.usableWeapons.size(); i++)
+            EntityLiving entityLiving = (EntityLiving) entity;
+            weaponRow.setButtons(Math.max(1, entityLiving.usableWeapons.size()));
+            for (int i = 0; i < entityLiving.usableWeapons.size(); i++)
             {
-                ((Button) weaponRow.componentList.get(i + 1)).logic = new ButtonLogicWeapon(i);
+                ((Button) weaponRow.componentList.get(i + 1)).setLogic(new ButtonLogicWeapon(i));
             }
-            itemRow.setButtons(Math.max(1, character.actionableItems.size()));
-            for (int i = 0; i < character.actionableItems.size(); i++)
+            itemRow.setButtons(Math.max(1, entityLiving.actionableItems.size()));
+            for (int i = 0; i < entityLiving.actionableItems.size(); i++)
             {
-                ((Button) itemRow.componentList.get(i + 1)).logic = new ButtonLogicItem(i);
+                ((Button) itemRow.componentList.get(i + 1)).setLogic(new ButtonLogicItem(i));
             }
         }
         else

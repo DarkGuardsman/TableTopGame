@@ -5,7 +5,8 @@ import com.builtbroken.tabletop.game.entity.actions.Action;
 import com.builtbroken.tabletop.game.entity.actions.ActionMove;
 import com.builtbroken.tabletop.game.entity.ai.AI;
 import com.builtbroken.tabletop.game.entity.controller.Player;
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
+import com.builtbroken.tabletop.game.items.Items;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.game.world.World;
@@ -110,6 +111,7 @@ public class Game implements Runnable
     protected void init()
     {
         Tiles.load();
+        Items.load();
 
         //Register actions
         Action.addAction(new ActionMove());
@@ -121,10 +123,19 @@ public class Game implements Runnable
 
 
         //Generate some characters to render
-        getWorld().getEntities().add(new Character("bob").setController(player).setPosition(2, 0, 0));
-        getWorld().getEntities().add(new Character("joe").setController(player).setPosition(-2, 0, 0));
-        getWorld().getEntities().add(new Character("paul").setController(player).setPosition(0, 2, 0));
-        getWorld().getEntities().add(new Character("tim").setController(player).setPosition(0, -2, 0));
+        getWorld().getEntities().add(new EntityLiving("bob").setController(player).setPosition(2, 0, 0));
+        getWorld().getEntities().add(new EntityLiving("joe").setController(player).setPosition(-2, 0, 0));
+        getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0));
+        getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0));
+
+        for(Entity entity : getWorld().getEntities())
+        {
+            if(entity instanceof EntityLiving)
+            {
+                ((EntityLiving) entity).actionableItems.add(Items.MEDKIT);
+                ((EntityLiving) entity).actionableItems.add(Items.GRENADE);
+            }
+        }
 
         AI ai = new AI("1", "enemy ai");
         for (int i = 0; i < 20; i++)
@@ -135,7 +146,7 @@ public class Game implements Runnable
                 int y = random.nextInt(20) - random.nextInt(20);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    getWorld().getEntities().add(new Character("enemy" + i).setController(ai).setPosition(x, y, 0));
+                    getWorld().getEntities().add(new EntityLiving("enemy" + i).setController(ai).setPosition(x, y, 0));
                     break;
                 }
             }
@@ -150,7 +161,7 @@ public class Game implements Runnable
                 int y = random.nextInt(50) - random.nextInt(50);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    getWorld().getEntities().add(new Character("neutral" + i).setController(ai).setPosition(x, y, 0));
+                    getWorld().getEntities().add(new EntityLiving("neutral" + i).setController(ai).setPosition(x, y, 0));
                     break;
                 }
             }

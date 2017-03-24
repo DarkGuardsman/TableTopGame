@@ -14,7 +14,7 @@ public class Shader
     public static final int VERTEX_ATTRIB = 0;
     public static final int TCOORD_ATTRIB = 1;
 
-    public static Shader CHAR, SHADER;
+    public static Shader GLOBAL_SHADER, SHADER;
 
     private boolean enabled = false;
 
@@ -28,13 +28,13 @@ public class Shader
 
     public static void loadAll()
     {
-        CHAR = new Shader("resources/shaders/char.vert", "resources/shaders/char.frag");
+        GLOBAL_SHADER = new Shader("resources/shaders/char.vert", "resources/shaders/char.frag");
         //SHADER = new Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
     }
 
     public static void disposeAll()
     {
-        CHAR.dispose();
+        GLOBAL_SHADER.dispose();
         //SHADER.dispose();
     }
 

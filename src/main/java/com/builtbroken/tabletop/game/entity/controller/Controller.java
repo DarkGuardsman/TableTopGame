@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.game.entity.controller;
 
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 
 /**
  * What controls the entity and how it functions
@@ -17,7 +17,7 @@ public class Controller
 
     boolean allowMovement = true;
 
-    public Character entity;
+    public EntityLiving entity;
 
     public final String id;
     public final String displayName;

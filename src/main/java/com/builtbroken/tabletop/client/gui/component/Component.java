@@ -79,7 +79,7 @@ public class Component
      */
     public Component(String name, float width, float height, String texture, float x, float y)
     {
-        this(name, width, height, new RenderRect(texture, Shader.CHAR), x, y);
+        this(name, width, height, new RenderRect(texture, Shader.GLOBAL_SHADER), x, y);
     }
 
     /**

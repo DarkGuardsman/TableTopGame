@@ -19,9 +19,9 @@ public class Weapon extends Item
     /** Damage applied by the weapon */
     public Damage damage;
 
-    public Weapon(String uniqueID)
+    public Weapon(String uniqueID, int id)
     {
-        super("weapon." + uniqueID);
+        super("weapon." + uniqueID, id);
     }
 
     /**

@@ -24,7 +24,7 @@ public class EntityTest extends TestCase
         Entity attacker = new Entity("attacker");
         Entity entity = new Entity("target");
 
-        Weapon weapon = new Weapon("gun");
+        Weapon weapon = new Weapon("gun", 0);
         weapon.damage = new Damage(null, new Dice(6), 10);
 
        assertEquals(HitResult.DAMAGE, attacker.attack(entity, weapon, 5));

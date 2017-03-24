@@ -11,7 +11,8 @@ uniform mat4 model = mat4(1.0);
 uniform mat4 view = mat4(1.0);
 uniform mat4 pr_matrix;
 
-void main() {
+void main()
+{
     vertexColor = color;
     textureCoord = texcoord;
     mat4 mvp = pr_matrix * view * model;

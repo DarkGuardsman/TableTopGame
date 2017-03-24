@@ -7,7 +7,12 @@ layout (location = 0) out vec4 fragColor;
 
 uniform sampler2D tex;
 
-void main() {
+void main()
+{
     vec4 textureColor = texture(tex, textureCoord);
-    fragColor = vertexColor * textureColor;
+    fragColor = vertexColor * vertexColor;
+    if (fragColor.w == 0)
+    {
+        discard;
+    }
 }

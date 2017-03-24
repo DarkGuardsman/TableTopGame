@@ -17,7 +17,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 1/31/2017.
  */
-public class Character extends Entity
+public class EntityLiving extends Entity
 {
     /** Traits and stats based on the character. Does not include gear, weapons, armor, or upgrades. */
     protected HashMap<String, Integer> ATTRIBUTES = new HashMap();
@@ -42,7 +42,7 @@ public class Character extends Entity
 
     protected int movementPoints = 10;
 
-    public Character(String name)
+    public EntityLiving(String name)
     {
         super("character");
         this.displayName = name;
@@ -86,7 +86,7 @@ public class Character extends Entity
         return inventory;
     }
 
-    public Character setController(Controller controller)
+    public EntityLiving setController(Controller controller)
     {
         this.controller = controller;
         return this;

@@ -1,6 +1,7 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
 import com.builtbroken.tabletop.client.gui.component.button.Button;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 
 /**
  * Object for handling actions for a button indirectly from the button object
@@ -11,6 +12,7 @@ import com.builtbroken.tabletop.client.gui.component.button.Button;
 public class ButtonLogic
 {
     public Button button;
+
     /**
      * Called when a button has been clicked
      *
@@ -64,5 +66,20 @@ public class ButtonLogic
     public float getHeight()
     {
         return -1;
+    }
+
+    public boolean hadSelectedEntity()
+    {
+        return button != null && button.display() != null && button.display().selectedEntity != null;
+    }
+
+    public boolean hadSelectedEntityLiving()
+    {
+        return hadSelectedEntity() && button.display().selectedEntity instanceof EntityLiving;
+    }
+
+    public EntityLiving getSelectedEntityAsLiving()
+    {
+        return (EntityLiving) button.display().selectedEntity;
     }
 }

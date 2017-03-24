@@ -8,9 +8,9 @@ import com.builtbroken.tabletop.game.items.Item;
  */
 public class Gear extends Item
 {
-    public Gear(String uniqueID)
+    public Gear(String uniqueID, int id)
     {
-        super("gear." + uniqueID);
+        super("gear." + uniqueID, id);
     }
 
     public enum GearType

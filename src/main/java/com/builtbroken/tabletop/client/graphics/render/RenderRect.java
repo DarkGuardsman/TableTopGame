@@ -96,7 +96,7 @@ public class RenderRect
 
     public void draw(float x, float y, float z, float rot, float scale)
     {
-        if (shader == Shader.CHAR)
+        if (shader == Shader.GLOBAL_SHADER)
         {
             if (cache == null)
             {

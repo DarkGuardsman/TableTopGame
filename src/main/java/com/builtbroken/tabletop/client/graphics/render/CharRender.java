@@ -43,8 +43,8 @@ public class CharRender
         sheet = TextureLoader.get(GameDisplay.TEXTURE_PATH + "entity/body/body.png");
 
         float uvScale = 64f / sheet.width;
-        body = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER, Mesh.generateUV(0, 0, uvScale, uvScale)));
-        head = new RenderRect(sheet, Shader.CHAR, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER + 0.05f, Mesh.generateUV(uvScale, 0, uvScale, uvScale)));
+        body = new RenderRect(sheet, Shader.GLOBAL_SHADER, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER, Mesh.generateUV(0, 0, uvScale, uvScale)));
+        head = new RenderRect(sheet, Shader.GLOBAL_SHADER, Mesh.createMeshForSize(1, 1, GameDisplay.ENTITY_LAYER + 0.05f, Mesh.generateUV(uvScale, 0, uvScale, uvScale)));
     }
 
     public static void dispose()

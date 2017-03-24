@@ -1,6 +1,6 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
-import com.builtbroken.tabletop.game.entity.living.Character;
+import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -18,18 +18,18 @@ public class ButtonLogicWeapon extends ButtonLogic
     @Override
     protected void leftClick(float mouseX, float mouseY)
     {
-        if (button.display().selectedEntity instanceof Character && ((Character) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (button.display().selectedEntity instanceof EntityLiving && ((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
         {
-            ((Character) button.display().selectedEntity).activeWeapon = ((Character) button.display().selectedEntity).usableWeapons.get(itemIndex);
+            ((EntityLiving) button.display().selectedEntity).activeWeapon = ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex);
         }
     }
 
     @Override
     public float getWidth()
     {
-        if (((Character) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
         {
-            return ((Character) button.display().selectedEntity).usableWeapons.get(itemIndex).width;
+            return ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex).width;
         }
         return -1;
     }
@@ -37,9 +37,9 @@ public class ButtonLogicWeapon extends ButtonLogic
     @Override
     public float getHeight()
     {
-        if (((Character) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
         {
-            return ((Character) button.display().selectedEntity).usableWeapons.get(itemIndex).height;
+            return ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex).height;
         }
         return -1;
     }

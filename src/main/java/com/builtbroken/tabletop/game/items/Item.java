@@ -16,9 +16,12 @@ public class Item extends GameObject
     /** Mass of the item, used for strength checks and other minor math values */
     public int mass;
 
-    public Item(String uniqueID)
+    public final int ID;
+
+    public Item(String uniqueID, int ID)
     {
         super("item." + uniqueID);
+        this.ID = ID;
     }
 
     /**

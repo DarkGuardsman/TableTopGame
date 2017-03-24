@@ -27,7 +27,7 @@ public class InventoryTest extends TestCase
     public void testCanFit()
     {
         Inventory inventory = new Inventory(2, 4);
-        Item item = new Item("tree");
+        Item item = new Item("tree", 0);
         item.height = 3;
         item.width = 2;
 
@@ -54,7 +54,7 @@ public class InventoryTest extends TestCase
     public void testAddItem()
     {
         Inventory inventory = new Inventory(2, 4);
-        Item item = new Item("tree");
+        Item item = new Item("tree", 0);
         item.height = 3;
         item.width = 2;
 
@@ -101,7 +101,7 @@ public class InventoryTest extends TestCase
     public void testRemoveItem()
     {
         Inventory inventory = new Inventory(2, 4);
-        Item item = new Item("tree");
+        Item item = new Item("tree", 0);
         item.height = 3;
         item.width = 2;
 

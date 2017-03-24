@@ -24,7 +24,7 @@ public class TileRender
             }
             if (tile != Tiles.AIR)
             {
-                renders[tile.id] = new RenderRect("resources/textures/tiles/" + tile.name + ".png", Shader.CHAR, 1, 1, 0.1f);
+                renders[tile.id] = new RenderRect("resources/textures/tiles/" + tile.name + ".png", Shader.GLOBAL_SHADER, 1, 1, 0.1f);
             }
         }
     }

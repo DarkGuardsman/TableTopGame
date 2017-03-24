@@ -47,7 +47,7 @@ public class FontRender
 
     public FontRender(String dataFile, float size, float layer)
     {
-        background = new RenderRect("resources/textures/gui/back.png", Shader.CHAR, size, size, layer - 0.05f);
+        background = new RenderRect("resources/textures/gui/back.png", Shader.GLOBAL_SHADER, size, size, layer - 0.05f);
         this.layer = layer;
         this.size = size;
         int line = 0;
@@ -262,7 +262,7 @@ public class FontRender
     private void bind()
     {
         sheet.bind();
-        Shader.CHAR.enable();
+        Shader.GLOBAL_SHADER.enable();
     }
 
     private void renderChar(byte c, float x, float y, float z, float rot, float scale)
@@ -279,7 +279,7 @@ public class FontRender
         {
             cache = new Matrix4f();
         }
-        Shader.CHAR.setUniformMat4f("ml_matrix", cache.resetToIdentity().translate(x, y, z));
+        Shader.GLOBAL_SHADER.setUniformMat4f("ml_matrix", cache.resetToIdentity().translate(x, y, z));
 
         //Render mesh
         data.mesh.render(scale);
@@ -287,7 +287,7 @@ public class FontRender
 
     private void unbind()
     {
-        Shader.CHAR.disable();
+        Shader.GLOBAL_SHADER.disable();
         sheet.unbind();
     }
 
