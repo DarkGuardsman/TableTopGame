@@ -20,6 +20,7 @@ import com.builtbroken.tabletop.util.Matrix4f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
 
@@ -102,6 +103,8 @@ public class GameDisplay implements Runnable
     protected RenderRect box_render;
 
     public FontRender fontRender;
+
+    protected Renderer renderer;
     protected ITexture testTexture;
 
     /** Location of the camera on the map X */
@@ -196,6 +199,8 @@ public class GameDisplay implements Runnable
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
+
+        renderer = new Renderer();
         testTexture = TextureLoader.getTexture(TEXTURE_PATH + "target.png", 0, 0, 1, 1);
 
         CharRender.load();
@@ -245,6 +250,11 @@ public class GameDisplay implements Runnable
         //Load projection matrix into shader
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
+
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(cameraBoundLeft, cameraBoundRight, cameraBoundBottom, cameraBoundTop, 1, -1);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         //Note that screen has resized
         for (Gui gui : guiMap.values())
@@ -438,7 +448,14 @@ public class GameDisplay implements Runnable
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        doRender(mouseLocationX, mouseLocationY);
+        //Render background behind map
+        background_render.render(-10, -10, 0, 0, 1);
+
+        //doRender(mouseLocationX, mouseLocationY);
+
+        renderer.startDrawing();
+        renderer.draw(testTexture, -1f, -1f, 1f, 1f, .1f, 0, 1);
+        renderer.endDrawing();
 
         /*
         int error = glGetError();
@@ -453,8 +470,7 @@ public class GameDisplay implements Runnable
 
     protected void doRender(float mouseLocationX, float mouseLocationY)
     {
-        //Render background behind map
-        background_render.render(-10, -10, 0, 0, 1);
+
 
         //Render map
         renderMap(mouseLocationX, mouseLocationY);

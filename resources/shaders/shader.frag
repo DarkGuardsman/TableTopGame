@@ -7,4 +7,6 @@ void main()
 {
     vec4 texColor = texture2D(u_texture, vTexCoord);
     gl_FragColor = vColor * texColor;
+    if (texColor.w == 0)
+	    discard;
 }

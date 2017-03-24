@@ -17,7 +17,7 @@ public class Shader
 
     private boolean enabled = false;
 
-    private final int ID;
+    public final int ID;
     private Map<String, Integer> locationCache = new HashMap<String, Integer>();
 
     public Shader(String vertex, String fragment)
