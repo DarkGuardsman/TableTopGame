@@ -1,13 +1,13 @@
-uniform sampler2D u_texture;
+#version 330 core
 
-varying vec4 vColor;
-varying vec2 vTexCoord;
+in vec4 vertexColor;
+in vec2 textureCoord;
 
-void main() 
-{
-    vec4 texColor = texture2D(u_texture, vTexCoord);
-    //gl_FragColor = vColor * texColor;
-    gl_FragColor = texColor;
-    //if (texColor.w == 0)
-	//    discard;
+layout (location = 0) out vec4 fragColor;
+
+uniform sampler2D tex;
+
+void main() {
+    vec4 textureColor = texture(tex, textureCoord);
+    fragColor = vertexColor * textureColor;
 }

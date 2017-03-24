@@ -24,6 +24,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLUtil;
 
 import java.util.HashMap;
 
@@ -164,6 +165,7 @@ public class GameDisplay implements Runnable
         glfwMakeContextCurrent(windowID);
         glfwShowWindow(windowID);
         GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback();
 
         ///Debug gl version
         System.out.println("OpenGL: " + glGetString(GL_VERSION));
@@ -178,9 +180,7 @@ public class GameDisplay implements Runnable
         Shader.loadAll();
         Shader.BACKGROUND.setUniform1i("tex", 1);
         Shader.CHAR.setUniform1i("tex", 1);
-
-        //Init display data
-        resizeDisplay();
+        Shader.SHADER.setUniform1i("tex", 1);
 
         //Register event for resize
         glfwSetWindowSizeCallback(windowID, new GLFWWindowSizeCallback()
@@ -202,7 +202,7 @@ public class GameDisplay implements Runnable
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
 
-        renderer = new Renderer(1000);
+        //renderer = new Renderer(1000);
         CharRender.load();
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
@@ -213,6 +213,9 @@ public class GameDisplay implements Runnable
         TileRender.load();
 
         loadGUIs();
+
+        //Init display data
+        resizeDisplay();
     }
 
     protected void loadGUIs()
@@ -250,6 +253,7 @@ public class GameDisplay implements Runnable
         //Load projection matrix into shader
         Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
+        Shader.SHADER.setUniformMat4f("pr_matrix", pr_matrix);
 
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -347,6 +351,7 @@ public class GameDisplay implements Runnable
         background_render.dispose();
         target_render.dispose();
         box_render.dispose();
+        Shader.disposeAll();
     }
 
     protected void update(double delta, float mouseLocationX, float mouseLocationY)
@@ -451,17 +456,12 @@ public class GameDisplay implements Runnable
         //Render background behind map
         background_render.render(-10, -10, 0, 0, 1);
 
-        renderer.draw(TextureLoader.getTexture(GUI_PATH + "button.down.png", 0, 0, 1, 1), 0, 0, 1, 1, 0.4f, 0, 1);
+        //renderer.begin();
+        //renderer.draw(TextureLoader.getTexture(TileRender.renders[1].texture, 0, 0, 1, 1), 0, 0, 0.4f, 0, 1);
+        //renderer.end();
 
-        //doRender(mouseLocationX, mouseLocationY);
+        doRender(mouseLocationX, mouseLocationY);
 
-        /*
-        int error = glGetError();
-        if (error != GL_NO_ERROR)
-        {
-            System.out.println("GLError: " + error);
-        }
-        */
 
         glfwSwapBuffers(windowID);
     }

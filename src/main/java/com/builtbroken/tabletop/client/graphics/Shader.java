@@ -2,6 +2,7 @@ package com.builtbroken.tabletop.client.graphics;
 
 import com.builtbroken.tabletop.util.Matrix4f;
 import com.builtbroken.tabletop.util.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,19 @@ public class Shader
         CHAR = new Shader("resources/shaders/char.vert", "resources/shaders/char.frag");
         BACKGROUND = new Shader("resources/shaders/bg.vert", "resources/shaders/bg.frag");
         SHADER = new Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+    }
+
+    public static void disposeAll()
+    {
+        CHAR.dispose();
+        BACKGROUND.dispose();
+        SHADER.dispose();
+    }
+
+    private void dispose()
+    {
+        disable();
+        glDeleteProgram(ID);
     }
 
     public int getUniform(String name)
@@ -96,6 +110,30 @@ public class Shader
         glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
     }
 
+
+    public int getAttributeLocation(CharSequence name)
+    {
+        return glGetAttribLocation(ID, name);
+    }
+
+
+    public void enableVertexAttribute(int location)
+    {
+        glEnableVertexAttribArray(location);
+    }
+
+
+    public void disableVertexAttribute(int location)
+    {
+        glDisableVertexAttribArray(location);
+    }
+
+
+    public void pointVertexAttribute(int location, int size, int stride, int offset)
+    {
+        glVertexAttribPointer(location, size, GL11.GL_FLOAT, false, stride, offset);
+    }
+
     public void enable()
     {
         glUseProgram(ID);
@@ -107,5 +145,4 @@ public class Shader
         glUseProgram(0);
         enabled = false;
     }
-
 }

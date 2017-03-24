@@ -8,11 +8,10 @@ import org.lwjgl.system.MemoryUtil;
 import java.awt.*;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -66,21 +65,30 @@ public class Renderer
         {
             flush();
         }
-        if (texture == null)
-        {
-            texture = tex.getTexture();
-            texture.bind();
-        }
-        else if (texture != tex.getTexture())
-        {
-            texture.unbind();
-            flush();
-            texture = tex.getTexture();
-            texture.bind();
-        }
 
 
         Color color = Color.WHITE;
+
+        if (tex != null && tex.getTexture() != null)
+        {
+            if (texture == null)
+            {
+                texture = tex.getTexture();
+                texture.bind();
+            }
+            else if (texture != tex.getTexture())
+            {
+                texture.unbind();
+                flush();
+                texture = tex.getTexture();
+                texture.bind();
+            }
+        }
+        else if (texture == null)
+        {
+            color = Color.red;
+        }
+
         final float r = color.getRed() / 255f;
         final float g = color.getGreen() / 255f;
         final float b = color.getBlue() / 255f;
@@ -214,20 +222,20 @@ public class Renderer
     private void specifyVertexAttributes()
     {
         Shader.SHADER.enable();
-        /* Specify Vertex Pointer */
-        int posAttrib = 0;
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, false, floatPerVertex * Float.BYTES, 0);
+          /* Specify Vertex Pointer */
+        int posAttrib = Shader.SHADER.getAttributeLocation("position");
+        Shader.SHADER.enableVertexAttribute(posAttrib);
+        Shader.SHADER.pointVertexAttribute(posAttrib, 3, floatPerVertex * Float.BYTES, 0);
 
         /* Specify Color Pointer */
-        int colAttrib = 1;
-        glEnableVertexAttribArray(colAttrib);
-        glVertexAttribPointer(colAttrib, 4, GL_FLOAT, false, floatPerVertex * Float.BYTES, 3 * Float.BYTES);
+        int colAttrib = Shader.SHADER.getAttributeLocation("color");
+        Shader.SHADER.enableVertexAttribute(colAttrib);
+        Shader.SHADER.pointVertexAttribute(colAttrib, 4, floatPerVertex * Float.BYTES, 3 * Float.BYTES);
 
         /* Specify Texture Pointer */
-        int texAttrib = 2;
-        glEnableVertexAttribArray(texAttrib);
-        glVertexAttribPointer(texAttrib, 2, GL_FLOAT, false, floatPerVertex * Float.BYTES, 7 * Float.BYTES);
+        int texAttrib = Shader.SHADER.getAttributeLocation("texcoord");
+        Shader.SHADER.enableVertexAttribute(texAttrib);
+        Shader.SHADER.pointVertexAttribute(texAttrib, 2, floatPerVertex * Float.BYTES, 7 * Float.BYTES);
     }
 
     public void dispose()

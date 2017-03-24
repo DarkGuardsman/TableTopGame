@@ -26,12 +26,17 @@ public class TextureLoader
 
     public static ITexture getTexture(String path, int x, int y, int u, int v)
     {
-        Texture data = new Texture(path);
+        Texture data = get(path);
         if (data != null)
         {
-            return new Icon(data, x, y, u, v);
+            return getTexture(data, x, y, u, v);
         }
         throw new RuntimeException("Failed to load texture " + path);
+    }
+
+    public static ITexture getTexture(Texture data, int x, int y, int u, int v)
+    {
+        return new Icon(data, x, y, u, v);
     }
 
     public static void disposeTextures()
