@@ -105,14 +105,6 @@ public class RenderRect
             cache = cache.resetToIdentity().translate(x, y, z);
             shader.setUniformMat4f("ml_matrix", cache);
         }
-        else if (shader == Shader.BACKGROUND)
-        {
-            if (cache == null)
-            {
-                cache = new Matrix4f().resetToIdentity().translate(0f, 0.0f, 0.0f);
-            }
-            shader.setUniformMat4f("vw_matrix", cache);
-        }
 
         //Render
         mesh.render(scale);

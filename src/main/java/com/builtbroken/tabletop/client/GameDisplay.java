@@ -175,7 +175,6 @@ public class GameDisplay implements Runnable
 
         //Load shader programs
         Shader.loadAll();
-        Shader.BACKGROUND.setUniform1i("tex", 1);
         Shader.CHAR.setUniform1i("tex", 1);
         //Shader.SHADER.setUniform1i("tex", 1);
 
@@ -249,7 +248,6 @@ public class GameDisplay implements Runnable
         pr_matrix = Matrix4f.orthographic(cameraBoundLeft, cameraBoundRight, cameraBoundBottom, cameraBoundTop, -1.0f, 1.0f);
 
         //Load projection matrix into shader
-        Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         Shader.CHAR.setUniformMat4f("pr_matrix", pr_matrix);
         //Shader.SHADER.setUniformMat4f("pr_matrix", pr_matrix);
 
