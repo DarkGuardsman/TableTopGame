@@ -69,14 +69,14 @@ public class Renderer
         if (texture == null)
         {
             texture = tex.getTexture();
-            //texture.bind();
+            texture.bind();
         }
         else if (texture != tex.getTexture())
         {
             texture.unbind();
             flush();
             texture = tex.getTexture();
-            //texture.bind();
+            texture.bind();
         }
 
 

@@ -8,6 +8,7 @@ import com.builtbroken.tabletop.client.graphics.render.CharRender;
 import com.builtbroken.tabletop.client.graphics.render.FontRender;
 import com.builtbroken.tabletop.client.graphics.render.RenderRect;
 import com.builtbroken.tabletop.client.graphics.render.TileRender;
+import com.builtbroken.tabletop.client.graphics.renderer.Renderer;
 import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
@@ -106,6 +107,8 @@ public class GameDisplay implements Runnable
 
     public FontRender fontRender;
 
+    public Renderer renderer;
+
     /** Location of the camera on the map X */
     protected float cameraPosX = 0;
     /** Location of the camera on the map X */
@@ -199,6 +202,7 @@ public class GameDisplay implements Runnable
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
 
+        renderer = new Renderer(1000);
         CharRender.load();
 
         ButtonScrollRow.downArrow = new RenderRect(GUI_PATH + "button.down.png", Shader.CHAR, 1, 0.2f, GAME_GUI_LAYER);
@@ -447,7 +451,9 @@ public class GameDisplay implements Runnable
         //Render background behind map
         background_render.render(-10, -10, 0, 0, 1);
 
-        doRender(mouseLocationX, mouseLocationY);
+        renderer.draw(TextureLoader.getTexture(GUI_PATH + "button.down.png", 0, 0, 1, 1), 0, 0, 1, 1, 0.4f, 0, 1);
+
+        //doRender(mouseLocationX, mouseLocationY);
 
         /*
         int error = glGetError();

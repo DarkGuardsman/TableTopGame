@@ -6,7 +6,8 @@ varying vec2 vTexCoord;
 void main() 
 {
     vec4 texColor = texture2D(u_texture, vTexCoord);
-    gl_FragColor = vColor * texColor;
-    if (texColor.w == 0)
-	    discard;
+    //gl_FragColor = vColor * texColor;
+    gl_FragColor = texColor;
+    //if (texColor.w == 0)
+	//    discard;
 }
