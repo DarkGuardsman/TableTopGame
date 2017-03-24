@@ -8,9 +8,14 @@ import com.builtbroken.tabletop.game.items.Item;
  */
 public class Armor extends Item
 {
-    public Armor(String uniqueID, int id)
+    public final String armorSet;
+    public final ArmorSlot slotType;
+
+    public Armor(String setName, String uniqueID, ArmorSlot slotType, int id)
     {
-        super("armor." + uniqueID, id);
+        super("armor." + setName + "." + uniqueID, id);
+        this.slotType = slotType;
+        this.armorSet = setName;
     }
 
     public enum ArmorSlot

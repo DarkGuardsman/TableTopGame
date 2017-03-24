@@ -86,6 +86,11 @@ public class EntityLiving extends Entity
         return inventory;
     }
 
+    public InventoryArmor getArmor()
+    {
+        return armor;
+    }
+
     public EntityLiving setController(Controller controller)
     {
         this.controller = controller;

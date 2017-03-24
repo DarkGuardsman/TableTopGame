@@ -24,6 +24,7 @@ public class Entity extends GameObject
     protected float x = 0;
     protected float y = 0;
     protected float z = 0;
+    protected float rotation = 0;
 
     /** Current health value, -1 means it was never set */
     protected int health = -1;
@@ -387,6 +388,11 @@ public class Entity extends GameObject
     public float zf()
     {
         return z;
+    }
+
+    public float getRotation()
+    {
+        return rotation;
     }
 
     //==============================================

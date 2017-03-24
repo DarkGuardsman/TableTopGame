@@ -6,7 +6,9 @@ import com.builtbroken.tabletop.game.entity.actions.ActionMove;
 import com.builtbroken.tabletop.game.entity.ai.AI;
 import com.builtbroken.tabletop.game.entity.controller.Player;
 import com.builtbroken.tabletop.game.entity.living.EntityLiving;
+import com.builtbroken.tabletop.game.items.ItemState;
 import com.builtbroken.tabletop.game.items.Items;
+import com.builtbroken.tabletop.game.items.armor.Armor;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.game.world.World;
@@ -128,12 +130,14 @@ public class Game implements Runnable
         getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0));
         getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0));
 
-        for(Entity entity : getWorld().getEntities())
+        for (Entity entity : getWorld().getEntities())
         {
-            if(entity instanceof EntityLiving)
+            if (entity instanceof EntityLiving)
             {
-                ((EntityLiving) entity).actionableItems.add(Items.MEDKIT);
-                ((EntityLiving) entity).actionableItems.add(Items.GRENADE);
+                ((EntityLiving) entity).actionableItems.add(Items.get("item.medkit"));
+                ((EntityLiving) entity).actionableItems.add(Items.get("item.grenade"));
+                ((EntityLiving) entity).getArmor().equip(new ItemState(Items.get("item.armor.armor1.head")), Armor.ArmorSlot.HEAD, true);
+                ((EntityLiving) entity).getArmor().equip(new ItemState(Items.get("item.armor.armor1.chest")), Armor.ArmorSlot.CHEST, true);
             }
         }
 

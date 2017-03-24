@@ -151,4 +151,32 @@ public class InventoryArmor
         }
         return false;
     }
+
+    public boolean hasArmor(Armor.ArmorSlot slot)
+    {
+        return get(slot) != null;
+    }
+
+    public ItemState get(Armor.ArmorSlot slot)
+    {
+        if (entityLiving != null)
+        {
+            switch (slot)
+            {
+                case SUIT:
+                    return suit;
+                case HEAD:
+                    return head;
+                case CHEST:
+                    return chest;
+                case LEGS:
+                    return legs;
+                case GLOVES:
+                    return gloves;
+                case BOOTS:
+                    return boots;
+            }
+        }
+        return null;
+    }
 }

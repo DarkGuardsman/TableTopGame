@@ -196,7 +196,7 @@ public class GameDisplay implements Runnable
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
 
         //renderer = new Renderer(1000);
-        CharRender.load();
+        EntityRender.load();
         TileRender.load();
         ItemRender.load();
 
@@ -340,7 +340,7 @@ public class GameDisplay implements Runnable
     {
         TextureLoader.disposeTextures();
         TileRender.dispose();
-        CharRender.dispose();
+        EntityRender.dispose();
         ItemRender.dispose();
         fontRender.dispose();
         background_render.dispose();
@@ -565,7 +565,7 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        CharRender.render(entity, tile_x, tile_y, 0, 0, zoom);
+                        EntityRender.render(entity, tile_x, tile_y, 0, 0, zoom);
 
                         if (mouseMapPosX == entity.xi() && mouseMapPosY == entity.yi())
                         {
