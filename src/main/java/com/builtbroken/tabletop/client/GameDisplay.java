@@ -4,8 +4,10 @@ package com.builtbroken.tabletop.client;
 import com.builtbroken.tabletop.client.controls.KeyboardInput;
 import com.builtbroken.tabletop.client.controls.MouseInput;
 import com.builtbroken.tabletop.client.graphics.Shader;
-import com.builtbroken.tabletop.client.graphics.render.*;
-import com.builtbroken.tabletop.client.graphics.textures.ITexture;
+import com.builtbroken.tabletop.client.graphics.render.CharRender;
+import com.builtbroken.tabletop.client.graphics.render.FontRender;
+import com.builtbroken.tabletop.client.graphics.render.RenderRect;
+import com.builtbroken.tabletop.client.graphics.render.TileRender;
 import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.client.gui.Gui;
 import com.builtbroken.tabletop.client.gui.component.Component;
@@ -104,9 +106,6 @@ public class GameDisplay implements Runnable
 
     public FontRender fontRender;
 
-    protected Renderer renderer;
-    protected ITexture testTexture;
-
     /** Location of the camera on the map X */
     protected float cameraPosX = 0;
     /** Location of the camera on the map X */
@@ -199,9 +198,6 @@ public class GameDisplay implements Runnable
         box_render = new RenderRect(TEXTURE_PATH + "box.png", Shader.CHAR, 1, 1, SELECTION_LAYER);
 
         fontRender = new FontRender(TEXTURE_PATH + "font/FontData.csv", 1, GAME_GUI_LAYER + 0.1f);
-
-        renderer = new Renderer();
-        testTexture = TextureLoader.getTexture(TEXTURE_PATH + "target.png", 0, 0, 1, 1);
 
         CharRender.load();
 
@@ -451,11 +447,7 @@ public class GameDisplay implements Runnable
         //Render background behind map
         background_render.render(-10, -10, 0, 0, 1);
 
-        //doRender(mouseLocationX, mouseLocationY);
-
-        renderer.startDrawing();
-        renderer.draw(testTexture, -1f, -1f, 1f, 1f, .1f, 0, 1);
-        renderer.endDrawing();
+        doRender(mouseLocationX, mouseLocationY);
 
         /*
         int error = glGetError();
