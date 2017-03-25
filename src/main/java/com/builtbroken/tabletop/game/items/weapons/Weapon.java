@@ -22,6 +22,7 @@ public class Weapon extends Item
     public Weapon(String uniqueID, int id)
     {
         super("weapon." + uniqueID, id);
+        canBeHeld = true;
     }
 
     /**

@@ -27,6 +27,7 @@ public class ButtonLogicItem extends ButtonLogic
             if (living.actionableItems.size() > itemIndex)
             {
                 living.activeItem = living.actionableItems.get(itemIndex);
+                living.heldItem = living.actionableItems.get(itemIndex);
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.builtbroken.tabletop.client.gui.component.button.actions;
 
+import com.builtbroken.tabletop.client.GameDisplay;
+import com.builtbroken.tabletop.client.graphics.render.ItemRender;
 import com.builtbroken.tabletop.game.entity.living.EntityLiving;
+import com.builtbroken.tabletop.game.items.Item;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -18,18 +21,27 @@ public class ButtonLogicWeapon extends ButtonLogic
     @Override
     protected void leftClick(float mouseX, float mouseY)
     {
-        if (button.display().selectedEntity instanceof EntityLiving && ((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            ((EntityLiving) button.display().selectedEntity).activeWeapon = ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex);
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.usableWeapons.size() > itemIndex)
+            {
+                living.activeWeapon = living.usableWeapons.get(itemIndex);
+                living.heldItem = living.actionableItems.get(itemIndex);
+            }
         }
     }
 
     @Override
     public float getWidth()
     {
-        if (((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            return ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex).width;
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.usableWeapons.size() > itemIndex)
+            {
+                return living.usableWeapons.get(itemIndex).width;
+            }
         }
         return -1;
     }
@@ -37,10 +49,28 @@ public class ButtonLogicWeapon extends ButtonLogic
     @Override
     public float getHeight()
     {
-        if (((EntityLiving) button.display().selectedEntity).usableWeapons.size() > itemIndex)
+        if (hadSelectedEntityLiving())
         {
-            return ((EntityLiving) button.display().selectedEntity).usableWeapons.get(itemIndex).height;
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.usableWeapons.size() > itemIndex)
+            {
+                return living.usableWeapons.get(itemIndex).height;
+            }
         }
         return -1;
+    }
+
+    @Override
+    public void render(float mouseX, float mouseY, float x, float y, float z)
+    {
+        if (hadSelectedEntityLiving())
+        {
+            EntityLiving living = getSelectedEntityAsLiving();
+            if (living.usableWeapons.size() > itemIndex)
+            {
+                Item item = living.usableWeapons.get(itemIndex);
+                ItemRender.render(item, x, y, GameDisplay.GAME_GUI_LAYER + 0.1f, 1);
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.builtbroken.tabletop.client.graphics.render;
 
-import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.graphics.mesh.Mesh;
 import com.builtbroken.tabletop.client.graphics.textures.TextureSheetData;
 import com.builtbroken.tabletop.util.Matrix4f;
 
@@ -279,7 +279,9 @@ public class FontRender
         {
             cache = new Matrix4f();
         }
-        Shader.GLOBAL_SHADER.setUniformMat4f("ml_matrix", cache.resetToIdentity().translate(x, y, z));
+        cache = cache.rotate(rot);
+        Shader.GLOBAL_SHADER.setUniformMat4f("rotation", cache);
+        Shader.GLOBAL_SHADER.setUniform3f("offset", x, y, z);
 
         //Render mesh
         data.mesh.render(scale);

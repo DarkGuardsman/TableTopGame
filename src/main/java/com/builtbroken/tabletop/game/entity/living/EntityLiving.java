@@ -31,8 +31,12 @@ public class EntityLiving extends Entity
     /** Items that can be used */
     public List<Item> actionableItems = new ArrayList();
 
+    /** Active item selected for use */
     public Item activeItem;
+    /** Active weapon selected for use */
     public Item activeWeapon;
+    /** Item that is currently being held */
+    public Item heldItem;
 
     /** Display name for the entity */
     protected String displayName;

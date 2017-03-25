@@ -16,6 +16,8 @@ public class Item extends GameObject
     /** Mass of the item, used for strength checks and other minor math values */
     public int mass;
 
+    protected boolean canBeHeld = false;
+
     public final int ID;
 
     public Item(String uniqueID, int ID)
@@ -33,5 +35,10 @@ public class Item extends GameObject
     public boolean hasAction(Entity entity)
     {
         return false;
+    }
+
+    public boolean canBeHeld()
+    {
+        return canBeHeld;
     }
 }

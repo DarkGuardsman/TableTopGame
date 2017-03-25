@@ -395,6 +395,12 @@ public class Entity extends GameObject
         return rotation;
     }
 
+    public Entity setRotation(float rotation)
+    {
+        this.rotation = rotation;
+        return this;
+    }
+
     //==============================================
     // Data
     //==============================================

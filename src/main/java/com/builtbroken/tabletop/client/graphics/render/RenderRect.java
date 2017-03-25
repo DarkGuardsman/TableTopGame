@@ -1,7 +1,7 @@
 package com.builtbroken.tabletop.client.graphics.render;
 
-import com.builtbroken.tabletop.client.graphics.Mesh;
 import com.builtbroken.tabletop.client.graphics.Shader;
+import com.builtbroken.tabletop.client.graphics.mesh.Mesh;
 import com.builtbroken.tabletop.client.graphics.textures.Texture;
 import com.builtbroken.tabletop.client.graphics.textures.TextureLoader;
 import com.builtbroken.tabletop.util.Matrix4f;
@@ -15,6 +15,7 @@ public class RenderRect
     public Shader shader;
 
     private Matrix4f cache;
+
 
     private float width, height, layer;
 
@@ -98,12 +99,15 @@ public class RenderRect
     {
         if (shader == Shader.GLOBAL_SHADER)
         {
+
             if (cache == null)
             {
                 cache = new Matrix4f();
             }
-            cache = cache.resetToIdentity().translate(x, y, z);
-            shader.setUniformMat4f("ml_matrix", cache);
+            cache = cache.rotate(rot);
+            shader.setUniformMat4f("rotation", cache);
+            shader.setUniform3f("offset", x, y, z);
+
         }
 
         //Render
@@ -112,7 +116,6 @@ public class RenderRect
 
     public void unbind()
     {
-
         //Clean up
         shader.disable();
         texture.unbind();

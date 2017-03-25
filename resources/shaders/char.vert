@@ -4,8 +4,9 @@ layout (location = 0) in vec4 position;
 layout (location = 1) in vec2 tc;
 
 uniform mat4 pr_matrix;
-uniform mat4 vw_matrix = mat4(1.0);
-uniform mat4 ml_matrix = mat4(1.0);
+uniform mat4 rotation;
+uniform vec3 offset = vec3(0.0);
+
 out DATA
 {
 	vec2 tc;
@@ -13,6 +14,6 @@ out DATA
 
 void main()
 {
-	gl_Position = pr_matrix * vw_matrix * ml_matrix * position;
+	gl_Position = pr_matrix * ((position * rotation) + vec4(offset, 0));
 	vs_out.tc = tc;
 }

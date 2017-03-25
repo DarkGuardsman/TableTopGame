@@ -99,6 +99,15 @@ public class Shader
         glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
     }
 
+    public void setUniform3f(String name, float x, float y, float z)
+    {
+        if (!enabled)
+        {
+            enable();
+        }
+        glUniform3f(getUniform(name), x, y, z);
+    }
+
     public void setUniformMat4f(String name, Matrix4f matrix)
     {
         if (!enabled)

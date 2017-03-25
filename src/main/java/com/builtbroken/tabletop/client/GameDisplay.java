@@ -554,6 +554,7 @@ public class GameDisplay implements Runnable
         //Render entities
         for (Entity entity : game.getWorld().getEntities())
         {
+            entity.setRotation((entity.getRotation() + 1) % 360);
             //Ensure the entity is on the floor we are rendering
             if (entity.zi() == cameraPosZ)
             {
@@ -565,7 +566,7 @@ public class GameDisplay implements Runnable
                 {
                     if (tile_y >= cameraBoundBottom && tile_y <= cameraBoundTop)
                     {
-                        EntityRender.render(entity, tile_x, tile_y, 0, 0, zoom);
+                        EntityRender.render(entity, tile_x, tile_y, 0, zoom);
 
                         if (mouseMapPosX == entity.xi() && mouseMapPosY == entity.yi())
                         {

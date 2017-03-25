@@ -9,6 +9,7 @@ import com.builtbroken.tabletop.game.entity.living.EntityLiving;
 import com.builtbroken.tabletop.game.items.ItemState;
 import com.builtbroken.tabletop.game.items.Items;
 import com.builtbroken.tabletop.game.items.armor.Armor;
+import com.builtbroken.tabletop.game.items.weapons.Weapon;
 import com.builtbroken.tabletop.game.map.examples.StaticMapData;
 import com.builtbroken.tabletop.game.tile.Tiles;
 import com.builtbroken.tabletop.game.world.World;
@@ -125,10 +126,10 @@ public class Game implements Runnable
 
 
         //Generate some characters to render
-        getWorld().getEntities().add(new EntityLiving("bob").setController(player).setPosition(2, 0, 0));
-        getWorld().getEntities().add(new EntityLiving("joe").setController(player).setPosition(-2, 0, 0));
-        getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0));
-        getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0));
+        getWorld().getEntities().add(new EntityLiving("bob").setController(player).setPosition(0, 0, 0).setRotation(45));
+        //getWorld().getEntities().add(new EntityLiving("joe").setController(player).setPosition(-2, 0, 0).setRotation(0));
+        //getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0).setRotation(-90));
+        //getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0).setRotation(90));
 
         for (Entity entity : getWorld().getEntities())
         {
@@ -136,6 +137,10 @@ public class Game implements Runnable
             {
                 ((EntityLiving) entity).actionableItems.add(Items.get("item.medkit"));
                 ((EntityLiving) entity).actionableItems.add(Items.get("item.grenade"));
+                ((EntityLiving) entity).usableWeapons.add((Weapon) Items.get("item.weapon.handgun"));
+                ((EntityLiving) entity).heldItem = Items.get("item.weapon.handgun");
+
+
                 ((EntityLiving) entity).getArmor().equip(new ItemState(Items.get("item.armor.armor1.head")), Armor.ArmorSlot.HEAD, true);
                 ((EntityLiving) entity).getArmor().equip(new ItemState(Items.get("item.armor.armor1.chest")), Armor.ArmorSlot.CHEST, true);
             }
@@ -150,7 +155,7 @@ public class Game implements Runnable
                 int y = random.nextInt(20) - random.nextInt(20);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    getWorld().getEntities().add(new EntityLiving("enemy" + i).setController(ai).setPosition(x, y, 0));
+                    //getWorld().getEntities().add(new EntityLiving("enemy" + i).setController(ai).setPosition(x, y, 0));
                     break;
                 }
             }
@@ -165,7 +170,7 @@ public class Game implements Runnable
                 int y = random.nextInt(50) - random.nextInt(50);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    getWorld().getEntities().add(new EntityLiving("neutral" + i).setController(ai).setPosition(x, y, 0));
+                    //getWorld().getEntities().add(new EntityLiving("neutral" + i).setController(ai).setPosition(x, y, 0));
                     break;
                 }
             }

@@ -73,25 +73,24 @@ public class Matrix4f
         return this;
     }
 
-    public static Matrix4f rotate(float angle)
+    public Matrix4f rotate(float angle)
     {
-        Matrix4f result = identity();
+        resetToIdentity();
         float r = (float) Math.toRadians(angle);
         float cos = (float) Math.cos(r);
         float sin = (float) Math.sin(r);
 
-        result.elements[0 + 0 * 4] = cos;
-        result.elements[1 + 0 * 4] = sin;
+        elements[0 + 0 * 4] = cos;
+        elements[1 + 0 * 4] = sin;
 
-        result.elements[0 + 1 * 4] = -sin;
-        result.elements[1 + 1 * 4] = cos;
+        elements[0 + 1 * 4] = -sin;
+        elements[1 + 1 * 4] = cos;
 
-        return result;
+        return this;
     }
 
-    public Matrix4f multiply(Matrix4f matrix)
+    public Matrix4f multiply(Matrix4f matrix, Matrix4f result)
     {
-        Matrix4f result = new Matrix4f();
         for (int y = 0; y < 4; y++)
         {
             for (int x = 0; x < 4; x++)
