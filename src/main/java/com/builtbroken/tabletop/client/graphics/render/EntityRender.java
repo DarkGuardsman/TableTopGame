@@ -79,7 +79,21 @@ public class EntityRender
                 RenderRect rect = heldItemRenders.get(living.heldItem);
                 if (rect != null)
                 {
-                    rect.render(x, y + 1, z, rot, scale);
+                    //Rotation to radian value
+                    double a = Math.toRadians(rot);
+
+                    //offset
+                    double ox = 0.3f;
+                    double oy = 0.5f;
+                    //Delta rotation
+                    double dx = (ox * Math.cos(a) - oy * Math.sin(a));
+                    double dy = (oy * Math.cos(a) + ox * Math.sin(a));
+
+                    //Item position
+                    float itemX = x + (float) dx;
+                    float itemY = y + (float) dy;
+
+                    rect.render(itemX, itemY, z, rot, scale);
                     //TODO do render over shoulder or under shoulder check to improve visuals
                 }
             }
