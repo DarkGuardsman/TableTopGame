@@ -554,7 +554,6 @@ public class GameDisplay implements Runnable
         //Render entities
         for (Entity entity : game.getWorld().getEntities())
         {
-            entity.setRotation((entity.getRotation() + 1) % 360);
             //Ensure the entity is on the floor we are rendering
             if (entity.zi() == cameraPosZ)
             {

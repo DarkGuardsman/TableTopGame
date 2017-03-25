@@ -126,10 +126,10 @@ public class Game implements Runnable
 
 
         //Generate some characters to render
-        getWorld().getEntities().add(new EntityLiving("bob").setController(player).setPosition(0, 0, 0).setRotation(45));
-        //getWorld().getEntities().add(new EntityLiving("joe").setController(player).setPosition(-2, 0, 0).setRotation(0));
-        //getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0).setRotation(-90));
-        //getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0).setRotation(90));
+        getWorld().getEntities().add(new EntityLiving("bob").setController(player).setPosition(2, 0, 0).setRotation(-90));
+        getWorld().getEntities().add(new EntityLiving("joe").setController(player).setPosition(-2, 0, 0).setRotation(90));
+        getWorld().getEntities().add(new EntityLiving("paul").setController(player).setPosition(0, 2, 0).setRotation(0));
+        getWorld().getEntities().add(new EntityLiving("tim").setController(player).setPosition(0, -2, 0).setRotation(180));
 
         for (Entity entity : getWorld().getEntities())
         {
@@ -155,7 +155,7 @@ public class Game implements Runnable
                 int y = random.nextInt(20) - random.nextInt(20);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    //getWorld().getEntities().add(new EntityLiving("enemy" + i).setController(ai).setPosition(x, y, 0));
+                    getWorld().getEntities().add(new EntityLiving("enemy" + i).setController(ai).setPosition(x, y, 0).setRotation(random.nextInt(360)));
                     break;
                 }
             }
@@ -170,7 +170,7 @@ public class Game implements Runnable
                 int y = random.nextInt(50) - random.nextInt(50);
                 if (getWorld().getEntity(x, y, 0) == null)
                 {
-                    //getWorld().getEntities().add(new EntityLiving("neutral" + i).setController(ai).setPosition(x, y, 0));
+                    getWorld().getEntities().add(new EntityLiving("neutral" + i).setController(ai).setPosition(x, y, 0).setRotation(random.nextInt(360)));
                     break;
                 }
             }
